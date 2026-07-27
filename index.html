@@ -1254,7 +1254,7 @@ function buildHBar(canvasId,data,title){
 
 
 // ── 台股各券商明細 ──
-window.TW_BROKER=TW_BROKER|| {
+window.TW_BROKER = {
   "永豐敦南": {total:208.1, items:[
     {code:"00675L",name:"富邦加權正2",shares:4000,price:284,val:113.6,type:"槓桿"},
     {code:"00663L",name:"國泰加權正2",shares:9000,price:94,val:84.6,type:"槓桿"},
@@ -1298,7 +1298,7 @@ window.TW_BROKER=TW_BROKER|| {
 };
 
 // ── 美股各券商明細 ──
-window.US_BROKER=US_BROKER|| {
+window.US_BROKER = {
   "永豐豐存股": {total:469.0, items:[
     {code:"QQQ",name:"QQQ",shares:43,price:520,val:71.6,type:"ETF"},
     {code:"GOOG",name:"Alphabet",shares:118,price:185,val:69.9,type:"個股"},
@@ -1423,16 +1423,16 @@ function mkLine(id,ds,pct){
 }
 
 // ── 圖表狀態 ──
-let chartsInit={};
+window.chartsInit={};
 
 function drawAllCharts(){
-  if(!chartsInit['g']){chartsInit['g']=1;
+  if(!window.chartsInit['g']){window.chartsInit['g']=1;
     drawGauge('g-tw',44.6,'4,456萬','#378ADD');
     drawGauge('g-us',59.7,'2,388萬','#1D9E75');
     drawGauge('g-jp',67.9,'679萬','#EF9F27');
     drawGauge('g-fd',86.9,'869萬','#7F77DD');
   }
-  if(!chartsInit['overview']){chartsInit['overview']=1;
+  if(!window.chartsInit['overview']){window.chartsInit['overview']=1;
     const od=document.getElementById('overviewDonut');
     if(od)new Chart(od,{type:'doughnut',
       data:{labels:['台股','美股','日股','基金'],datasets:[{
@@ -1442,7 +1442,7 @@ function drawAllCharts(){
 }
 
 function drawTabCharts(name){
-  if(chartsInit[name]) return; chartsInit[name]=1;
+  if(window.chartsInit[name]) return; window.chartsInit[name]=1;
   if(name==='growth'){
     const bc=document.getElementById('growthChart');
     if(bc)new Chart(bc,{type:'bar',data:{labels:SL.labels,datasets:[
