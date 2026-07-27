@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="RetireFlow">
 <title>RetireFlow 退休財務儀表板</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -23,7 +22,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 .g2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
 @media(max-width:680px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
-@media(max-width:380px){.g4{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
 .metric{background:var(--bg);border-radius:var(--radius-sm);padding:12px 14px}
 .metric-label{font-size:10px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase}
@@ -65,8 +63,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .inp-row label{font-size:12px;color:var(--muted);width:110px;flex-shrink:0}
 .inp-row input{flex:1;height:32px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 10px;background:var(--bg);color:var(--text);font-family:inherit}
 .btn-primary{padding:8px 0;font-size:13px;border-radius:var(--radius-sm);border:none;background:var(--text);cursor:pointer;color:var(--card);font-family:inherit;width:100%;margin-top:8px}
-.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600}
-.badge-amber{background:#FAEEDA;color:#633806}.badge-red{background:#FCEBEB;color:#501313}
 .holding-header{font-size:10px;font-weight:600;color:var(--hint);letter-spacing:.06em;text-transform:uppercase;padding:5px 0;border-bottom:1.5px solid var(--border);margin:10px 0 2px}
 .holding-header:first-child{margin-top:0}
 .sep{height:1px;background:var(--border);margin:10px 0}
@@ -76,6 +72,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .gauge-sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .gauge-sub-box{background:var(--bg);border-radius:10px;padding:8px;display:flex;flex-direction:column;align-items:center}
 .gauge-label{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;text-align:center}
+.new-badge{display:inline-block;background:#E1F5EE;color:#085041;font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;margin-left:4px}
 </style>
 </head>
 <body>
@@ -84,38 +81,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="header">
   <div>
     <h1>RetireFlow 退休財務儀表板</h1>
-    <p>更新時間：2026/07/27 05:44 ｜ 目標：55歲前退休（2028年前）</p>
+    <p>資料來源：Google Drive ｜ 更新：2026/07/27 05:56 ｜ 目標 2028/12 前退休</p>
   </div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <div class="pill"><span class="dot dot-amber"></span>市場偏謹慎</div>
-    <div class="pill"><span class="dot dot-red"></span>台幣升值風險</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <div class="pill"><span class="dot dot-green"></span>Drive 已同步</div>
+    <div class="pill"><span class="dot dot-amber"></span>市場謹慎</div>
   </div>
 </div>
 
 <div class="g4 mb12">
   <div class="metric">
     <div class="metric-label">總資產</div>
-    <div class="metric-value">8,217<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
-    <div class="metric-sub up">↑ +48萬 (+0.6%)</div>
+    <div class="metric-value">8,396<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub up">↑ +0萬 (+0.0%)</div>
   </div>
   <div class="metric">
     <div class="metric-label">總負債</div>
-    <div class="metric-value dn">4,322<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
-    <div class="metric-sub">負債比 52.6%</div>
+    <div class="metric-value dn">4,269<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub">負債比 50.8%</div>
   </div>
   <div class="metric">
     <div class="metric-label">淨資產</div>
-    <div class="metric-value">3,896<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
-    <div class="metric-sub up">↑ 期間 +1818.0萬（+28.4%）</div>
+    <div class="metric-value">4,128<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub up">↑ 期間 +1997.0萬（+31.2%）</div>
   </div>
   <div class="metric">
     <div class="metric-label">距退休</div>
     <div class="countdown">
       <span class="cd-n">2</span><span class="cd-u">年</span>
       <span class="cd-sep">·</span>
-      <span class="cd-n">4</span><span class="cd-u">月</span>
+      <span class="cd-n">5</span><span class="cd-u">月</span>
     </div>
-    <div class="metric-sub">年股息 137萬｜月均 11萬</div>
+    <div class="metric-sub">年股息 135萬｜月均 11萬</div>
   </div>
 </div>
 
@@ -123,18 +120,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
     <div>
       <div class="section-title" style="margin-bottom:2px">退休目標達成率</div>
-      <div style="font-size:12px;color:var(--muted)">總資產 8,217萬 ／ 目標 16,000萬</div>
+      <div style="font-size:12px;color:var(--muted)">總資產 8,396萬 ／ 目標 16,000萬</div>
     </div>
     <div style="text-align:right">
-      <div style="font-size:26px;font-weight:700;letter-spacing:-1px">51.4%</div>
-      <div style="font-size:11px;color:var(--muted)">還需增加 7,783萬</div>
+      <div style="font-size:26px;font-weight:700;letter-spacing:-1px">52.5%</div>
+      <div style="font-size:11px;color:var(--muted)">還需增加 7,604萬</div>
     </div>
   </div>
   <div class="prog-bg" style="height:12px">
-    <div class="prog-fill" style="width:51.4%;background:linear-gradient(to right,#378ADD,#1D9E75)"></div>
+    <div class="prog-fill" style="width:52.5%;background:linear-gradient(to right,#378ADD,#1D9E75)"></div>
   </div>
   <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--hint);margin-top:4px">
-    <span>起始 03/24</span><span>目標 16,000萬 ▶</span>
+    <span>起始 03/24・6,400萬</span><span>目標 16,000萬 ▶</span>
   </div>
 </div>
 
@@ -152,57 +149,58 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="g2">
     <div class="card">
       <div class="section-title">各類資產現值</div>
-      <div class="row"><div><div class="row-name">台股</div><div class="row-tag">永豐・玉山・台銀・凱基</div></div><div style="text-align:right"><div style="font-weight:600">4,557萬</div><div style="font-size:11px;color:#378ADD">55.5% +42.9%</div></div></div>
-      <div class="row"><div><div class="row-name">美股</div><div class="row-tag">永豐豐存股・複委託・FirstTrade</div></div><div style="text-align:right"><div style="font-weight:600">2,303萬</div><div style="font-size:11px;color:#1D9E75">28.0% +13.7%</div></div></div>
-      <div class="row"><div><div class="row-name">日股</div><div class="row-tag">永豐複委託</div></div><div style="text-align:right"><div style="font-weight:600">621萬</div><div style="font-size:11px;color:#EF9F27">7.6% +17.8%</div></div></div>
-      <div class="row"><div><div class="row-name">基金</div><div class="row-tag">基富通・鉅亨・HSBC</div></div><div style="text-align:right"><div style="font-weight:600">737萬</div><div style="font-size:11px;color:#7F77DD">9.0% +12.1%</div></div></div>
-      <div class="row"><div><div class="row-name" style="color:var(--muted)">現金倉位</div><div class="row-tag">SGOV＋台幣現金（待填入）</div></div><div style="font-size:11px;color:var(--hint)">目標10%</div></div>
-      <div class="total-row"><span>合計</span><span>8,217萬</span></div>
+      <div class="row"><div><div class="row-name">台股</div><div class="row-tag">永豐・玉山・台銀・凱基</div></div><div style="text-align:right"><div style="font-weight:600">4,461萬</div><div style="font-size:11px;color:#378ADD">53.1% +39.8%</div></div></div>
+      <div class="row"><div><div class="row-name">美股</div><div class="row-tag">永豐豐存股・複委託・FirstTrade</div></div><div style="text-align:right"><div style="font-weight:600">2,388萬</div><div style="font-size:11px;color:#1D9E75">28.4% +17.9%</div></div></div>
+      <div class="row"><div><div class="row-name">日股</div><div class="row-tag">永豐複委託</div></div><div style="text-align:right"><div style="font-weight:600">679萬</div><div style="font-size:11px;color:#EF9F27">8.1% +28.7%</div></div></div>
+      <div class="row"><div><div class="row-name">基金</div><div class="row-tag">基富通・鉅亨・HSBC</div></div><div style="text-align:right"><div style="font-weight:600">869萬</div><div style="font-size:11px;color:#7F77DD">10.3% +32.1%</div></div></div>
+      <div class="row"><div><div class="row-name">現金倉位 <span class="new-badge">NEW</span></div><div class="row-tag">台幣30萬・USD5000・JPY100萬</div></div><div style="font-size:11px;color:var(--hint)">已記錄</div></div>
+      <div class="total-row"><span>合計</span><span>8,396萬</span></div>
     </div>
     <div class="card">
       <div class="section-title">資產配置</div>
       <div class="chart-wrap-sm"><canvas id="donutChart"></canvas></div>
       <div class="legend-row" style="margin-top:8px;justify-content:center">
-        <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>台股55.5%</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>美股28.0%</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>日股7.6%</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#7F77DD"></span>基金9.0%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>台股53.1%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>美股28.4%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>日股8.1%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7F77DD"></span>基金10.3%</span>
       </div>
     </div>
   </div>
   <div class="card mb12">
-    <div class="section-title">各資產報酬率（03/24～2026/07/27，37天）</div>
+    <div class="section-title">各資產報酬率（03/24～07/27，125天）</div>
     <div class="g4">
-      <div class="metric"><div class="metric-label" style="color:#378ADD">台股</div><div class="metric-value up">+42.9%</div><div class="metric-sub">年化+3273.9% ｜ +1367萬</div></div>
-      <div class="metric"><div class="metric-label" style="color:#1D9E75">美股</div><div class="metric-value up">+13.7%</div><div class="metric-sub">年化+255.1% ｜ +278萬</div></div>
-      <div class="metric"><div class="metric-label" style="color:#EF9F27">日股</div><div class="metric-value up">+17.8%</div><div class="metric-sub">年化+401.7% ｜ +94萬</div></div>
-      <div class="metric"><div class="metric-label" style="color:#7F77DD">基金</div><div class="metric-value up">+12.1%</div><div class="metric-sub">年化+207.3% ｜ +79萬</div></div>
+      <div class="metric"><div class="metric-label" style="color:#378ADD">台股</div><div class="metric-value up">+39.8%</div><div class="metric-sub">年化+166.2% ｜ +1271萬</div></div>
+      <div class="metric"><div class="metric-label" style="color:#1D9E75">美股</div><div class="metric-value up">+17.9%</div><div class="metric-sub">年化+61.9% ｜ +363萬</div></div>
+      <div class="metric"><div class="metric-label" style="color:#EF9F27">日股</div><div class="metric-value up">+28.7%</div><div class="metric-sub">年化+109.1% ｜ +152萬</div></div>
+      <div class="metric"><div class="metric-label" style="color:#7F77DD">基金</div><div class="metric-value up">+32.1%</div><div class="metric-sub">年化+125.6% ｜ +211萬</div></div>
     </div>
     <div class="alert alert-info" style="margin-top:10px">ℹ️ 年化報酬率為短期數據推算，不代表長期可持續</div>
   </div>
   <div class="g2">
     <div class="card">
       <div class="section-title">負債明細</div>
-      <div class="row"><span>房貸（星展-東方文華）</span><span><b class="dn">3,524萬</b> <span style="font-size:11px;color:var(--hint)">@2.5%</span></span></div><div class="row"><span>股票質借（永豐台股）</span><span><b class="dn">798萬</b> <span style="font-size:11px;color:var(--hint)">@2.5%</span></span></div>
-      <div class="row" style="font-weight:600"><span>總負債</span><span class="dn">4,322萬</span></div>
-      <div class="row"><span>年利息</span><span class="dn">約 108萬</span></div>
-      <div class="row"><span>股息淨超過利息</span><span class="up">+29萬</span></div>
+      <div class="row"><span>房貸（星展-東方文華）</span><span><b class="dn">3,505萬</b> <span style="font-size:11px;color:var(--hint)">@2.5%</span></span></div><div class="row"><span>股票質借（永豐台股）</span><span><b class="dn">763萬</b> <span style="font-size:11px;color:var(--hint)">@2.5%</span></span></div>
+      <div class="row" style="font-weight:600"><span>總負債</span><span class="dn">4,269萬</span></div>
+      <div class="row"><span>年利息</span><span class="dn">約 107萬</span></div>
+      <div class="row"><span>股息超過利息</span><span class="up">+28萬</span></div>
     </div>
     <div class="card">
       <div class="section-title">基金帳戶</div>
-      <div class="row"><span>基富通基金總額（基富通）</span><span>158萬 <span style="font-size:11px;color:var(--hint)">殖利率2.0%</span></span></div><div class="row"><span>鉅亨基金總額（鉅亨網）</span><span>420萬 <span style="font-size:11px;color:var(--hint)">殖利率2.0%</span></span></div><div class="row"><span>結構型商品（HSBC）</span><span>159萬 <span style="font-size:11px;color:var(--hint)">殖利率5.0%</span></span></div>
-      <div class="row" style="font-weight:600"><span>基金小計</span><span>737萬</span></div>
+      <div class="row"><span>基富通基金總額（基富通）</span><span>143萬 <span style="font-size:11px;color:var(--hint)">殖利率2%</span></span></div><div class="row"><span>鉅亨基金總額（鉅亨網）</span><span>411萬 <span style="font-size:11px;color:var(--hint)">殖利率2%</span></span></div><div class="row"><span>結構型商品（HSBC）</span><span>314萬 <span style="font-size:11px;color:var(--hint)">殖利率5%</span></span></div>
+      <div class="row" style="font-weight:600"><span>基金小計</span><span>869萬</span></div>
       <div class="sep"></div>
-      <div class="row"><span style="font-size:11px;color:var(--hint)">💡 建議現金倉位達 1,600萬（10%）</span></div>
+      <div class="section-title" style="margin-top:4px">現金倉位 <span class="new-badge">NEW</span></div>
+      <div class="row"><span>台幣（NTD）</span><span>300,000</span></div><div class="row"><span>美金（USD）</span><span>5,000</span></div><div class="row"><span>日幣（YEN）</span><span>1,000,000</span></div>
     </div>
   </div>
 </div>
 
-<!-- 油表達成率 -->
+<!-- 油表 -->
 <div id="tab-gauge" class="tab-content">
   <div class="card mb12">
-    <div class="section-title">各類資產退休目標達成率</div>
-    <div style="font-size:12px;color:var(--muted)">退休目標 16,000萬，目標配置：台股40%・美股30%・日股10%・基金10%・現金10%</div>
+    <div class="section-title">各類資產退休目標達成率（依 Google Drive 目標設定）</div>
+    <div style="font-size:12px;color:var(--muted)">台股目標1億・美股目標4,000萬・日股目標1,000萬・基金目標1,000萬</div>
     <div class="gauge-grid">
       <div class="gauge-box">
         <div class="gauge-label">整體達成率</div>
@@ -217,33 +215,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card mb12">
-    <div class="section-title">目標配置 vs 實際配置</div>
+    <div class="section-title">目標配置 vs 實際</div>
     <div style="margin-top:8px">
-      <div class="risk-row"><div class="risk-label" style="color:#378ADD">台股</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際 55.5%</span><span>目標 40%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:100%;background:#378ADD"></div></div></div><div class="risk-val" style="color:#E24B4A">+15.5%</div></div>
-      <div class="risk-row"><div class="risk-label" style="color:#1D9E75">美股</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際 28.0%</span><span>目標 30%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:93%;background:#1D9E75"></div></div></div><div class="risk-val" style="color:#1D9E75">-2.0%</div></div>
-      <div class="risk-row"><div class="risk-label" style="color:#EF9F27">日股</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際 7.6%</span><span>目標 10%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:76%;background:#EF9F27"></div></div></div><div class="risk-val" style="color:#1D9E75">-2.4%</div></div>
-      <div class="risk-row"><div class="risk-label" style="color:#7F77DD">基金</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際 9.0%</span><span>目標 10%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:90%;background:#7F77DD"></div></div></div><div class="risk-val" style="color:#1D9E75">-1.0%</div></div>
-      <div class="risk-row"><div class="risk-label" style="color:var(--muted)">現金</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際 ~0%</span><span>目標 10%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:3%;background:#999"></div></div></div><div class="risk-val dn">-10%</div></div>
+      <div class="risk-row"><div class="risk-label" style="color:#378ADD">台股</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際53.1%</span><span>目標40%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:100%;background:#378ADD"></div></div></div><div class="risk-val" style="color:#E24B4A">+13.1%</div></div>
+      <div class="risk-row"><div class="risk-label" style="color:#1D9E75">美股</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際28.4%</span><span>目標30%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:95%;background:#1D9E75"></div></div></div><div class="risk-val" style="color:#1D9E75">-1.6%</div></div>
+      <div class="risk-row"><div class="risk-label" style="color:#EF9F27">日股</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際8.1%</span><span>目標10%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:81%;background:#EF9F27"></div></div></div><div class="risk-val" style="color:#1D9E75">-1.9%</div></div>
+      <div class="risk-row"><div class="risk-label" style="color:#7F77DD">基金</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>實際10.3%</span><span>目標10%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:100%;background:#7F77DD"></div></div></div><div class="risk-val" style="color:#1D9E75">+0.3%</div></div>
     </div>
   </div>
-  <div class="alert alert-danger">⚠️ <b>台股超重 +15.5%</b>：建議分批降低槓桿ETF部位，轉入現金或美股</div>
-  <div class="alert alert-danger" style="margin-top:0">⚠️ <b>現金倉位不足</b>：建議增至 1,600萬，作為回調加碼彈藥</div>
-  <div class="alert alert-good" style="margin-top:8px">✓ 美股・日股・基金配置偏差在合理範圍（±3%）</div>
+  <div class="alert alert-danger">⚠️ <b>台股仍超重</b> +13.1%：建議持續分批降低槓桿ETF部位</div>
+  <div class="alert alert-good" style="margin-top:0">✓ 美股・日股・基金配置偏差均在合理範圍</div>
 </div>
 
-<!-- 風險管控 -->
+<!-- 風險 -->
 <div id="tab-risk" class="tab-content">
   <div class="g3 mb12">
     <div class="card">
       <div class="section-title">CNN 恐懼貪婪</div>
-      <div style="display:flex;align-items:baseline;gap:8px;margin:8px 0"><span style="font-size:34px;font-weight:700;color:#EF9F27">41</span><span class="badge badge-amber">恐懼</span></div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:8px 0"><span style="font-size:34px;font-weight:700;color:#EF9F27">41</span><span style="background:#FAEEDA;color:#633806;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600">恐懼</span></div>
       <div class="vix-bar"><div class="vix-pin" style="left:41%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--hint)"><span>極恐懼</span><span>中性50</span><span>極貪婪</span></div>
-      <div class="alert alert-warn" style="margin-top:10px">逢低分批佈局，避免重押</div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--hint)"><span>極恐懼</span><span>中性</span><span>極貪婪</span></div>
+      <div class="alert alert-warn" style="margin-top:10px">逢低分批佈局</div>
     </div>
     <div class="card">
       <div class="section-title">VIX 波動率</div>
-      <div style="display:flex;align-items:baseline;gap:8px;margin:8px 0"><span style="font-size:34px;font-weight:700;color:#E24B4A">22.3</span><span class="badge badge-red">警戒</span></div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:8px 0"><span style="font-size:34px;font-weight:700;color:#E24B4A">22.3</span><span style="background:#FCEBEB;color:#501313;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600">警戒</span></div>
       <div class="vix-bar" style="background:linear-gradient(to right,#1D9E75 40%,#EF9F27 65%,#E24B4A)"><div class="vix-pin" style="left:55%"></div></div>
       <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--hint)"><span>&lt;15低波</span><span>20警戒</span><span>&gt;30恐慌</span></div>
       <div class="alert alert-danger" style="margin-top:10px">VIX&gt;20 降低槓桿</div>
@@ -258,33 +254,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="row"><span>槓桿ETF</span><span><span class="dot dot-red" style="margin-right:5px"></span>耗損風險</span></div>
     </div>
   </div>
-  <div class="card mb12">
-    <div class="section-title">風險部位評估</div>
-    <div style="margin-top:6px">
-      <div class="risk-row"><div class="risk-label">台股槓桿</div><div style="flex:1"><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:78%;background:#E24B4A"></div></div></div><div class="risk-val dn">高</div></div>
-      <div style="font-size:11px;color:var(--muted);margin:-4px 0 10px 90px">00631L・00663L・00675L 共33,000股</div>
-      <div class="risk-row"><div class="risk-label">美股槓桿</div><div style="flex:1"><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:55%;background:#EF9F27"></div></div></div><div class="risk-val" style="color:#EF9F27">中</div></div>
-      <div style="font-size:11px;color:var(--muted);margin:-4px 0 10px 90px">TQQQ・QLD・SSO・AMDL</div>
-      <div class="risk-row"><div class="risk-label">股票質借</div><div style="flex:1"><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:40%;background:#EF9F27"></div></div></div><div class="risk-val" style="color:#EF9F27">中</div></div>
-      <div style="font-size:11px;color:var(--muted);margin:-4px 0 10px 90px">永豐台股 798萬 @2.5%</div>
-      <div class="risk-row"><div class="risk-label">匯率風險</div><div style="flex:1"><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:65%;background:#E24B4A"></div></div></div><div class="risk-val dn">高</div></div>
-      <div style="font-size:11px;color:var(--muted);margin:-4px 0 0 90px">美股+日股 2,924萬，台幣每升1%損失約 29萬</div>
-    </div>
-  </div>
-  <div class="alert alert-danger">⚠️ <b>台幣快速升值</b>：外幣資產 2,924萬，匯率風險持續升高</div>
-  <div class="alert alert-warn" style="margin-top:0">⚠️ <b>槓桿ETF耗損</b>：VIX&gt;20 時 volatility decay 明顯，逢反彈減碼</div>
-  <div class="alert alert-good" style="margin-top:8px">✓ <b>年股息137萬 &gt; 年利息108萬</b>，財務正向循環</div>
-  <div class="alert alert-good" style="margin-top:0">✓ 高股息除息旺季（Q2-Q3）即將到來</div>
+  <div class="alert alert-danger">⚠️ <b>台幣升值</b>：外幣資產 3,067萬，匯率每升1%損失約 31萬</div>
+  <div class="alert alert-warn" style="margin-top:0">⚠️ <b>槓桿ETF</b>：台股槓桿部位（00631L/00663L/00685L）規模大幅增加，VIX&gt;20需特別注意耗損</div>
+  <div class="alert alert-good" style="margin-top:8px">✓ 年股息135萬 &gt; 年利息107萬，被動收入正向循環</div>
 </div>
 
-<!-- 持股明細 -->
+<!-- 持股 -->
 <div id="tab-holdings" class="tab-content">
   <div class="g2">
-    <div class="card"><div class="section-title">台股持股</div><div class="row"><div><div class="row-name">00631L 00631L</div><div class="row-tag">永豐敦南｜1,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00663L 00663L</div><div class="row-tag">永豐敦南｜9,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00675L 00675L</div><div class="row-tag">永豐敦南｜4,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">0050 元大台灣50</div><div class="row-tag">永豐竹科｜41,900股</div></div><div style="font-size:11px" class="up">殖利率2.0%</div></div><div class="row"><div><div class="row-name">0056 元大高股息</div><div class="row-tag">永豐竹科｜62,000股</div></div><div style="font-size:11px" class="up">殖利率8.0%</div></div><div class="row"><div><div class="row-name">006208 富邦台50</div><div class="row-tag">永豐竹科｜20,000股</div></div><div style="font-size:11px" class="up">殖利率2.0%</div></div><div class="row"><div><div class="row-name">00631L 元大台灣50正2</div><div class="row-tag">永豐竹科｜2,000股</div></div><div style="font-size:11px" class="up">殖利率2.0%</div></div><div class="row"><div><div class="row-name">00663L 國泰臺灣加權正2</div><div class="row-tag">永豐竹科｜23,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00881 國泰台灣科技龍頭</div><div class="row-tag">永豐竹科｜33,000股</div></div><div style="font-size:11px" class="up">殖利率5.0%</div></div><div class="row"><div><div class="row-name">00894 中信小資高價30</div><div class="row-tag">永豐竹科｜30,000股</div></div><div style="font-size:11px" class="up">殖利率5.0%</div></div><div class="row"><div><div class="row-name">00922 國泰台灣領袖50</div><div class="row-tag">永豐竹科｜11,000股</div></div><div style="font-size:11px" class="up">殖利率5.0%</div></div><div class="row"><div><div class="row-name">00924 復華S＆P500成長</div><div class="row-tag">永豐竹科｜21,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00927 群益半導體收益</div><div class="row-tag">永豐竹科｜50,000股</div></div><div style="font-size:11px" class="up">殖利率5.0%</div></div><div class="row"><div><div class="row-name">00935 野村臺灣新科技50</div><div class="row-tag">永豐竹科｜29,000股</div></div><div style="font-size:11px" class="up">殖利率5.0%</div></div><div class="row"><div><div class="row-name">00980A 主動野村臺灣優選</div><div class="row-tag">永豐竹科｜22,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">009816 凱基台灣TOP50</div><div class="row-tag">永豐竹科｜17,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00981A 主動統一台股增長</div><div class="row-tag">永豐竹科｜23,000股</div></div><div style="font-size:11px" class="up">殖利率5.0%</div></div><div class="row"><div><div class="row-name">00985A 主動野村台灣50</div><div class="row-tag">永豐竹科｜21,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00988A 主動統一全球創新</div><div class="row-tag">永豐竹科｜12,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00991A 主動復華未來50</div><div class="row-tag">永豐竹科｜11,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00992A 主動群益科技創新</div><div class="row-tag">永豐竹科｜18,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">2330 台積電</div><div class="row-tag">永豐竹科｜5,000股</div></div><div style="font-size:11px" class="up">殖利率2.0%</div></div><div class="row"><div><div class="row-name">6290 良維</div><div class="row-tag">永豐竹科｜9,000股</div></div><div style="font-size:11px" class="up">殖利率5.0%</div></div><div class="row"><div><div class="row-name">6683 雍智科技</div><div class="row-tag">永豐竹科｜1,000股</div></div><div style="font-size:11px" class="up">殖利率2.0%</div></div><div class="row"><div><div class="row-name">6830 汎銓</div><div class="row-tag">永豐竹科｜1,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">6983 景美</div><div class="row-tag">永豐竹科｜1,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">6290 6290</div><div class="row-tag">玉山｜3,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">006208 富邦台50</div><div class="row-tag">台銀｜931股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00631L 元大台灣50正2</div><div class="row-tag">台銀｜7,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00663L 國泰臺灣加權正2</div><div class="row-tag">台銀｜1,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00675L 富邦臺灣加權正2</div><div class="row-tag">台銀｜2,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00924 復華S＆P500成長</div><div class="row-tag">台銀｜3,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">2812 台中銀</div><div class="row-tag">台銀｜2,559股</div></div><div style="font-size:11px" class="up">殖利率5.0%</div></div><div class="row"><div><div class="row-name">00679B 00679B</div><div class="row-tag">凱基｜10,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00857B 00857B</div><div class="row-tag">凱基｜4,000股</div></div><div style="font-size:11px" class="">—</div></div></div>
+    <div class="card">
+      <div class="section-title">台股持股（Google Drive 最新）</div>
+      <div class="row"><div><div class="row-name">00631L 元大台灣50正2</div><div class="row-tag">永豐敦南｜3,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00663L 國泰臺灣加權正2</div><div class="row-tag">永豐敦南｜9,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00675L 富邦臺灣加權正2</div><div class="row-tag">永豐敦南｜4,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">0050 元大台灣50</div><div class="row-tag">永豐竹科｜45,000股</div></div><div style="font-size:11px" class="up">殖利率2%</div></div><div class="row"><div><div class="row-name">0056 元大高股息</div><div class="row-tag">永豐竹科｜62,700股</div></div><div style="font-size:11px" class="up">殖利率8%</div></div><div class="row"><div><div class="row-name">006208 富邦台50</div><div class="row-tag">永豐竹科｜20,000股</div></div><div style="font-size:11px" class="up">殖利率2%</div></div><div class="row"><div><div class="row-name">00631L 元大台灣50正2</div><div class="row-tag">永豐竹科｜30,000股</div></div><div style="font-size:11px" class="up">殖利率2%</div></div><div class="row"><div><div class="row-name">00663L 國泰臺灣加權正2</div><div class="row-tag">永豐竹科｜23,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00685L 群益臺灣加權正2</div><div class="row-tag">永豐竹科｜100,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00881 國泰台灣科技龍頭</div><div class="row-tag">永豐竹科｜35,000股</div></div><div style="font-size:11px" class="up">殖利率5%</div></div><div class="row"><div><div class="row-name">00894 中信小資高價30</div><div class="row-tag">永豐竹科｜33,000股</div></div><div style="font-size:11px" class="up">殖利率5%</div></div><div class="row"><div><div class="row-name">00927 群益半導體收益</div><div class="row-tag">永豐竹科｜50,000股</div></div><div style="font-size:11px" class="up">殖利率5%</div></div><div class="row"><div><div class="row-name">00935 野村臺灣新科技50</div><div class="row-tag">永豐竹科｜31,000股</div></div><div style="font-size:11px" class="up">殖利率5%</div></div><div class="row"><div><div class="row-name">2330 台積電</div><div class="row-tag">永豐竹科｜5,294股</div></div><div style="font-size:11px" class="up">殖利率2%</div></div><div class="row"><div><div class="row-name">5483 中美晶</div><div class="row-tag">永豐竹科｜7,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00631L 元大台灣50正2</div><div class="row-tag">玉山｜15,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">006208 富邦台50</div><div class="row-tag">台銀｜1,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00631L 元大台灣50正2</div><div class="row-tag">台銀｜11,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00663L 國泰臺灣加權正2</div><div class="row-tag">台銀｜1,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">00675L 富邦臺灣加權正2</div><div class="row-tag">台銀｜2,000股</div></div><div style="font-size:11px" class="">—</div></div><div class="row"><div><div class="row-name">2812 台中銀</div><div class="row-tag">台銀｜2,559股</div></div><div style="font-size:11px" class="up">殖利率5%</div></div><div class="row"><div><div class="row-name">00988A 主動統一全球創新</div><div class="row-tag">凱基｜15,000股</div></div><div style="font-size:11px" class="">—</div></div>
+    </div>
     <div class="card">
       <div class="section-title">美股 / 日股</div>
-      <div class="holding-header">美股</div><div class="row"><div><div class="row-name">BRK.B</div><div class="row-tag">永豐美股豐存股｜9.5股</div></div></div><div class="row"><div><div class="row-name">GOOG</div><div class="row-tag">永豐美股豐存股｜118.0股</div></div></div><div class="row"><div><div class="row-name">NVDA</div><div class="row-tag">永豐美股豐存股｜107.0股</div></div></div><div class="row"><div><div class="row-name">PLTR</div><div class="row-tag">永豐美股豐存股｜72.0股</div></div></div><div class="row"><div><div class="row-name">QQQ</div><div class="row-tag">永豐美股豐存股｜43.0股</div></div></div><div class="row"><div><div class="row-name">SMH</div><div class="row-tag">永豐美股豐存股｜71.0股</div></div></div><div class="row"><div><div class="row-name">TSLA</div><div class="row-tag">永豐美股豐存股｜47.1股</div></div></div><div class="row"><div><div class="row-name">VOO</div><div class="row-tag">永豐美股豐存股｜19.3股</div></div></div><div class="row"><div><div class="row-name">VT</div><div class="row-tag">永豐美股豐存股｜166.0股</div></div></div><div class="row"><div><div class="row-name">VTI</div><div class="row-tag">永豐美股豐存股｜34.5股</div></div></div><div class="row"><div><div class="row-name">AMDL</div><div class="row-tag">永豐美股複委託｜300.0股</div></div></div><div class="row"><div><div class="row-name">BMNR</div><div class="row-tag">永豐美股複委託｜400.0股</div></div></div><div class="row"><div><div class="row-name">MNST</div><div class="row-tag">永豐美股複委託｜60.0股</div></div></div><div class="row"><div><div class="row-name">MU</div><div class="row-tag">永豐美股複委託｜20.0股</div></div></div><div class="row"><div><div class="row-name">MUU</div><div class="row-tag">永豐美股複委託｜50.0股</div></div></div><div class="row"><div><div class="row-name">QLD</div><div class="row-tag">永豐美股複委託｜80.0股</div></div></div><div class="row"><div><div class="row-name">QQQI</div><div class="row-tag">永豐美股複委託｜50.0股</div></div></div><div class="row"><div><div class="row-name">RZLV</div><div class="row-tag">永豐美股複委託｜4100.0股</div></div></div><div class="row"><div><div class="row-name">SGOV</div><div class="row-tag">永豐美股複委託｜500.0股</div></div></div><div class="row"><div><div class="row-name">SMH</div><div class="row-tag">永豐美股複委託｜20.0股</div></div></div><div class="row"><div><div class="row-name">SOFI</div><div class="row-tag">永豐美股複委託｜1000.0股</div></div></div><div class="row"><div><div class="row-name">SPYI</div><div class="row-tag">永豐美股複委託｜150.0股</div></div></div><div class="row"><div><div class="row-name">SSO</div><div class="row-tag">永豐美股複委託｜70.0股</div></div></div><div class="row"><div><div class="row-name">TER</div><div class="row-tag">永豐美股複委託｜300.0股</div></div></div><div class="row"><div><div class="row-name">TQQQ</div><div class="row-tag">永豐美股複委託｜120.0股</div></div></div><div class="row"><div><div class="row-name">TSM</div><div class="row-tag">永豐美股複委託｜32.0股</div></div></div><div class="row"><div><div class="row-name">AMD</div><div class="row-tag">FirstTrade｜60.0股</div></div></div><div class="row"><div><div class="row-name">AMDL</div><div class="row-tag">FirstTrade｜120.0股</div></div></div><div class="row"><div><div class="row-name">BMNR</div><div class="row-tag">FirstTrade｜300.0股</div></div></div><div class="row"><div><div class="row-name">GBTC</div><div class="row-tag">FirstTrade｜100.0股</div></div></div><div class="row"><div><div class="row-name">GDX</div><div class="row-tag">FirstTrade｜12.0股</div></div></div><div class="row"><div><div class="row-name">GOOG</div><div class="row-tag">FirstTrade｜15.0股</div></div></div><div class="row"><div><div class="row-name">IBIT</div><div class="row-tag">FirstTrade｜350.0股</div></div></div><div class="row"><div><div class="row-name">METU</div><div class="row-tag">FirstTrade｜5.0股</div></div></div><div class="row"><div><div class="row-name">MSFT</div><div class="row-tag">FirstTrade｜16.0股</div></div></div><div class="row"><div><div class="row-name">MSFU</div><div class="row-tag">FirstTrade｜400.0股</div></div></div><div class="row"><div><div class="row-name">MVLL</div><div class="row-tag">FirstTrade｜20.0股</div></div></div><div class="row"><div><div class="row-name">NVDA</div><div class="row-tag">FirstTrade｜12.0股</div></div></div><div class="row"><div><div class="row-name">SGOV</div><div class="row-tag">FirstTrade｜300.0股</div></div></div><div class="row"><div><div class="row-name">SMH</div><div class="row-tag">FirstTrade｜20.0股</div></div></div><div class="row"><div><div class="row-name">SPYI</div><div class="row-tag">FirstTrade｜200.0股</div></div></div><div class="row"><div><div class="row-name">TER</div><div class="row-tag">FirstTrade｜120.0股</div></div></div><div class="row"><div><div class="row-name">TSLA</div><div class="row-tag">FirstTrade｜20.0股</div></div></div>
-      <div class="holding-header">日股（永豐複委託）</div><div class="row"><div><div class="row-name">1306 1306</div><div class="row-tag">日股永豐複委託｜20,000股</div></div></div><div class="row"><div><div class="row-name">2644 2644</div><div class="row-tag">日股永豐複委託｜4,000股</div></div></div><div class="row"><div><div class="row-name">6762 6762</div><div class="row-tag">日股永豐複委託｜600股</div></div></div><div class="row"><div><div class="row-name">6971 6971</div><div class="row-tag">日股永豐複委託｜900股</div></div></div><div class="row"><div><div class="row-name">6981 6981</div><div class="row-tag">日股永豐複委託｜500股</div></div></div>
+      <div class="holding-header">美股</div><div class="row"><div><div class="row-name">NVDA</div><div class="row-tag">永豐豐存股｜107股</div></div></div><div class="row"><div><div class="row-name">QQQ</div><div class="row-tag">永豐豐存股｜43股</div></div></div><div class="row"><div><div class="row-name">SMH</div><div class="row-tag">永豐豐存股｜73股</div></div></div><div class="row"><div><div class="row-name">TSLA</div><div class="row-tag">永豐豐存股｜37股</div></div></div><div class="row"><div><div class="row-name">VOO</div><div class="row-tag">永豐豐存股｜19.3股</div></div></div><div class="row"><div><div class="row-name">VT</div><div class="row-tag">永豐豐存股｜166股</div></div></div><div class="row"><div><div class="row-name">PLTR</div><div class="row-tag">永豐豐存股｜87股</div></div></div><div class="row"><div><div class="row-name">GOOG</div><div class="row-tag">永豐豐存股｜118股</div></div></div><div class="row"><div><div class="row-name">BRK.B</div><div class="row-tag">永豐豐存股｜12股</div></div></div><div class="row"><div><div class="row-name">TQQQ</div><div class="row-tag">永豐複委託｜200股</div></div></div><div class="row"><div><div class="row-name">SOXL</div><div class="row-tag">永豐複委託｜120股</div></div></div><div class="row"><div><div class="row-name">SGOV</div><div class="row-tag">永豐複委託｜500股</div></div></div><div class="row"><div><div class="row-name">TSM</div><div class="row-tag">永豐複委託｜50股</div></div></div><div class="row"><div><div class="row-name">TER</div><div class="row-tag">永豐複委託｜270股</div></div></div><div class="row"><div><div class="row-name">AMD</div><div class="row-tag">FirstTrade｜25股</div></div></div><div class="row"><div><div class="row-name">SGOV</div><div class="row-tag">FirstTrade｜400股</div></div></div><div class="row"><div><div class="row-name">TQQQ</div><div class="row-tag">FirstTrade｜200股</div></div></div><div class="row"><div><div class="row-name">SOXL</div><div class="row-tag">FirstTrade｜120股</div></div></div><div class="row"><div><div class="row-name">SNXX</div><div class="row-tag">FirstTrade｜530股</div></div></div>
+      <div class="holding-header">日股（永豐複委託）</div><div class="row"><div><div class="row-name">2644 日本REITs ETF</div><div class="row-tag">日股永豐複委託｜6,000股</div></div></div><div class="row"><div><div class="row-name">6762 TDK</div><div class="row-tag">日股永豐複委託｜600股</div></div></div><div class="row"><div><div class="row-name">6971 京瓷</div><div class="row-tag">日股永豐複委託｜900股</div></div></div><div class="row"><div><div class="row-name">6981 村田製作所</div><div class="row-tag">日股永豐複委託｜500股</div></div></div>
     </div>
   </div>
 </div>
@@ -292,7 +277,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- 走勢圖 -->
 <div id="tab-trend" class="tab-content">
   <div class="card mb12">
-    <div class="section-title">總資產 / 淨資產 / 負債</div>
+    <div class="section-title">總資產 / 淨資產 / 負債（102筆，03/24～07/27）</div>
     <div class="legend-row"><span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>總資產</span><span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>淨資產</span><span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>總負債</span></div>
     <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
   </div>
@@ -307,13 +292,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<!-- 退休試算 -->
+<!-- 試算 -->
 <div id="tab-calc" class="tab-content">
   <div class="g2">
     <div class="card">
       <div class="section-title">退休目標設定</div>
       <div class="inp-row"><label>退休目標（萬）</label><input type="number" id="s-target" value="16000" step="100"></div>
-      <div class="inp-row"><label>目前總資產（萬）</label><input type="number" id="s-current" value="8217"></div>
+      <div class="inp-row"><label>目前總資產（萬）</label><input type="number" id="s-current" value="8396"></div>
       <div class="inp-row"><label>每月新增（萬）</label><input type="number" id="s-monthly" value="15"></div>
       <div class="inp-row"><label>預期年報酬率（%）</label><input type="number" id="s-return" value="10" step="0.5"></div>
       <div class="inp-row"><label>退休後月支出（萬）</label><input type="number" id="s-expense" value="12"></div>
@@ -324,78 +309,66 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="section-title">試算結果</div>
       <div style="margin-top:8px">
         <div class="metric mb12"><div class="metric-label">預計達到退休門檻</div><div class="metric-value" id="r-years">—</div><div class="metric-sub" id="r-date"></div></div>
-        <div class="metric mb12"><div class="metric-label">退休時預估總資產</div><div class="metric-value" id="r-final">—</div><div class="metric-sub" id="r-fs"></div></div>
+        <div class="metric mb12"><div class="metric-label">退休時預估總資產</div><div class="metric-value" id="r-final">—</div></div>
         <div class="metric"><div class="metric-label">退休金可支應年限</div><div class="metric-value" id="r-dur">—</div><div class="metric-sub">4% 提領法則</div></div>
       </div>
     </div>
   </div>
   <div class="card" style="margin-top:12px">
     <div class="section-title">財務摘要</div>
-    <div class="row"><span>期間報酬（37天）</span><span class="up" style="font-weight:600">+28.4%</span></div>
-    <div class="row"><span>預估年股息</span><span>137萬</span></div>
-    <div class="row"><span>年利息支出</span><span class="dn">108萬</span></div>
-    <div class="row"><span>股息淨超過利息</span><span class="up">+29萬</span></div>
+    <div class="row"><span>期間報酬（125天）</span><span class="up" style="font-weight:600">+31.2%</span></div>
+    <div class="row"><span>預估年股息</span><span>135萬</span></div>
+    <div class="row"><span>年利息支出</span><span class="dn">107萬</span></div>
+    <div class="row"><span>股息淨超過利息</span><span class="up">+28萬</span></div>
     <div class="row"><span>月均被動收入</span><span class="up">11萬</span></div>
   </div>
 </div>
 
 <div style="text-align:center;font-size:11px;color:var(--hint);margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
-  RetireFlow v2.0 ｜ 2026/07/27 05:44 自動產生 ｜ 僅供個人參考，不構成投資建議
+  RetireFlow v2.1 ｜ 資料來源：Google Drive RetireFlow_DB ｜ 2026/07/27 05:56 ｜ 僅供個人參考
 </div>
 </div>
 
 <script>
-const H={dates:["03/24", "03/25", "03/26", "03/27", "03/28", "03/30", "03/31", "04/01", "04/02", "04/03", "04/04", "04/08", "04/09", "04/10", "04/11", "04/13", "04/14", "04/15", "04/16", "04/17", "04/18", "04/19", "04/20", "04/21", "04/22", "04/23", "04/24", "04/25", "04/27", "04/28", "04/29", "04/30", "05/01", "05/04", "05/07", "05/08", "05/09"],total:[6400, 6394, 6301, 6248, 6223, 6117, 6092, 6343, 6301, 6151, 6306, 6749, 6667, 7065, 7050, 7066, 7167, 7167, 7287, 7298, 7316, 7443, 7427, 7457, 7490, 7732, 7875, 7956, 7969, 8029, 7997, 7902, 7846, 8117, 8241, 8169, 8217],net:[2556, 2634, 2541, 2488, 2463, 2357, 2275, 2526, 2484, 2335, 2489, 2848, 2766, 3164, 3149, 3165, 3267, 3267, 3350, 3361, 3380, 3507, 3490, 3521, 3554, 3357, 3501, 3651, 3664, 3725, 3692, 3598, 3525, 3796, 3919, 3847, 3896],debt:[3844, 3760, 3760, 3760, 3760, 3760, 3817, 3817, 3817, 3817, 3817, 3901, 3901, 3901, 3901, 3901, 3901, 3901, 3936, 3936, 3936, 3936, 3936, 3936, 3936, 4375, 4375, 4304, 4304, 4304, 4304, 4304, 4322, 4322, 4322, 4322, 4322],tw:[3190, 3162, 3163, 3158, 3158, 3130, 3105, 3270, 3187, 3032, 3188, 3441, 3345, 3618, 3618, 3629, 3695, 3695, 3800, 3780, 3794, 3801, 3886, 3930, 3960, 4138, 4271, 4334, 4344, 4471, 4452, 4474, 4400, 4642, 4607, 4532, 4557],us:[2025, 2027, 1939, 1897, 1873, 1878, 1851, 1900, 1962, 1958, 1962, 2094, 2110, 2158, 2144, 2151, 2162, 2162, 2212, 2256, 2263, 2358, 2214, 2195, 2196, 2264, 2265, 2282, 2281, 2225, 2211, 2097, 2129, 2156, 2280, 2278, 2303],jp:[527, 548, 542, 535, 534, 451, 504, 541, 520, 530, 525, 583, 581, 588, 587, 583, 609, 609, 573, 559, 558, 558, 602, 606, 608, 605, 613, 614, 617, 607, 607, 605, 582, 583, 617, 622, 621],fund:[657, 657, 657, 657, 657, 657, 631, 631, 631, 631, 631, 631, 631, 702, 702, 702, 702, 702, 702, 702, 702, 726, 726, 726, 726, 726, 726, 726, 726, 726, 726, 726, 737, 737, 737, 737, 737]};
+const H={dates:["03/24", "03/25", "03/26", "03/27", "03/28", "03/30", "03/31", "04/01", "04/02", "04/03", "04/04", "04/08", "04/09", "04/10", "04/11", "04/13", "04/14", "04/15", "04/16", "04/17", "04/18", "04/19", "04/20", "04/21", "04/22", "04/23", "04/24", "04/25", "04/27", "04/28", "04/29", "04/30", "05/01", "05/04", "05/07", "05/08", "05/09", "05/10", "05/11", "05/12", "05/13", "05/14", "05/15", "05/17", "05/18", "05/19", "05/20", "05/21", "05/22", "05/23", "05/25", "05/26", "05/27", "05/28", "05/29", "05/30", "06/01", "06/02", "06/03", "06/04", "06/05", "06/06", "06/08", "06/09", "06/10", "06/11", "06/12", "06/15", "06/16", "06/17", "06/18", "06/19", "06/21", "06/22", "06/23", "06/24", "06/25", "06/26", "06/29", "06/30", "07/01", "07/02", "07/03", "07/05", "07/06", "07/07", "07/08", "07/09", "07/10", "07/13", "07/14", "07/15", "07/16", "07/17", "07/18", "07/19", "07/20", "07/21", "07/22", "07/23", "07/24", "07/27"],total:[6400, 6394, 6301, 6248, 6223, 6117, 6092, 6343, 6301, 6151, 6306, 6749, 6667, 7065, 7050, 7066, 7167, 7167, 7287, 7298, 7316, 7443, 7427, 7457, 7490, 7732, 7875, 7956, 7969, 8029, 7997, 7902, 7846, 8117, 8241, 8169, 8217, 8193, 8273, 8246, 8184, 8253, 8071, 8066, 8043, 7843, 7792, 8089, 8218, 8483, 8735, 8771, 8875, 8704, 8930, 8941, 8998, 9014, 9174, 9085, 8941, 8823, 8479, 8669, 8619, 8356, 8695, 8961, 9027, 9065, 9242, 9153, 9275, 8937, 9393, 9101, 9158, 8989, 8937, 9263, 9542, 9300, 9209, 9149, 9121, 9072, 8947, 8986, 9051, 8976, 8786, 8911, 8770, 8250, 8142, 8241, 8169, 8385, 8651, 8576, 8396, 8396],net:[2556, 2634, 2541, 2488, 2463, 2357, 2275, 2526, 2484, 2335, 2489, 2848, 2766, 3164, 3149, 3165, 3267, 3267, 3350, 3361, 3380, 3507, 3490, 3521, 3554, 3357, 3501, 3651, 3664, 3725, 3692, 3598, 3525, 3796, 3919, 3847, 3896, 3872, 3951, 3925, 3863, 3931, 3749, 3745, 3721, 3522, 3470, 3767, 3896, 4170, 4422, 4458, 4561, 4391, 4617, 4628, 4719, 4735, 4895, 4806, 4662, 4544, 4200, 4391, 4340, 4077, 4416, 4683, 4748, 4786, 4970, 4881, 5003, 4666, 5121, 4829, 4886, 4717, 4665, 4991, 5274, 5032, 4940, 4880, 4852, 4803, 4678, 4718, 4783, 4708, 4517, 4642, 4501, 3982, 3874, 3973, 3901, 4116, 4382, 4308, 4127, 4128],debt:[3844, 3760, 3760, 3760, 3760, 3760, 3817, 3817, 3817, 3817, 3817, 3901, 3901, 3901, 3901, 3901, 3901, 3901, 3936, 3936, 3936, 3936, 3936, 3936, 3936, 4375, 4375, 4304, 4304, 4304, 4304, 4304, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4322, 4313, 4313, 4313, 4313, 4313, 4313, 4313, 4279, 4279, 4279, 4279, 4279, 4279, 4279, 4279, 4279, 4279, 4279, 4279, 4279, 4279, 4272, 4272, 4272, 4272, 4272, 4272, 4272, 4272, 4272, 4272, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269, 4269],tw:[3190, 3162, 3163, 3158, 3158, 3130, 3105, 3270, 3187, 3032, 3188, 3441, 3345, 3618, 3618, 3629, 3695, 3695, 3800, 3780, 3794, 3801, 3886, 3930, 3960, 4138, 4271, 4334, 4344, 4471, 4452, 4474, 4400, 4642, 4607, 4532, 4557, 4533, 4596, 4606, 4511, 4551, 4461, 4461, 4434, 4333, 4311, 4463, 4553, 4633, 4853, 4808, 4893, 4730, 4900, 4899, 4957, 4960, 4949, 4859, 4744, 4821, 4531, 4620, 4591, 4427, 4624, 4807, 4851, 4863, 4952, 4953, 4953, 4597, 5067, 4936, 4945, 4714, 4749, 4951, 5064, 5021, 5042, 4984, 4972, 4895, 4911, 4902, 4902, 4915, 4729, 4812, 4769, 4384, 4384, 4427, 4354, 4533, 4630, 4594, 4461, 4461],us:[2025, 2027, 1939, 1897, 1873, 1878, 1851, 1900, 1962, 1958, 1962, 2094, 2110, 2158, 2144, 2151, 2162, 2162, 2212, 2256, 2263, 2358, 2214, 2195, 2196, 2264, 2265, 2282, 2281, 2225, 2211, 2097, 2129, 2156, 2280, 2278, 2303, 2303, 2317, 2278, 2316, 2336, 2265, 2261, 2265, 2178, 2154, 2278, 2298, 2414, 2413, 2501, 2514, 2504, 2531, 2547, 2541, 2556, 2588, 2588, 2577, 2380, 2375, 2449, 2428, 2345, 2466, 2499, 2527, 2537, 2606, 2514, 2635, 2634, 2662, 2510, 2521, 2617, 2523, 2609, 2748, 2590, 2451, 2452, 2463, 2525, 2411, 2434, 2471, 2410, 2403, 2424, 2362, 2291, 2179, 2271, 2273, 2285, 2431, 2404, 2386, 2388],jp:[527, 548, 542, 535, 534, 451, 504, 541, 520, 530, 525, 583, 581, 588, 587, 583, 609, 609, 573, 559, 558, 558, 602, 606, 608, 605, 613, 614, 617, 607, 607, 605, 582, 583, 617, 622, 621, 621, 623, 625, 621, 629, 609, 608, 608, 596, 590, 612, 629, 629, 662, 655, 660, 663, 692, 688, 692, 690, 723, 724, 706, 707, 658, 686, 687, 669, 691, 741, 735, 750, 770, 773, 774, 793, 751, 741, 779, 744, 752, 788, 825, 785, 811, 809, 781, 747, 720, 746, 774, 746, 749, 770, 733, 670, 674, 674, 674, 698, 721, 709, 680, 679],fund:[657, 657, 657, 657, 657, 657, 631, 631, 631, 631, 631, 631, 631, 702, 702, 702, 702, 702, 702, 702, 702, 726, 726, 726, 726, 726, 726, 726, 726, 726, 726, 726, 737, 737, 737, 737, 737, 737, 737, 737, 737, 737, 737, 737, 737, 737, 737, 737, 737, 807, 807, 807, 807, 807, 807, 807, 807, 807, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 914, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 869, 869, 869, 869, 869, 869, 869]};
 const dark=matchMedia('(prefers-color-scheme:dark)').matches;
 const gc=dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
 const tc=dark?'#555':'#aaa';
-
 function drawGauge(id,pct,label){
   const c=document.getElementById(id);if(!c)return;
   const W=c.clientWidth||c.width,H2=c.clientHeight||c.height;
-  c.width=W;c.height=H2;
-  const ctx=c.getContext('2d');
+  c.width=W;c.height=H2;const ctx=c.getContext('2d');
   const cx=W/2,cy=H2*0.88,r=Math.min(W,H2*2)*0.38;
   const cl=Math.min(pct,100);
   const col=pct<40?'#E24B4A':pct<70?'#EF9F27':pct<90?'#1D9E75':'#378ADD';
-  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,2*Math.PI);
-  ctx.strokeStyle=dark?'#333':'#eee';ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();
-  if(cl>0){ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+Math.PI*cl/100);
-  ctx.strokeStyle=col;ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();}
-  ctx.fillStyle=dark?'#f0efe9':'#1a1a1a';
-  ctx.font=`bold ${r*0.5}px -apple-system,sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(pct.toFixed(1)+'%',cx,cy-r*0.12);
-  ctx.fillStyle=tc;ctx.font=`${r*0.28}px -apple-system,sans-serif`;
-  ctx.fillText(label||'',cx,cy+r*0.3);
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,2*Math.PI);ctx.strokeStyle=dark?'#333':'#eee';ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();
+  if(cl>0){ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+Math.PI*cl/100);ctx.strokeStyle=col;ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();}
+  ctx.fillStyle=dark?'#f0efe9':'#1a1a1a';ctx.font=`bold ${r*0.5}px -apple-system,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(pct.toFixed(1)+'%',cx,cy-r*0.12);
+  ctx.fillStyle=tc;ctx.font=`${r*0.28}px -apple-system,sans-serif`;ctx.fillText(label||'',cx,cy+r*0.3);
 }
-
 let gaugesDrawn=false;
 function drawAllGauges(){
   if(gaugesDrawn)return;gaugesDrawn=true;
-  drawGauge('gauge-overall',51.4,'8,217萬 / 16,000萬');
-  drawGauge('gauge-tw',71.2,'4,557萬');
-  drawGauge('gauge-us',48.0,'2,303萬');
-  drawGauge('gauge-jp',38.8,'621萬');
-  drawGauge('gauge-fund',46.0,'737萬');
+  drawGauge('gauge-overall',52.5,'8,396萬/16,000萬');
+  drawGauge('gauge-tw',69.7,'4,461萬');
+  drawGauge('gauge-us',49.8,'2,388萬');
+  drawGauge('gauge-jp',42.4,'679萬');
+  drawGauge('gauge-fund',54.3,'869萬');
 }
-
-function mkLine(id,datasets){
-  const ctx=document.getElementById(id);if(!ctx)return;
-  new Chart(ctx,{type:'line',data:{labels:H.dates,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toLocaleString()}萬`}}},scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:10},maxTicksLimit:10}},y:{grid:{color:gc},ticks:{color:tc,font:{size:10},callback:v=>v+'萬'}}}}});
+function mkLine(id,ds){
+  const c=document.getElementById(id);if(!c)return;
+  new Chart(c,{type:'line',data:{labels:H.dates,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toLocaleString()}萬`}}},scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:10},maxTicksLimit:14}},y:{grid:{color:gc},ticks:{color:tc,font:{size:10},callback:v=>v+'萬'}}}}});
 }
-
 let chartsDrawn=false;
 function drawCharts(){
   if(chartsDrawn)return;chartsDrawn=true;
-  mkLine('trendChart',[{label:'總資產',data:H.total,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:dark?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.07)',tension:0.3},{label:'淨資產',data:H.net,borderColor:'#1D9E75',borderWidth:2,pointRadius:0,fill:false,tension:0.3},{label:'總負債',data:H.debt,borderColor:'#E24B4A',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0.3}]);
+  mkLine('trendChart',[{label:'總資產',data:H.total,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:dark?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.06)',tension:0.3},{label:'淨資產',data:H.net,borderColor:'#1D9E75',borderWidth:2,pointRadius:0,fill:false,tension:0.3},{label:'總負債',data:H.debt,borderColor:'#E24B4A',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0.3}]);
   mkLine('allocChart',[{label:'台股',data:H.tw,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:false,tension:0.3},{label:'美股',data:H.us,borderColor:'#1D9E75',borderWidth:2,pointRadius:0,fill:false,tension:0.3},{label:'日股',data:H.jp,borderColor:'#EF9F27',borderWidth:2,pointRadius:0,fill:false,tension:0.3},{label:'基金',data:H.fund,borderColor:'#7F77DD',borderWidth:2,pointRadius:0,fill:false,tension:0.3}]);
   const chg=H.total.map((v,i)=>i===0?0:v-H.total[i-1]);
-  const bctx=document.getElementById('barChart');
-  if(bctx) new Chart(bctx,{type:'bar',data:{labels:H.dates,datasets:[{label:'每日變化',data:chg,backgroundColor:chg.map(v=>v>=0?'rgba(29,158,117,0.75)':'rgba(226,75,74,0.75)'),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y>=0?'+':''}${c.parsed.y}萬`}}},scales:{x:{grid:{display:false},ticks:{color:tc,font:{size:10},maxTicksLimit:10}},y:{grid:{color:gc},ticks:{color:tc,font:{size:10},callback:v=>v+'萬'}}}}});
-  new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['台股','美股','日股','基金'],datasets:[{data:[55.5,28.0,7.6,9.0],backgroundColor:['#378ADD','#1D9E75','#EF9F27','#7F77DD'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false}}}});
+  const bc=document.getElementById('barChart');
+  if(bc)new Chart(bc,{type:'bar',data:{labels:H.dates,datasets:[{data:chg,backgroundColor:chg.map(v=>v>=0?'rgba(29,158,117,0.75)':'rgba(226,75,74,0.75)'),borderRadius:3,label:'每日變化'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y>=0?'+':''}${c.parsed.y}萬`}}},scales:{x:{grid:{display:false},ticks:{color:tc,font:{size:10},maxTicksLimit:14}},y:{grid:{color:gc},ticks:{color:tc,font:{size:10},callback:v=>v+'萬'}}}}});
+  new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['台股','美股','日股','基金'],datasets:[{data:[53.1,28.4,8.1,10.3],backgroundColor:['#378ADD','#1D9E75','#EF9F27','#7F77DD'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false}}}});
 }
-
 function switchTab(el,name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
@@ -403,26 +376,20 @@ function switchTab(el,name){
   if(name==='trend')setTimeout(drawCharts,60);
   if(name==='gauge')setTimeout(drawAllGauges,60);
 }
-
 function calcRetire(){
   const tgt=parseFloat(document.getElementById('s-target').value)||16000;
-  const cur=parseFloat(document.getElementById('s-current').value)||8217;
+  const cur=parseFloat(document.getElementById('s-current').value)||8396;
   const mon=parseFloat(document.getElementById('s-monthly').value)||15;
   const ret=parseFloat(document.getElementById('s-return').value)/100;
   const exp=parseFloat(document.getElementById('s-expense').value)||12;
   const age0=parseFloat(document.getElementById('s-age').value)||52;
   const mr=ret/12;let bal=cur,months=0;
   while(bal<tgt&&months<600){bal=bal*(1+mr)+mon;months++;}
-  const yr=2026+Math.floor(months/12);
-  const age=(age0+months/12).toFixed(1);
-  const dur=Math.min((bal*0.04/(exp*12)*25),99).toFixed(1);
   document.getElementById('r-years').textContent=(months/12).toFixed(1)+'年後';
-  document.getElementById('r-date').textContent='約'+yr+'年（'+age+'歲）';
+  document.getElementById('r-date').textContent='約'+(2026+Math.floor(months/12))+'年（'+(age0+months/12).toFixed(1)+'歲）';
   document.getElementById('r-final').textContent='NT$'+Math.round(bal).toLocaleString()+'萬';
-  document.getElementById('r-fs').textContent='目標'+tgt.toLocaleString()+'萬 達成';
-  document.getElementById('r-dur').textContent=dur+'年';
+  document.getElementById('r-dur').textContent=Math.min((bal*0.04/(exp*12)*25),99).toFixed(1)+'年';
 }
-
 document.addEventListener('DOMContentLoaded',()=>{drawCharts();drawAllGauges();calcRetire();});
 </script>
 </body>
