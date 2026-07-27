@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RetireFlow Pro">
-<title>RetireFlow Pro｜退休財務分析</title>
+<title>RetireFlow Pro v3.1</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -29,7 +29,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .metric-sub{font-size:11px;color:var(--hint);margin-top:2px}
 .up{color:#1D9E75}.dn{color:#E24B4A}.warn{color:#EF9F27}
 .stitle{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--hint);margin-bottom:10px}
-.mb12{margin-bottom:12px}
 .tab-bar{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
 .tab{padding:5px 13px;border-radius:99px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;transition:all .15s}
 .tab:hover{background:var(--bg)}.tab.active{background:var(--text);color:var(--card);border-color:transparent}
@@ -48,7 +47,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .prog-bg{height:7px;background:var(--bg);border-radius:99px;overflow:hidden;margin:5px 0 3px}
 .prog-fill{height:100%;border-radius:99px}
 .risk-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.risk-label{font-size:12px;width:80px;flex-shrink:0;color:var(--muted)}
+.risk-label{font-size:12px;width:85px;flex-shrink:0;color:var(--muted)}
 .risk-bar-bg{flex:1;height:6px;background:var(--bg);border-radius:99px;overflow:hidden}
 .risk-bar-fill{height:100%;border-radius:99px}
 .tbl{width:100%;border-collapse:collapse}
@@ -56,198 +55,438 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tbl td{border-bottom:0.5px solid var(--border)}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:var(--bg)}
-.cash-gauge{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
-.cash-box{background:var(--bg);border-radius:10px;padding:12px;text-align:center}
-.cash-val{font-size:18px;font-weight:600;margin:4px 0 2px}
-.cash-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-.cash-note{font-size:11px;color:var(--hint);margin-top:3px}
 .sdiv{display:flex;align-items:center;gap:10px;margin:14px 0 10px}
 .sdiv span{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--hint);white-space:nowrap}
 .sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
 .countdown{display:flex;align-items:baseline;gap:3px}
 .cd-n{font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1}
 .cd-u{font-size:12px;color:var(--muted)}.cd-sep{font-size:16px;color:var(--border);margin:0 2px}
+.scenario-card{background:var(--bg);border-radius:10px;padding:14px;margin-bottom:10px}
+.sc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:600px){.sc-grid{grid-template-columns:repeat(2,1fr)}}
+.sc-item{text-align:center}
+.sc-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.sc-val{font-size:16px;font-weight:600;margin-bottom:2px}
+.sc-diff{font-size:11px}
+.gauge-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+@media(max-width:600px){.gauge-row{grid-template-columns:repeat(2,1fr)}}
+.gauge-box{background:var(--bg);border-radius:10px;padding:10px;text-align:center}
+.gauge-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
 </style>
 </head>
 <body>
 <div class="wrap">
+
 <div class="header">
   <div>
-    <h1>RetireFlow Pro｜退休財務分析儀表板</h1>
-    <p>資料來源：Google Drive ｜ 更新：2026/07/27 06:31 ｜ 目標：2028/12 前退休・總資產 ≥ NT$16,000萬</p>
+    <h1>RetireFlow Pro v3.1｜退休財務分析</h1>
+    <p>Google Drive 即時同步 ｜ 2026/07/27 07:01 ｜ 目標：2028/12・總資產 ≥ NT$16,000萬</p>
   </div>
   <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
     <div class="pill"><span class="dot dot-green"></span>Drive 已同步</div>
-    <div class="pill"><span class="dot dot-amber"></span>7月回調中</div>
+    <div class="pill"><span class="dot dot-amber"></span>槓桿比率 7.4%</div>
   </div>
 </div>
 
+<!-- 核心指標 -->
 <div class="g4">
   <div class="metric">
     <div class="metric-label">總資產</div>
     <div class="metric-value">8392<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
-    <div class="metric-sub dn">↓ 全期 +31.1%</div>
+    <div class="metric-sub">達成率 52.4%｜缺口 7608萬</div>
   </div>
   <div class="metric">
-    <div class="metric-label">年化波動度</div>
-    <div class="metric-value warn">78.9%</div>
-    <div class="metric-sub">最大回撤 -13.5%</div>
+    <div class="metric-label">淨資產</div>
+    <div class="metric-value">4123<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub">負債比 50.9%</div>
   </div>
   <div class="metric">
-    <div class="metric-label">退休達成率</div>
-    <div class="metric-value">52.4%</div>
-    <div class="metric-sub">缺口 7608萬萬</div>
+    <div class="metric-label">槓桿ETF現值</div>
+    <div class="metric-value warn">623<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub">佔總資產 7.4%</div>
   </div>
   <div class="metric">
-    <div class="metric-label">距退休</div>
-    <div class="countdown">
-      <span class="cd-n">2</span><span class="cd-u">年</span>
-      <span class="cd-sep">·</span><span class="cd-n">5</span><span class="cd-u">月</span>
-    </div>
-    <div class="metric-sub">股息134萬｜利息107萬</div>
+    <div class="metric-label">現金+SGOV</div>
+    <div class="metric-value">357.7<span style="font-size:13px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub">SGOV 900股≈289萬｜現金68.2萬</div>
   </div>
 </div>
 
+<!-- 退休目標進度條 -->
 <div class="card">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-    <div><div class="stitle" style="margin-bottom:1px">退休目標達成率</div><div style="font-size:12px;color:var(--muted)">8392 萬 ／ 16,000萬</div></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <div><div class="stitle" style="margin-bottom:1px">退休目標達成率（依 Google Drive 目標金額）</div>
+    <div style="font-size:12px;color:var(--muted)">總資產 8392萬 ／ 目標 16,000萬</div></div>
     <div style="text-align:right"><div style="font-size:24px;font-weight:700">52.4%</div></div>
   </div>
   <div class="prog-bg" style="height:10px"><div class="prog-fill" style="width:52.4%;background:linear-gradient(to right,#378ADD,#1D9E75)"></div></div>
-  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--hint);margin-top:4px"><span>起始 03/24・6,400萬</span><span>目標 16,000萬 ▶</span></div>
+  <div class="gauge-row" style="margin-top:12px">
+    <div class="gauge-box"><div class="gauge-label">台股目標1億</div><canvas id="g-tw" width="100" height="60"></canvas></div>
+    <div class="gauge-box"><div class="gauge-label">美股目標4千萬</div><canvas id="g-us" width="100" height="60"></canvas></div>
+    <div class="gauge-box"><div class="gauge-label">日股目標1千萬</div><canvas id="g-jp" width="100" height="60"></canvas></div>
+    <div class="gauge-box"><div class="gauge-label">基金目標1千萬</div><canvas id="g-fd" width="100" height="60"></canvas></div>
+  </div>
 </div>
 
 <div class="tab-bar">
-  <button class="tab active" onclick="switchTab(this,'growth')">📈 成長與波動</button>
-  <button class="tab" onclick="switchTab(this,'alloc')">⚖️ 配置分析</button>
-  <button class="tab" onclick="switchTab(this,'health')">🏥 持股健康</button>
+  <button class="tab active" onclick="switchTab(this,'alloc')">⚖️ 配置分析</button>
+  <button class="tab" onclick="switchTab(this,'leverage')">🔧 槓桿管理</button>
   <button class="tab" onclick="switchTab(this,'cash')">💰 現金管理</button>
+  <button class="tab" onclick="switchTab(this,'scenario')">📋 情境建議</button>
   <button class="tab" onclick="switchTab(this,'trend')">📊 走勢圖</button>
 </div>
 
-<div id="tab-growth" class="tab-content active">
-  <div class="sdiv"><span>月／季成長率</span></div>
-  <div class="card">
-    <div class="stitle">各資產月/季成長率（%）</div>
-    <div class="legend-row">
-      <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>台股</span>
-      <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>美股</span>
-      <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>日股</span>
-      <span class="legend-item"><span class="legend-dot" style="background:#7F77DD"></span>基金</span>
-      <span class="legend-item"><span class="legend-dot" style="background:#555"></span>總資產</span>
-    </div>
-    <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
-  </div>
-  <div class="sdiv"><span>波動度與風險指標</span></div>
-  <div class="g4">
-    <div class="metric"><div class="metric-label" style="color:#378ADD">台股波動度</div><div class="metric-value warn">92.2%</div><div class="metric-sub">最大回撤 -13.5%</div></div>
-    <div class="metric"><div class="metric-label" style="color:#1D9E75">美股波動度</div><div class="metric-value warn">98.4%</div><div class="metric-sub">最大回撤 -16.8%</div></div>
-    <div class="metric"><div class="metric-label" style="color:#EF9F27">日股波動度</div><div class="metric-value dn">122.3%</div><div class="metric-sub">最大回撤 -18.8%</div></div>
-    <div class="metric"><div class="metric-label" style="color:#7F77DD">基金波動度</div><div class="metric-value up">70.6%</div><div class="metric-sub">最大回撤 -5.0%</div></div>
-  </div>
-  <div class="card">
-    <div class="stitle">財經專家分析觀點</div>
-    <div class="alert alert-danger">🔴 <b>波動度偏高</b>：總資產年化波動度 78.9% 高於退休組合建議的15~20%，主因槓桿ETF（00631L/00663L/00685L/TQQQ/SOXL）。建議2年內降至25%以下。</div>
-    <div class="alert alert-warn">🟡 <b>7月回調 -12%</b>：最大回撤 -14.7% 發生在7/17-18，對應大盤修正約-7%，槓桿倍數符合2x預期。高波動期持有大量槓桿ETF是主因。</div>
-    <div class="alert alert-good">🟢 <b>基金最穩健</b>：年化波動度 70.6% 最低，最大回撤僅 -5.0%，是組合中最優質的壓艙石。建議維持或增加。</div>
-    <div class="alert alert-info">📊 <b>Sharpe Ratio</b>（期間報酬/年化波動）：台股 0.43 ｜ 美股 0.18 ｜ 日股 0.23 ｜ 基金 0.45。基金和日股報酬/風險比最佳。</div>
-  </div>
-</div>
-
-<div id="tab-alloc" class="tab-content">
-  <div class="sdiv"><span>資產配置合理性分析</span></div>
+<!-- 配置分析 -->
+<div id="tab-alloc" class="tab-content active">
+  <div class="sdiv"><span>實際配置 vs 退休目標（依 Google Drive 設定）</span></div>
   <div class="g2">
     <div class="card">
-      <div class="stitle">實際 vs 目標配置雷達圖</div>
-      <div class="chart-sm"><canvas id="radarChart"></canvas></div>
+      <div class="stitle">各類資產：實際 vs 目標（絕對金額）</div>
+      <div style="margin-top:4px">
+        <div class="risk-row">
+          <div class="risk-label" style="color:#378ADD">台股 4456萬</div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px">
+              <span>達成 44.6%</span><span>目標 10,000萬</span>
+            </div>
+            <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:44.6%;background:#378ADD"></div></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;width:50px;text-align:right;color:#378ADD">44.6%</div>
+        </div>
+        <div class="risk-row">
+          <div class="risk-label" style="color:#1D9E75">美股 2388萬</div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px">
+              <span>達成 59.7%</span><span>目標 4,000萬</span>
+            </div>
+            <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:59.7%;background:#1D9E75"></div></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;width:50px;text-align:right;color:#1D9E75">59.7%</div>
+        </div>
+        <div class="risk-row">
+          <div class="risk-label" style="color:#EF9F27">日股 679萬</div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px">
+              <span>達成 67.9%</span><span>目標 1,000萬</span>
+            </div>
+            <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:67.9%;background:#EF9F27"></div></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;width:50px;text-align:right;color:#EF9F27">67.9%</div>
+        </div>
+        <div class="risk-row">
+          <div class="risk-label" style="color:#7F77DD">基金 869萬</div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px">
+              <span>達成 86.9%</span><span>目標 1,000萬</span>
+            </div>
+            <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:86.9%;background:#7F77DD"></div></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;width:50px;text-align:right;color:#7F77DD">86.9%</div>
+        </div>
+      </div>
     </div>
     <div class="card">
-      <div class="stitle">各類配置偏差</div>
-      <div style="margin-top:4px">
-        <div class="risk-row"><div class="risk-label" style="color:#378ADD">台股 53.1%</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px"><span>目標40%</span><span style="color:#E24B4A">+13.1%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:100.0%;background:#378ADD"></div></div></div></div>
-        <div class="risk-row"><div class="risk-label" style="color:#1D9E75">美股 28.5%</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px"><span>目標30%</span><span style="color:#1D9E75">-1.5%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:94.9%;background:#1D9E75"></div></div></div></div>
-        <div class="risk-row"><div class="risk-label" style="color:#EF9F27">日股 8.1%</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px"><span>目標10%</span><span style="color:#1D9E75">-1.9%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:80.9%;background:#EF9F27"></div></div></div></div>
-        <div class="risk-row"><div class="risk-label" style="color:#7F77DD">基金 10.4%</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px"><span>目標10%</span><span style="color:#1D9E75">+0.4%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:100.0%;background:#7F77DD"></div></div></div></div>
-        <div class="risk-row"><div class="risk-label" style="color:var(--muted)">現金 0.8%</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px"><span>目標8%</span><span style="color:#E24B4A">-7.2%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:10.0%;background:#999"></div></div></div></div>
-        <div class="risk-row"><div class="risk-label" style="color:#E24B4A">槓桿 ~15%</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px"><span>建議上限10%</span><span style="color:#E24B4A">+5%</span></div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:100%;background:#E24B4A"></div></div></div></div>
+      <div class="stitle">資產佔比圓餅圖</div>
+      <div class="chart-sm"><canvas id="donutChart"></canvas></div>
+      <div class="legend-row" style="justify-content:center;margin-top:6px">
+        <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>台股53.1%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>美股28.5%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>日股8.1%</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7F77DD"></span>基金10.4%</span>
       </div>
     </div>
   </div>
   <div class="card">
-    <div class="stitle">財經專家配置建議</div>
-    <div class="alert alert-danger">🔴 <b>台股超重 +13.1%</b>：53% 遠超目標40%，且槓桿ETF佔台股約28%（總資產~15%）。退休前2年建議：先將槓桿降至10%以下，再將台股整體降至45~48%。</div>
-    <div class="alert alert-warn">🟡 <b>目標公式說明</b>：Drive中設定台股目標1億（約佔16000萬的62.5%）為絕對金額目標，與本儀表板的比例目標（40%）不同。建議以「比例配置」為主要參考，「絕對金額」為里程碑。</div>
-    <div class="alert alert-good">🟢 <b>美股配置良好</b>：28.5% 接近目標30%，以VOO/QQQ/NVDA為核心，邏輯清晰，無需調整。</div>
-    <div class="alert alert-info">📋 <b>退休前2年路線圖</b>：Q3 2026→槓桿降至10%；Q4 2026→現金增至5%；2027→台股降至48%；2028退休前→波動度目標20%以下。</div>
+    <div class="stitle">配置說明與建議</div>
+    <div class="alert alert-info">📊 <b>目標配置說明（正確版）</b>：Google Drive 設定台股目標1億、美股4千萬、日股1千萬、基金1千萬，共1.6億（16,000萬）。目前台股達成44.6%、美股59.7%、日股67.9%、基金86.9%——基金最接近目標！</div>
+    <div class="alert alert-good">🟢 <b>基金已達86.9%</b>：1,000萬目標中已達869萬，若本季基金淨值續升，最快2026 Q4可達標。建議維持現有配置。</div>
+    <div class="alert alert-warn">🟡 <b>台股仍需加碼</b>：目標1億，目前僅4,456萬（44.6%），差距5,544萬。但不需急於一次到位——透過股息再投入+資本利得自然增長，預計2028年可達標。</div>
+    <div class="alert alert-good">🟢 <b>美股超過目標比例</b>（28.5% vs 目標25%）：絕對金額2,388萬，目標4,000萬達成59.7%，方向正確，持續定期定額即可。</div>
   </div>
 </div>
 
-<div id="tab-health" class="tab-content">
-  <div class="sdiv"><span>持股健康指數評估</span></div>
+<!-- 槓桿管理 -->
+<div id="tab-leverage" class="tab-content">
+  <div class="sdiv"><span>槓桿 ETF 現值與風險評估</span></div>
   <div class="g3">
-    <div class="metric"><div class="metric-label">核心ETF健康</div><div class="metric-value up">88<span style="font-size:13px;color:var(--muted)">/100</span></div><div class="metric-sub">0050/0056/VOO/QQQ 穩健</div></div>
-    <div class="metric"><div class="metric-label">槓桿ETF風險</div><div class="metric-value dn">45<span style="font-size:13px;color:var(--muted)">/100</span></div><div class="metric-sub">00685L/TQQQ/SOXL 極高風險</div></div>
-    <div class="metric"><div class="metric-label">整體持股健康</div><div class="metric-value warn">70<span style="font-size:13px;color:var(--muted)">/100</span></div><div class="metric-sub">槓桿部位拉低整體評分</div></div>
+    <div class="metric">
+      <div class="metric-label">槓桿ETF總現值</div>
+      <div class="metric-value warn">623<span style="font-size:13px;color:var(--muted)">萬</span></div>
+      <div class="metric-sub">佔總資產 7.4% ｜ 尚在管控範圍</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">台股槓桿</div>
+      <div class="metric-value warn">507<span style="font-size:13px;color:var(--muted)">萬</span></div>
+      <div class="metric-sub">00685L+00663L+00631L+00675L</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">美股槓桿</div>
+      <div class="metric-value warn">115<span style="font-size:13px;color:var(--muted)">萬</span></div>
+      <div class="metric-sub">TQQQ 400股 + SOXL 240股</div>
+    </div>
   </div>
+
   <div class="card">
-    <div class="stitle">主要持股健康評分表（評分基準：財務體質、流動性、波動風險、退休適配度）</div>
+    <div class="stitle">槓桿ETF明細（換算台幣現值）</div>
     <div style="overflow-x:auto">
       <table class="tbl">
-        <thead><tr><th>代號</th><th>名稱</th><th>類型</th><th style="width:120px">健康分</th><th>風險</th><th>說明</th></tr></thead>
-        <tbody><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">0050</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">元大台灣50</td><td style="padding:7px 8px;font-size:11px">ETF</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:92%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">92</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">追蹤台灣50大市值，流動性佳，長期穩健首選</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">0056</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">元大高股息</td><td style="padding:7px 8px;font-size:11px">ETF</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:88%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">88</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">高股息策略ETF，殖利率8%，配息穩定</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">006208</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">富邦台50</td><td style="padding:7px 8px;font-size:11px">ETF</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:91%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">91</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">低費率，與0050高度相關，可合併計算</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">00881</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">國泰科技龍頭</td><td style="padding:7px 8px;font-size:11px">ETF</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:85%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">85</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低-中</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">科技股集中，波動略高但成長性佳</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">00927</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">群益半導體收益</td><td style="padding:7px 8px;font-size:11px">ETF</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:83%;height:100%;background:#EF9F27;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#EF9F27;width:24px">83</span></div></td><td style="padding:7px 8px"><span style="background:#FAEEDA;color:#EF9F27;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">中</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">半導體集中+配息，產業週期風險需注意</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">00631L</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">元大台50正2</td><td style="padding:7px 8px;font-size:11px">槓桿</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:55%;height:100%;background:#E24B4A;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#E24B4A;width:24px">55</span></div></td><td style="padding:7px 8px"><span style="background:#FCEBEB;color:#E24B4A;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">高</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2倍槓桿，持倉56,000股（3券商合計），需控管</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">00663L</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">國泰加權正2</td><td style="padding:7px 8px;font-size:11px">槓桿</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:52%;height:100%;background:#E24B4A;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#E24B4A;width:24px">52</span></div></td><td style="padding:7px 8px"><span style="background:#FCEBEB;color:#E24B4A;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">高</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2倍槓桿，33,000股，VIX>20時耗損顯著</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">00685L</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">群益加權正2</td><td style="padding:7px 8px;font-size:11px">槓桿</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:45%;height:100%;background:#E24B4A;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#E24B4A;width:24px">45</span></div></td><td style="padding:7px 8px"><span style="background:#FCEBEB;color:#E24B4A;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">極高</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">⚠️ 2倍槓桿，100,000股，最大風險部位，建議減半</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">2330</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">台積電</td><td style="padding:7px 8px;font-size:11px">個股</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:95%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">95</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">全球半導體龍頭，財務健全，護城河極深</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">NVDA</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">Nvidia</td><td style="padding:7px 8px;font-size:11px">美股</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:96%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">96</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低-中</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">AI時代最強護城河，本益比高但成長支撐</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">VOO</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">Vanguard S&P500</td><td style="padding:7px 8px;font-size:11px">ETF</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:94%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">94</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">最廣泛分散，長期投資首選</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">QQQ</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">Invesco QQQ</td><td style="padding:7px 8px;font-size:11px">ETF</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:90%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">90</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低-中</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">Nasdaq100，科技集中，長期成長動能強</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">TQQQ</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">ProShares 3x QQQ</td><td style="padding:7px 8px;font-size:11px">槓桿</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:40%;height:100%;background:#E24B4A;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#E24B4A;width:24px">40</span></div></td><td style="padding:7px 8px"><span style="background:#FCEBEB;color:#E24B4A;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">極高</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">⚠️ 3倍槓桿，長期持有必虧（decay），應作短線</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">SOXL</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">Direxion 3x半導體</td><td style="padding:7px 8px;font-size:11px">槓桿</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:38%;height:100%;background:#E24B4A;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#E24B4A;width:24px">38</span></div></td><td style="padding:7px 8px"><span style="background:#FCEBEB;color:#E24B4A;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">極高</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">⚠️ 3倍槓桿，半導體集中，最高波動部位</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">SGOV</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">iShares超短債</td><td style="padding:7px 8px;font-size:11px">現金替代</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:97%;height:100%;background:#1D9E75;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#1D9E75;width:24px">97</span></div></td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#1D9E75;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">極低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">年化~5%，近無風險，現金管理最佳工具</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">PLTR</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">Palantir</td><td style="padding:7px 8px;font-size:11px">美股</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:73%;height:100%;background:#EF9F27;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#EF9F27;width:24px">73</span></div></td><td style="padding:7px 8px"><span style="background:#FAEEDA;color:#EF9F27;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">高</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">高本益比，成長性佳但估值偏高，持倉可</td></tr><tr><td style="padding:7px 8px;font-weight:500;font-size:12px">TSLA</td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">Tesla</td><td style="padding:7px 8px;font-size:11px">美股</td><td style="padding:7px 8px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:68%;height:100%;background:#EF9F27;border-radius:3px"></div></div><span style="font-size:11px;font-weight:600;color:#EF9F27;width:24px">68</span></div></td><td style="padding:7px 8px"><span style="background:#FAEEDA;color:#EF9F27;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">高</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">業績不穩，高波動，建議控制倉位</td></tr></tbody>
+        <thead><tr>
+          <th>代號</th><th>名稱</th><th>市場</th><th style="text-align:right">股數</th>
+          <th style="text-align:right">單價</th><th style="text-align:right">台幣現值</th>
+          <th style="text-align:right">佔總資產</th><th style="text-align:center">倍率/風險</th>
+          <th>市場衝擊說明</th>
+        </tr></thead>
+        <tbody><tr>
+      <td style="padding:7px 8px;font-weight:500;font-size:12px">00685L</td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">群益加權正2</td>
+      <td style="padding:7px 8px;font-size:11px">台股</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">100,000</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">TWD$28.5</td>
+      <td style="padding:7px 8px;font-size:12px;font-weight:600;text-align:right">285.0萬</td>
+      <td style="padding:7px 8px;font-size:11px;text-align:right;color:var(--muted)">3.4%</td>
+      <td style="padding:7px 8px;text-align:center"><span style="background:#FAEEDA;color:#EF9F27;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">2x 高</span></td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">大盤-1% → 持倉-2%，VIX>20時decay每月約1%</td>
+    </tr><tr>
+      <td style="padding:7px 8px;font-weight:500;font-size:12px">00663L</td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">國泰加權正2</td>
+      <td style="padding:7px 8px;font-size:11px">台股</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">33,000</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">TWD$32.0</td>
+      <td style="padding:7px 8px;font-size:12px;font-weight:600;text-align:right">105.6萬</td>
+      <td style="padding:7px 8px;font-size:11px;text-align:right;color:var(--muted)">1.3%</td>
+      <td style="padding:7px 8px;text-align:center"><span style="background:#FAEEDA;color:#EF9F27;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">2x 高</span></td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">大盤-1% → 持倉-2%，VIX>20時decay每月約1%</td>
+    </tr><tr>
+      <td style="padding:7px 8px;font-weight:500;font-size:12px">00631L</td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">元大台50正2</td>
+      <td style="padding:7px 8px;font-size:11px">台股</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">56,000</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">TWD$18.5</td>
+      <td style="padding:7px 8px;font-size:12px;font-weight:600;text-align:right">103.6萬</td>
+      <td style="padding:7px 8px;font-size:11px;text-align:right;color:var(--muted)">1.2%</td>
+      <td style="padding:7px 8px;text-align:center"><span style="background:#FAEEDA;color:#EF9F27;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">2x 高</span></td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">大盤-1% → 持倉-2%，VIX>20時decay每月約1%</td>
+    </tr><tr>
+      <td style="padding:7px 8px;font-weight:500;font-size:12px">00675L</td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">富邦加權正2</td>
+      <td style="padding:7px 8px;font-size:11px">台股</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">6,000</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">TWD$22.0</td>
+      <td style="padding:7px 8px;font-size:12px;font-weight:600;text-align:right">13.2萬</td>
+      <td style="padding:7px 8px;font-size:11px;text-align:right;color:var(--muted)">0.2%</td>
+      <td style="padding:7px 8px;text-align:center"><span style="background:#FAEEDA;color:#EF9F27;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">2x 高</span></td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">大盤-1% → 持倉-2%，VIX>20時decay每月約1%</td>
+    </tr><tr>
+      <td style="padding:7px 8px;font-weight:500;font-size:12px">TQQQ</td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">ProShares 3x QQQ</td>
+      <td style="padding:7px 8px;font-size:11px">美股</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">400</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">USD$60.0</td>
+      <td style="padding:7px 8px;font-size:12px;font-weight:600;text-align:right">76.8萬</td>
+      <td style="padding:7px 8px;font-size:11px;text-align:right;color:var(--muted)">0.9%</td>
+      <td style="padding:7px 8px;text-align:center"><span style="background:#FCEBEB;color:#E24B4A;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">3x 極高</span></td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">大盤-1% → 持倉-3%，VIX>20時decay每月約2~3%</td>
+    </tr><tr>
+      <td style="padding:7px 8px;font-weight:500;font-size:12px">SOXL</td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">Direxion 3x 半導體</td>
+      <td style="padding:7px 8px;font-size:11px">美股</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">240</td>
+      <td style="padding:7px 8px;font-size:12px;text-align:right">USD$50.0</td>
+      <td style="padding:7px 8px;font-size:12px;font-weight:600;text-align:right">38.4萬</td>
+      <td style="padding:7px 8px;font-size:11px;text-align:right;color:var(--muted)">0.5%</td>
+      <td style="padding:7px 8px;text-align:center"><span style="background:#FCEBEB;color:#E24B4A;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">3x 極高</span></td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted)">大盤-1% → 持倉-3%，VIX>20時decay每月約2~3%</td>
+    </tr><tr style="font-weight:600;background:var(--bg)">
+  <td colspan="5" style="padding:7px 8px;font-size:12px">槓桿 ETF 合計</td>
+  <td style="padding:7px 8px;font-size:13px;color:#E24B4A;text-align:right">623萬</td>
+  <td style="padding:7px 8px;font-size:12px;color:#E24B4A;text-align:right">7.4%</td>
+  <td colspan="2" style="padding:7px 8px;font-size:11px;color:var(--muted)">目前在合理範圍，但需主動管控</td>
+</tr></tbody>
       </table>
     </div>
   </div>
+
   <div class="card">
-    <div class="stitle">風險提示</div>
-    <div class="alert alert-danger">🔴 <b>00685L 100,000股</b>：群益加權正2，倉位極大，大盤-7%時損失-14%，VIX>25時 volatility decay 每月耗損2~3%。強烈建議分3個月減至30,000股以下。</div>
-    <div class="alert alert-danger">🔴 <b>TQQQ/SOXL 各200+120股</b>：3倍槓桿，長期持有必因decay衰減，應作短線工具，不宜列入退休配置。建議設停利停損，定期換手。</div>
-    <div class="alert alert-warn">🟡 <b>00631L 合計56,000股</b>（永豐竹科30,000+玉山15,000+台銀11,000）：集中度高，建議整合至單一帳戶方便管理，並逐步減至30,000股。</div>
-    <div class="alert alert-good">🟢 <b>台積電2330（5,294股）、NVDA（107股）</b>：兩大AI核心持股，財務體質極佳，長期持有無需調整。</div>
-    <div class="alert alert-good">🟢 <b>SGOV（900股）</b>：現金替代首選，年化5%，建議增加至2,000股（約NT$200萬）作為美元現金倉位。</div>
+    <div class="stitle">槓桿風險量化分析</div>
+    <div class="alert alert-warn">🟡 <b>目前槓桿現值 623萬（7.4%）</b>：整體在7.4%，尚屬合理。但需注意：若市場急跌10%，2倍槓桿損失約20%（損失約101萬）、3倍槓桿損失約30%（損失約35萬），合計損失約136萬。</div>
+    <div class="alert alert-danger">🔴 <b>00685L 100,000股最需關注</b>：現值約285萬，但2倍槓桿＋極大股數，加權指數若下跌10%，此部位損失約57萬；若下跌20%，損失約114萬。建議設停損在-15%觸發減碼機制。</div>
+    <div class="alert alert-good">🟢 <b>TQQQ/SOXL 總現值115萬，可接受</b>：3倍槓桿絕對金額不大，但decay效應顯著。建議設季度檢視，停利50%、停損20%換手，不長期持有。</div>
+    <div class="alert alert-info">💡 <b>VIX 與槓桿調整原則</b>：VIX &lt; 15 → 槓桿維持或小幅增加；VIX 15~25 → 維持現有，不加碼；VIX &gt; 25 → 開始分批減碼至10%以下；VIX &gt; 35 → 快速降槓桿至5%以下。</div>
   </div>
 </div>
 
+<!-- 現金管理 -->
 <div id="tab-cash" class="tab-content">
-  <div class="sdiv"><span>現金倉位分析與建議</span></div>
-  <div class="cash-gauge">
-    <div class="cash-box">
-      <div class="cash-label">目前現金</div>
-      <div class="cash-val dn">0.8%</div>
-      <div class="cash-note">約 67.2萬<br>台幣30萬+USD5000+JPY100萬</div>
+  <div class="sdiv"><span>現金倉位分析（含SGOV正確換算）</span></div>
+  <div class="g4">
+    <div class="metric">
+      <div class="metric-label">SGOV 900股</div>
+      <div class="metric-value up">289<span style="font-size:13px;color:var(--muted)">萬</span></div>
+      <div class="metric-sub">$100.5 × 32元 × 900股</div>
     </div>
-    <div class="cash-box">
-      <div class="cash-label">建議最低（5%）</div>
-      <div class="cash-val warn">420萬</div>
-      <div class="cash-note">缺口：352萬<br>1個月緊急備用</div>
+    <div class="metric">
+      <div class="metric-label">台幣現金</div>
+      <div class="metric-value">30<span style="font-size:13px;color:var(--muted)">萬</span></div>
+      <div class="metric-sub">活存 NT$300,000</div>
     </div>
-    <div class="cash-box">
-      <div class="cash-label">建議適中（8%）</div>
-      <div class="cash-val up">671萬</div>
-      <div class="cash-note">缺口：604萬<br>回調加碼彈藥</div>
+    <div class="metric">
+      <div class="metric-label">外幣現金</div>
+      <div class="metric-value">37<span style="font-size:13px;color:var(--muted)">萬</span></div>
+      <div class="metric-sub">USD5000+JPY100萬 換算</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">現金合計</div>
+      <div class="metric-value">358<span style="font-size:13px;color:var(--muted)">萬</span></div>
+      <div class="metric-sub warn">佔總資產 4.3% （建議 8%）</div>
     </div>
   </div>
-  <div class="card" style="margin-top:12px">
-    <div class="stitle">現金策略建議</div>
-    <div class="alert alert-danger">🔴 <b>現金嚴重不足（0.8%）</b>：目前僅約 67.2萬，市場急跌-20%時無彈藥加碼，也無法應對突發支出。建議優先補足至5%（420萬）。</div>
-    <div class="alert alert-warn">🟡 <b>現金來源建議</b>：① 分批減碼00685L（100,000→30,000股）釋放約400~500萬；② 減碼TQQQ/SOXL釋放100~150萬；③ Q4高股息除息入帳50~70萬。合計可增加現金600~720萬。</div>
-    <div class="alert alert-good">🟢 <b>SGOV是最佳現金替代</b>：目前900股（約NT$90萬），年化~5%。建議增加至2,000股（~NT$200萬）作為美元現金倉位，搭配台幣定存150萬作緊急備用。</div>
-    <div class="alert alert-info">💡 <b>退休前現金規劃</b>：2026Q4目標5%（420萬）→ 2027目標8%（700萬）→ 2028退休前目標10%（1,600萬）= 退休後13個月生活費緩衝。</div>
-  </div>
+
   <div class="card">
-    <div class="stitle">現金工具比較</div>
+    <div class="stitle">現金 vs 建議水位</div>
+    <div style="margin-top:8px">
+      <div class="risk-row">
+        <div class="risk-label">目前 4.3%</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px">
+            <span>358萬</span><span>最低目標5%（420萬）</span>
+          </div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:85.2%;background:#EF9F27"></div></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;width:60px;text-align:right;color:#EF9F27">85.2%達標</div>
+      </div>
+      <div class="risk-row">
+        <div class="risk-label">目標 8%</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px">
+            <span>建議 671萬</span><span>缺口 314萬</span>
+          </div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:53.3%;background:#1D9E75"></div></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;width:60px;text-align:right;color:#1D9E75">53.3%達標</div>
+      </div>
+    </div>
+    <div class="alert alert-warn" style="margin-top:10px">🟡 <b>SGOV 289萬已是良好基礎</b>，加上台幣+外幣現金共358萬。距建議8%（671萬）缺口約314萬，主要靠減碼槓桿ETF補足。</div>
+    <div class="alert alert-good">🟢 <b>SGOV 增加方向</b>：建議將 SGOV 從900股增至2,000股，增加約NT$111萬，年化收益約5.6萬，現金部位更充裕。</div>
+    <div class="alert alert-info">💡 <b>現金補足來源優先序</b>：① 00685L 減碼50,000股 → 釋放約142萬 ② TQQQ停利出場 → 釋放約77萬 ③ Q4高股息除息（0056/00927）→ 約50~70萬 ④ 月薪定期投入現金帳戶</div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">現金工具配置建議</div>
     <table class="tbl">
-      <thead><tr><th>工具</th><th>年化利率</th><th>流動性</th><th>風險</th><th>建議用途</th></tr></thead>
+      <thead><tr><th>工具</th><th>目前持有</th><th>建議增至</th><th>年化利率</th><th>風險</th><th>說明</th></tr></thead>
       <tbody>
-        <tr><td style="padding:7px 8px;font-weight:500;font-size:12px">SGOV（美元）</td><td style="padding:7px 8px;font-size:12px" class="up">~5.0%</td><td style="padding:7px 8px;font-size:12px">T+1</td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#085041;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">極低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">美元現金主倉位，建議2,000股</td></tr>
-        <tr><td style="padding:7px 8px;font-weight:500;font-size:12px">00679B（台股）</td><td style="padding:7px 8px;font-size:12px" class="up">~3.5%</td><td style="padding:7px 8px;font-size:12px">T+2</td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#085041;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">台幣債券，已持有10,000股</td></tr>
-        <tr><td style="padding:7px 8px;font-weight:500;font-size:12px">台銀定存</td><td style="padding:7px 8px;font-size:12px">~2.0%</td><td style="padding:7px 8px;font-size:12px">到期</td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#085041;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">極低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">緊急預備金，建議150萬</td></tr>
-        <tr><td style="padding:7px 8px;font-weight:500;font-size:12px">HSBC結構型</td><td style="padding:7px 8px;font-size:12px">~5.0%</td><td style="padding:7px 8px;font-size:12px">到期</td><td style="padding:7px 8px"><span style="background:#FAEEDA;color:#633806;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600">中</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">159萬，到期後評估是否續</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:500;font-size:12px">SGOV（美元）</td><td style="padding:7px 8px;font-size:12px">900股≈289萬</td><td style="padding:7px 8px;font-size:12px" class="up">2,000股≈642萬</td><td style="padding:7px 8px;font-size:12px" class="up">~5.0%</td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#085041;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">極低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">美元現金主倉，T+1流動</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:500;font-size:12px">00679B（台股）</td><td style="padding:7px 8px;font-size:12px">10,000股</td><td style="padding:7px 8px;font-size:12px">維持</td><td style="padding:7px 8px;font-size:12px" class="up">~3.5%</td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#085041;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">台幣債券倉，T+2流動</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:500;font-size:12px">台銀定存</td><td style="padding:7px 8px;font-size:12px">30萬</td><td style="padding:7px 8px;font-size:12px" class="up">150萬</td><td style="padding:7px 8px;font-size:12px">~2.0%</td><td style="padding:7px 8px"><span style="background:#E1F5EE;color:#085041;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">極低</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">緊急備用金，3個月生活費</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:500;font-size:12px">HSBC結構型</td><td style="padding:7px 8px;font-size:12px">159萬</td><td style="padding:7px 8px;font-size:12px">到期評估</td><td style="padding:7px 8px;font-size:12px" class="up">~5.0%</td><td style="padding:7px 8px"><span style="background:#FAEEDA;color:#633806;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">中</span></td><td style="padding:7px 8px;font-size:11px;color:var(--muted)">到期後若市場波動高可續約</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
+<!-- 情境建議 -->
+<div id="tab-scenario" class="tab-content">
+  <div class="sdiv"><span>槓桿 ↔ 現金 動態調整情境</span></div>
+  <div class="alert alert-info" style="margin-bottom:14px">📊 <b>調整原則</b>：槓桿與現金是蹺蹺板關係——槓桿減碼後，釋放資金優先補現金，其次轉入核心ETF（0050/VOO）。以下三種情境供參考，依市場狀況動態選擇。</div>
+  
+    <div class="scenario-card" style="border-left:4px solid #378ADD">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:600">🔵 保守（退休前 2028）</div>
+        <div style="font-size:11px;color:var(--muted)">槓桿8% ／ 現金10%</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">退休前最後2年，降低波動，現金足夠應對市場震盪</div>
+      <div class="sc-grid">
+        <div class="sc-item">
+          <div class="sc-label">槓桿目標</div>
+          <div class="sc-val" style="color:#378ADD">671萬</div>
+          <div class="sc-diff up">+48萬 ↑增加</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">現金目標</div>
+          <div class="sc-val" style="color:#378ADD">839萬</div>
+          <div class="sc-diff up">+481萬 ↑增加</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">釋放資金</div>
+          <div class="sc-val">0萬</div>
+          <div class="sc-diff" style="color:var(--muted)">可適度增槓桿</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">年化波動預估</div>
+          <div class="sc-val warn">20~25%</div>
+          <div class="sc-diff" style="color:var(--muted)">退休標準✓</div>
+        </div>
+      </div>
+    </div>
+    <div class="scenario-card" style="border-left:4px solid #1D9E75">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:600">🟢 平衡（當前建議）</div>
+        <div style="font-size:11px;color:var(--muted)">槓桿12% ／ 現金8%</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">現階段最適配置，兼顧成長與風險控管</div>
+      <div class="sc-grid">
+        <div class="sc-item">
+          <div class="sc-label">槓桿目標</div>
+          <div class="sc-val" style="color:#1D9E75">1007萬</div>
+          <div class="sc-diff up">+384萬 ↑增加</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">現金目標</div>
+          <div class="sc-val" style="color:#1D9E75">671萬</div>
+          <div class="sc-diff up">+313萬 ↑增加</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">釋放資金</div>
+          <div class="sc-val">0萬</div>
+          <div class="sc-diff" style="color:var(--muted)">可適度增槓桿</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">年化波動預估</div>
+          <div class="sc-val warn">25~32%</div>
+          <div class="sc-diff" style="color:var(--muted)">可接受</div>
+        </div>
+      </div>
+    </div>
+    <div class="scenario-card" style="border-left:4px solid #EF9F27">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:600">🟡 積極（多頭持續）</div>
+        <div style="font-size:11px;color:var(--muted)">槓桿18% ／ 現金5%</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">市場持續上漲時維持，但需嚴設停損</div>
+      <div class="sc-grid">
+        <div class="sc-item">
+          <div class="sc-label">槓桿目標</div>
+          <div class="sc-val" style="color:#EF9F27">1511萬</div>
+          <div class="sc-diff up">+888萬 ↑增加</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">現金目標</div>
+          <div class="sc-val" style="color:#EF9F27">420萬</div>
+          <div class="sc-diff up">+62萬 ↑增加</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">釋放資金</div>
+          <div class="sc-val">0萬</div>
+          <div class="sc-diff" style="color:var(--muted)">可適度增槓桿</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-label">年化波動預估</div>
+          <div class="sc-val warn">32~40%</div>
+          <div class="sc-diff" style="color:var(--muted)">偏高注意</div>
+        </div>
+      </div>
+    </div>
+  <div class="card" style="margin-top:4px">
+    <div class="stitle">調整動作優先序建議</div>
+    <div class="alert alert-danger">🔴 <b>立即</b>：00685L 設停損 -15%（現價約28.5，停損約24.2），觸發時分批減碼至50,000股，釋放約142萬轉入現金。</div>
+    <div class="alert alert-warn">🟡 <b>Q3 2026</b>：TQQQ/SOXL 設停利+50%，獲利了結後不再追買，轉入SGOV或VOO。</div>
+    <div class="alert alert-warn">🟡 <b>Q4 2026</b>：高股息除息旺季（0056/00927約50~70萬），除息後視市況決定是否再投入或轉現金。</div>
+    <div class="alert alert-good">🟢 <b>2027年目標</b>：槓桿降至10%以下，現金+SGOV增至8%（670萬），整體年化波動度目標降至25%以下。</div>
+    <div class="alert alert-good">🟢 <b>2028退休前</b>：槓桿清空或降至5%以下，現金10%（1,600萬），轉型為高股息ETF+債券的穩健配置。</div>
+  </div>
+</div>
+
+<!-- 走勢圖 -->
 <div id="tab-trend" class="tab-content">
   <div class="card">
     <div class="stitle">總資產 / 淨資產 / 負債走勢</div>
@@ -275,70 +514,82 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <div style="text-align:center;font-size:11px;color:var(--hint);margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
-  RetireFlow Pro v3.0 ｜ Google Drive 即時同步 ｜ 2026/07/27 06:31 ｜ 分析僅供參考，不構成投資建議
+  RetireFlow Pro v3.1 ｜ Google Drive 即時同步 ｜ 2026/07/27 07:01 ｜ 分析僅供參考，不構成投資建議
 </div>
 </div>
-<script>
 
-const H={dates:["03/24", "03/25", "03/30", "04/01", "04/10", "04/23", "04/30", "05/07", "05/15", "05/22", "05/30", "06/01", "06/10", "06/15", "06/23", "06/30", "07/01", "07/07", "07/17", "07/21", "07/24", "07/27"],total:[6400, 6394, 6117, 6343, 7065, 7732, 7902, 8241, 8071, 8218, 8941, 8998, 8619, 8961, 9393, 9263, 9542, 9072, 8250, 8385, 8396, 8392],net:[2556, 2634, 2357, 2526, 3164, 3357, 3598, 3919, 3749, 3896, 4628, 4719, 4340, 4683, 5121, 4991, 5274, 4803, 3982, 4116, 4127, 4123],tw:[3190, 3162, 3130, 3270, 3618, 4138, 4474, 4607, 4461, 4553, 4899, 4957, 4591, 4807, 5067, 4951, 5064, 4895, 4384, 4533, 4461, 4456],us:[2025, 2027, 1878, 1900, 2158, 2264, 2097, 2280, 2265, 2298, 2547, 2541, 2428, 2499, 2662, 2609, 2748, 2525, 2291, 2285, 2386, 2388],jp:[527, 548, 451, 541, 588, 605, 605, 617, 609, 629, 688, 692, 687, 741, 751, 788, 825, 747, 670, 698, 680, 679],fund:[657, 657, 657, 631, 702, 726, 726, 737, 737, 737, 807, 807, 914, 914, 914, 914, 905, 905, 905, 869, 869, 869],debt:[3844, 3760, 3760, 3817, 3901, 4375, 4304, 4322, 4322, 4322, 4313, 4279, 4279, 4279, 4272, 4272, 4269, 4269, 4269, 4269, 4269, 4269]};
-const SL={labels:["3\u6708", "4\u6708", "5\u6708", "6\u6708", "7\u6708\u8fc4\u4eca", "Q1(3~4)", "Q2(5~6)", "\u5168\u671f"],total:[-4.4, 24.6, 8.5, 2.9, -12.1, 23.5, 12.4, 31.1],tw:[-1.9, 36.8, 6.3, -0.1, -12.0, 40.3, 7.5, 39.7],us:[-7.3, 10.4, 11.7, 2.7, -13.1, 3.6, 14.4, 17.9],jp:[-14.4, 11.8, 11.5, 13.9, -17.8, 14.6, 27.8, 28.7],fund:[0.0, 15.0, 9.6, 13.2, -4.0, 10.4, 24.0, 32.1]};
+<script>
 const DARK=matchMedia('(prefers-color-scheme:dark)').matches;
 const GC=DARK?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
 const TC=DARK?'#555':'#aaa';
 
-function mkLine(id,ds,pct=false){
+// 歷史數據（精簡版關鍵日期）
+const HD=["03/24","03/30","04/01","04/10","04/23","04/30","05/07","05/15","05/22","05/30","06/01","06/10","06/15","06/23","06/30","07/01","07/07","07/17","07/21","07/24","07/27"];
+const HT=[6400,6117,6343,7065,7732,7902,8241,8071,8218,8941,8998,8619,8961,9393,9263,9542,9072,8250,8385,8396,8392];
+const HN=[2556,2357,2526,3164,3357,3598,3919,3749,3896,4628,4719,4341,4683,5121,4991,5274,4803,3982,4116,4127,4123];
+const HDbt=[3844,3760,3817,3901,4375,4304,4322,4322,4322,4313,4279,4279,4279,4272,4272,4269,4269,4269,4269,4269,4269];
+const HTW=[3190,3130,3270,3618,4138,4474,4607,4461,4553,4899,4957,4591,4807,5067,4951,5064,4895,4384,4533,4461,4456];
+const HUS=[2025,1878,1900,2158,2264,2097,2280,2265,2298,2547,2541,2428,2499,2662,2609,2748,2525,2291,2285,2386,2388];
+const HJP=[527,451,541,588,605,605,618,609,629,688,692,687,741,751,788,825,747,670,698,680,679];
+const HFD=[657,657,631,702,726,726,737,737,737,807,807,914,914,914,914,905,905,905,869,869,869];
+
+function drawGauge(id,pct,label,color){
   const c=document.getElementById(id);if(!c)return;
-  new Chart(c,{type:'line',data:{labels:H.dates,datasets:ds},options:{
+  const W=c.clientWidth||c.width,H=c.clientHeight||c.height;
+  c.width=W;c.height=H;const ctx=c.getContext('2d');
+  const cx=W/2,cy=H*0.88,r=Math.min(W,H*2)*0.36;
+  const cl=Math.min(pct,100);
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,2*Math.PI);
+  ctx.strokeStyle=DARK?'#333':'#eee';ctx.lineWidth=r*0.2;ctx.lineCap='round';ctx.stroke();
+  if(cl>0){ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+Math.PI*cl/100);
+  ctx.strokeStyle=color;ctx.lineWidth=r*0.2;ctx.lineCap='round';ctx.stroke();}
+  ctx.fillStyle=DARK?'#f0efe9':'#1a1a1a';
+  ctx.font='bold '+Math.round(r*0.48)+'px -apple-system,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(pct.toFixed(1)+'%',cx,cy-r*0.12);
+  ctx.fillStyle=TC;ctx.font=Math.round(r*0.28)+'px -apple-system,sans-serif';
+  ctx.fillText(label,cx,cy+r*0.32);
+}
+
+function mkLine(id,ds){
+  const c=document.getElementById(id);if(!c)return;
+  new Chart(c,{type:'line',data:{labels:HD,datasets:ds},options:{
     responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y?.toLocaleString()}${pct?'%':'萬'}`}}},
-    scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10},maxTicksLimit:14}},
-            y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+(pct?'%':'萬')}}}}});
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y?.toLocaleString()}萬`}}},
+    scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10},maxTicksLimit:12}},
+            y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}}}}});
 }
 
 let chartsDrawn=false;
 function drawCharts(){
   if(chartsDrawn)return;chartsDrawn=true;
-  // 成長率
-  const gc2=document.getElementById('growthChart');
-  if(gc2)new Chart(gc2,{type:'bar',data:{labels:SL.labels,datasets:[
-    {label:'台股',data:SL.tw,backgroundColor:'rgba(55,138,221,0.85)',borderRadius:4},
-    {label:'美股',data:SL.us,backgroundColor:'rgba(29,158,117,0.85)',borderRadius:4},
-    {label:'日股',data:SL.jp,backgroundColor:'rgba(239,159,39,0.85)',borderRadius:4},
-    {label:'基金',data:SL.fund,backgroundColor:'rgba(127,119,221,0.85)',borderRadius:4},
-    {label:'總資產',data:SL.total,backgroundColor:'rgba(80,80,80,0.6)',borderRadius:4},
-  ]},options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:true,position:'top',labels:{font:{size:11},color:TC,boxWidth:10}},
-             tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}},
-    scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10}}},
-            y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'%'}}}}});
-  // 雷達
-  const rc=document.getElementById('radarChart');
-  if(rc)new Chart(rc,{type:'radar',
-    data:{labels:['台股','美股','日股','基金','現金'],datasets:[
-      {label:'實際',data:[53.1,28.5,8.1,10.4,0.8],borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.2)',pointBackgroundColor:'#378ADD',borderWidth:2},
-      {label:'目標',data:[40,30,10,10,8],borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.1)',pointBackgroundColor:'#1D9E75',borderWidth:2,borderDash:[5,3]},
-    ]},options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:TC,boxWidth:10}}},
-      scales:{r:{grid:{color:GC},ticks:{color:TC,font:{size:9},backdropColor:'transparent'},pointLabels:{color:TC,font:{size:11}},suggestedMin:0,suggestedMax:65}}}});
-  // 走勢
+  drawGauge('g-tw',44.6,'4456萬','#378ADD');
+  drawGauge('g-us',59.7,'2388萬','#1D9E75');
+  drawGauge('g-jp',67.9,'679萬','#EF9F27');
+  drawGauge('g-fd',86.9,'869萬','#7F77DD');
+  new Chart(document.getElementById('donutChart'),{type:'doughnut',
+    data:{labels:['台股','美股','日股','基金'],datasets:[{
+      data:[53.1,28.5,8.1,10.4],
+      backgroundColor:['#378ADD','#1D9E75','#EF9F27','#7F77DD'],borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false}}}});
   mkLine('trendChart',[
-    {label:'總資產',data:H.total,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:DARK?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.06)',tension:0.3},
-    {label:'淨資產',data:H.net,borderColor:'#1D9E75',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
-    {label:'總負債',data:H.debt,borderColor:'#E24B4A',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0.3},
+    {label:'總資產',data:HT,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:DARK?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.06)',tension:0.3},
+    {label:'淨資產',data:HN,borderColor:'#1D9E75',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
+    {label:'總負債',data:HDbt,borderColor:'#E24B4A',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0.3},
   ]);
   mkLine('allocChart',[
-    {label:'台股',data:H.tw,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
-    {label:'美股',data:H.us,borderColor:'#1D9E75',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
-    {label:'日股',data:H.jp,borderColor:'#EF9F27',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
-    {label:'基金',data:H.fund,borderColor:'#7F77DD',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
+    {label:'台股',data:HTW,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
+    {label:'美股',data:HUS,borderColor:'#1D9E75',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
+    {label:'日股',data:HJP,borderColor:'#EF9F27',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
+    {label:'基金',data:HFD,borderColor:'#7F77DD',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
   ]);
-  const chg=H.total.map((v,i)=>i===0?0:v-H.total[i-1]);
+  const chg=HT.map((v,i)=>i===0?0:v-HT[i-1]);
   const bc=document.getElementById('barChart');
-  if(bc)new Chart(bc,{type:'bar',data:{labels:H.dates,datasets:[{data:chg,
+  if(bc)new Chart(bc,{type:'bar',data:{labels:HD,datasets:[{data:chg,
     backgroundColor:chg.map(v=>v>=0?'rgba(29,158,117,0.75)':'rgba(226,75,74,0.75)'),borderRadius:2,label:'每日變化'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
       tooltip:{callbacks:{label:c=>` ${c.parsed.y>=0?'+':''}${c.parsed.y}萬`}}},
-      scales:{x:{grid:{display:false},ticks:{color:TC,font:{size:10},maxTicksLimit:14}},
+      scales:{x:{grid:{display:false},ticks:{color:TC,font:{size:10},maxTicksLimit:12}},
               y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}}}}});
 }
 
@@ -346,10 +597,9 @@ function switchTab(el,name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');document.getElementById('tab-'+name).classList.add('active');
-  if(['growth','alloc','trend'].includes(name))setTimeout(drawCharts,60);
+  setTimeout(drawCharts,60);
 }
 document.addEventListener('DOMContentLoaded',drawCharts);
-
 </script>
 </body>
 </html>
