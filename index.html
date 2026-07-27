@@ -307,14 +307,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .chart-md{position:relative;width:100%;height:220px}
 .chart-sm{position:relative;width:100%;height:190px}
 .chart-pareto{position:relative;width:100%;height:310px}
-.bar-race-wrap{position:relative;width:100%;overflow:hidden;border-radius:8px;background:var(--bg)}
-.bar-race-canvas{display:block;width:100%}
-.br-ctrl{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
-.br-btn{padding:5px 14px;border-radius:99px;border:1px solid var(--border);background:var(--card);font-size:12px;cursor:pointer;font-family:inherit;color:var(--text);transition:background .15s}
-.br-btn:hover{background:var(--bg)}
-.br-btn.active{background:var(--text);color:var(--card);border-color:transparent}
-.br-speed{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
-.br-speed input{width:80px;accent-color:#378ADD}
+/* bar chart */
 .chart-xs{position:relative;width:100%;height:160px}
 .legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
 .legend-item{display:flex;align-items:center;gap:4px}
@@ -631,7 +624,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>槓桿ETF</span>
       <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>主動ETF</span>
     </div>
-    <div class="bar-race-wrap" id="twRace"></div>
+    <div style="position:relative;width:100%;height:520px"><canvas id="twPareto"></canvas></div>
     <div class="key-insight">🔍 台積電（1,247萬/33.4%）+ 0050（455萬/12.2%）= 台股前兩大佔45.6%。前5大（2330+0050+00663L+0056+00631L）合計65.9%。槓桿ETF四檔合計784萬佔台股21%，超過建議15%上限。</div>
   </div>
   <div class="g2">
@@ -660,7 +653,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>ETF</span>
       <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>槓桿</span>
     </div>
-    <div class="bar-race-wrap" id="usRace"></div>
+    <div style="position:relative;width:100%;height:480px"><canvas id="usPareto"></canvas></div>
     <div class="key-insight">🔍 SGOV（289萬/20.4%）居首但屬現金替代，合理。TER（179萬/12.6%）是最大個股部位，須確認估值。SOFI/RZLV/NOK等高風險小型股合計約120萬，建議清倉轉核心ETF。</div>
   </div>
   <div class="g2">
@@ -682,7 +675,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div id="tab-pareto-jp" class="tab-content">
   <div class="card">
     <div class="stitle">日股持股 Pareto 分析（估值 349萬，4檔）</div>
-    <div class="bar-race-wrap" id="jpRace"></div>
+    <div style="position:relative;width:100%;height:200px"><canvas id="jpPareto"></canvas></div>
     <div class="key-insight">🔍 日本REITs ETF（2644）佔72.4%（253萬），集中在REIT資產但配息穩定。TDK/京瓷/村田均為電子零件龍頭，財務健全。整體349萬距目標1,000萬仍差651萬，建議分季加碼。</div>
   </div>
   <div class="card">
@@ -1077,277 +1070,43 @@ function drawGauge(id,pct,label,color){
   ctx.fillText(label,cx,cy+r*0.3);
 }
 
-// ══ Bar Race Chart ════════════════════════════════════════════
-
-class BarRace {
-  constructor(containerId, data, title=''){
-    this.el = document.getElementById(containerId);
-    if(!this.el) return;
-    this.data = [...data].sort((a,b)=>b.val-a.val);
-    this.title = title;
-    this.total = data.reduce((s,d)=>s+d.val,0);
-    this.animating = false;
-    this.raf = null;
-    this.progress = 0;       // 0→1 全部展開完畢
-    this.speed = 1;          // 倍速
-    this.topN = Math.min(data.length, 12);
-    this.topData = this.data.slice(0, this.topN);
-    this.build();
-    this.reset();
-  }
-
-  build(){
-    // Canvas 高度依條數決定
-    const h = this.topN * 38 + 60;
-    this.el.innerHTML = `
-      <canvas class="bar-race-canvas" id="cvs-${this.el.id}" height="${h}"></canvas>
-      <div class="br-ctrl">
-        <button class="br-btn active" id="btn-play-${this.el.id}" onclick="window._br_${this.el.id}.toggle()">▶ 播放</button>
-        <button class="br-btn" onclick="window._br_${this.el.id}.reset()">↺ 重置</button>
-        <div class="br-speed">
-          速度 <input type="range" min="0.5" max="3" step="0.5" value="1"
-            oninput="window._br_${this.el.id}.setSpeed(+this.value);this.nextSibling.textContent=this.value+'x'">
-          <span>1x</span>
-        </div>
-        <div style="font-size:11px;color:var(--hint);margin-left:auto" id="lbl-${this.el.id}">0%</div>
-      </div>`;
-    this.canvas = document.getElementById('cvs-'+this.el.id);
-    this.ctx = this.canvas.getContext('2d');
-    window['_br_'+this.el.id] = this;
-    this.btnPlay = document.getElementById('btn-play-'+this.el.id);
-    this.lbl     = document.getElementById('lbl-'+this.el.id);
-    // resize observer
-    if(window.ResizeObserver){
-      new ResizeObserver(()=>this.draw(this.progress)).observe(this.el);
-    }
-  }
-
-  reset(){
-    cancelAnimationFrame(this.raf);
-    this.animating = false;
-    this.progress = 0;
-    this.btnPlay.textContent = '▶ 播放';
-    this.btnPlay.classList.add('active');
-    this.draw(0);
-    this.lbl.textContent = '0%';
-  }
-
-  toggle(){
-    if(this.progress >= 1){ this.reset(); return; }
-    this.animating = !this.animating;
-    this.btnPlay.textContent = this.animating ? '⏸ 暫停' : '▶ 繼續';
-    if(this.animating) this._tick();
-  }
-
-  setSpeed(s){ this.speed = s; }
-
-  _tick(){
-    if(!this.animating) return;
-    this.progress = Math.min(1, this.progress + 0.012 * this.speed);
-    this.draw(this.progress);
-    this.lbl.textContent = Math.round(this.progress*100)+'%';
-    if(this.progress < 1) this.raf = requestAnimationFrame(()=>this._tick());
-    else {
-      this.animating = false;
-      this.btnPlay.textContent = '↺ 重播';
-    }
-  }
-
-  draw(prog){
-    const cvs = this.canvas;
-    const dpr = window.devicePixelRatio||1;
-    const W = cvs.offsetWidth||cvs.parentElement.offsetWidth||600;
-    const H = cvs.height || this.topN*38+60;
-    cvs.width  = W * dpr;
-    cvs.height = H * dpr;
-    cvs.style.height = H+'px';
-    const ctx = this.ctx;
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-
-    const isDk = DARK;
-    ctx.clearRect(0,0,W,H);
-
-    const PAD_L = 10, PAD_R = 130, PAD_TOP = 36, BAR_H = 26, GAP = 12;
-    const maxVal = this.topData[0].val;
-    const availW = W - PAD_L - PAD_R;
-
-    // 標題
-    ctx.fillStyle = isDk?'#f0efe9':'#1a1a1a';
-    ctx.font = 'bold 13px -apple-system,sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText(this.title, PAD_L, 20);
-
-    // 總計標
-    ctx.fillStyle = isDk?'#555':'#aaa';
-    ctx.font = '11px -apple-system,sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText('總計 '+Math.round(this.total)+'萬', W-PAD_L, 20);
-
-    this.topData.forEach((item, i) => {
-      const y = PAD_TOP + i*(BAR_H+GAP);
-      const targetW = (item.val / maxVal) * availW;
-      const curW = targetW * prog;
-      const pct = (item.val/this.total*100);
-      const color = TYPE_C[item.type] || '#999';
-
-      // 背景條（淡）
-      ctx.fillStyle = (isDk?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.04)');
-      ctx.beginPath();
-      ctx.roundRect(PAD_L, y, availW, BAR_H, 4);
-      ctx.fill();
-
-      // 動畫條
-      if(curW > 0){
-        ctx.fillStyle = color + (isDk?'CC':'DD');
-        ctx.beginPath();
-        ctx.roundRect(PAD_L, y, curW, BAR_H, 4);
-        ctx.fill();
-
-        // 漸層高光
-        const grad = ctx.createLinearGradient(PAD_L, y, PAD_L, y+BAR_H);
-        grad.addColorStop(0,'rgba(255,255,255,0.15)');
-        grad.addColorStop(1,'rgba(255,255,255,0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.roundRect(PAD_L, y, curW, BAR_H, 4);
-        ctx.fill();
-      }
-
-      // 排名圓圈
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(PAD_L+11, y+BAR_H/2, 9, 0, Math.PI*2);
-      ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 9px -apple-system,sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(i+1, PAD_L+11, y+BAR_H/2+3.5);
-
-      // 代號
-      ctx.fillStyle = isDk?'#f0efe9':'#1a1a1a';
-      ctx.font = 'bold 11px -apple-system,sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText(item.code, PAD_L+24, y+BAR_H/2+4);
-
-      // 右側資訊（隨動畫顯示）
-      const showVal = Math.round(item.val * prog);
-      const showPct = (pct * prog).toFixed(1);
-      ctx.fillStyle = isDk?'#aaa':'#666';
-      ctx.font = '11px -apple-system,sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText(item.name, W - PAD_R + 6, y+12);
-      ctx.fillStyle = color;
-      ctx.font = 'bold 12px -apple-system,sans-serif';
-      ctx.fillText(showVal+'萬', W - PAD_R + 6, y+BAR_H-2);
-      ctx.fillStyle = isDk?'#555':'#aaa';
-      ctx.font = '10px -apple-system,sans-serif';
-      ctx.fillText(showPct+'%', W - PAD_R + 70, y+BAR_H-2);
-
-      // 類型標籤（小badge on bar）
-      if(curW > 60 && prog > 0.3){
-        const badge = item.type;
-        ctx.font = '9px -apple-system,sans-serif';
-        const bw = ctx.measureText(badge).width + 8;
-        ctx.fillStyle = 'rgba(0,0,0,0.18)';
-        ctx.beginPath();
-        ctx.roundRect(PAD_L+curW-bw-4, y+BAR_H/2-7, bw, 14, 3);
-        ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.textAlign = 'center';
-        ctx.fillText(badge, PAD_L+curW-bw/2-4, y+BAR_H/2+3.5);
-      }
-    });
-  }
-}
-
-// ── 基金 Bar Race（靜態，因只有3筆）──
-function buildFundBar(containerId){
-  const el=document.getElementById(containerId);
-  if(!el) return;
-  const items=[
-    {name:'鉅亨網基金',val:411,type:'基金',color:'#378ADD'},
-    {name:'HSBC結構型',val:314,type:'基金',color:'#1D9E75'},
-    {name:'基富通基金',val:143,type:'基金',color:'#EF9F27'},
-  ];
-  new BarRace(containerId,[
-    {code:'鉅亨',name:'鉅亨網基金',val:411,type:'ETF'},
-    {code:'HSBC',name:'HSBC結構型',val:314,type:'現金替代'},
-    {code:'基富通',name:'基富通基金',val:143,type:'ETF'},
-  ],'基金帳戶 Pareto（總計869萬）');
-}
-
-// ── Donut ──
-function buildDonut(canvasId,data){
+// ── 橫向 Bar Chart ─────────────────────────────────────────
+function buildHBar(canvasId, data, title){
   const ctx=document.getElementById(canvasId);if(!ctx)return;
-  const groups={};
-  data.forEach(d=>{const k=d.type||'其他';groups[k]=(groups[k]||0)+d.val;});
-  const labels=Object.keys(groups);
-  new Chart(ctx,{type:'doughnut',
-    data:{labels,datasets:[{data:labels.map(l=>parseFloat(groups[l].toFixed(1))),
-      backgroundColor:labels.map(l=>TYPE_C[l]||'#999'),borderWidth:0,hoverOffset:4}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
-      plugins:{legend:{display:true,position:'right',labels:{font:{size:11},color:TC,boxWidth:10}},
-               tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}萬`}}}}});
+  const top=data.slice(0,15);
+  const rest=data.slice(15);
+  if(rest.length){
+    const ov=rest.reduce((s,d)=>s+d.val,0);
+    top.push({code:'其他',name:'其他'+rest.length+'檔',val:parseFloat(ov.toFixed(1)),type:'ETF'});
+  }
+  const total=data.reduce((s,d)=>s+d.val,0);
+  const items=[...top].reverse();
+  const labels=items.map(d=>d.code+' '+d.name);
+  const vals=items.map(d=>d.val);
+  const pcts=items.map(d=>parseFloat((d.val/total*100).toFixed(1)));
+  const colors=items.map(d=>TYPE_C[d.type]||'#999');
+  new Chart(ctx,{type:'bar',data:{labels,datasets:[{
+    label:'市值（萬）',data:vals,
+    backgroundColor:colors.map(c=>c+'BB'),borderColor:colors,
+    borderWidth:1,borderRadius:4
+  }]},options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>` ${c.parsed.x}萬（${pcts[c.dataIndex]}%）`}},
+      title:{display:!!title,text:title,color:TC,font:{size:12,weight:'600'},padding:{bottom:6}}
+    },
+    scales:{
+      x:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
+      y:{grid:{display:false},ticks:{color:TC,font:{size:10}}}
+    }
+  }});
 }
 
-// ── Line chart ──
-function mkLine(id,ds,pct=false){
-  const c=document.getElementById(id);if(!c)return;
-  new Chart(c,{type:'line',data:{labels:HD,datasets:ds},options:{
-    responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y?.toLocaleString()}${pct?'%':'萬'}`}}},
-    scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10},maxTicksLimit:12}},
-            y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+(pct?'%':'萬')}}}}});
-}
-
-// ── 滾動波動度（模擬）──
-const rvol=[null,null,null,null,null,45,42,38,35,31,28,36,34,32,30,29,33,48,44,40,38];
-
-let chartsInit={};
-function drawAllCharts(){
-  if(!chartsInit['g']){chartsInit['g']=1;
-    drawGauge('g-tw',44.6,'4,456萬','#378ADD');
-    drawGauge('g-us',59.7,'2,388萬','#1D9E75');
-    drawGauge('g-jp',67.9,'679萬','#EF9F27');
-    drawGauge('g-fd',86.9,'869萬','#7F77DD');
-  }
-  if(!chartsInit['overview']){chartsInit['overview']=1;
-    new Chart(document.getElementById('overviewDonut'),{type:'doughnut',
-      data:{labels:['台股','美股','日股','基金'],datasets:[{
-        data:[53.1,28.5,8.1,10.4],backgroundColor:['#378ADD','#1D9E75','#EF9F27','#7F77DD'],borderWidth:0,hoverOffset:4}]},
-      options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false}}}});
-  }
-}
-
-function drawTabCharts(name){
-  if(chartsInit[name]) return; chartsInit[name]=1;
-  if(name==='growth'){
-    const bc=document.getElementById('growthChart');
-    if(bc)new Chart(bc,{type:'bar',data:{labels:SL.labels,datasets:[
-      {label:'台股',data:SL.tw,backgroundColor:'rgba(55,138,221,0.85)',borderRadius:3},
-      {label:'美股',data:SL.us,backgroundColor:'rgba(29,158,117,0.85)',borderRadius:3},
-      {label:'日股',data:SL.jp,backgroundColor:'rgba(239,159,39,0.85)',borderRadius:3},
-      {label:'基金',data:SL.fund,backgroundColor:'rgba(127,119,221,0.85)',borderRadius:3},
-      {label:'總資產',data:SL.total,backgroundColor:'rgba(80,80,80,0.6)',borderRadius:3},
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{
-      legend:{display:true,position:'top',labels:{font:{size:11},color:TC,boxWidth:10}},
-      tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}},
-    scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10}}},y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'%'}}}}});
-    mkLine('volChart',[{label:'20日滾動波動度',data:rvol,borderColor:'#EF9F27',backgroundColor:'rgba(239,159,39,0.1)',borderWidth:2,pointRadius:3,fill:true,tension:0.3,spanGaps:true}],true);
-  }
-  if(name==='alloc'){
-    const rc=document.getElementById('radarChart');
-    if(rc)new Chart(rc,{type:'radar',data:{labels:['台股','美股','日股','基金','現金'],datasets:[
-      {label:'實際配置',data:[44.6,59.7,67.9,86.9,53],borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.2)',borderWidth:2,pointBackgroundColor:'#378ADD'},
-      {label:'目標配置',data:[100,100,100,100,100],borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.1)',borderWidth:2,borderDash:[5,3],pointBackgroundColor:'#1D9E75'},
-    ]},options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:TC,boxWidth:10}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.r}%`}}},
-      scales:{r:{grid:{color:GC},ticks:{color:TC,font:{size:9},backdropColor:'transparent'},pointLabels:{color:TC,font:{size:11}},suggestedMin:0,suggestedMax:110}}}});
-  }
-  if(name==='pareto-tw'){new BarRace('twRace',TW_DATA,'台股持股 Bar Race（估值3,736萬）');buildDonut('twDonut',TW_DATA);}
-  if(name==='pareto-us'){new BarRace('usRace',US_DATA,'美股持股 Bar Race（估值1,422萬）');buildDonut('usDonut',US_DATA);}
-  if(name==='pareto-jp'){new BarRace('jpRace',JP_DATA,'日股持股 Bar Race（估值349萬）');}
-  if(name==='fund'){new BarRace('fundRace',[{code:'鉅亨',name:'鉅亨網基金',val:411,type:'ETF'},{code:'HSBC',name:'HSBC結構型',val:314,type:'現金替代'},{code:'基富通',name:'基富通基金',val:143,type:'ETF'}],'基金帳戶 Bar Race（總計869萬）');}
+if(name==='pareto-tw'){buildHBar('twPareto',TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',TW_DATA);}
+  if(name==='pareto-us'){buildHBar('usPareto',US_DATA,'美股持股（估值1,422萬）');buildDonut('usDonut',US_DATA);}
+  if(name==='pareto-jp'){buildHBar('jpPareto',JP_DATA,'日股持股（估值349萬）');}
+  if(name==='fund'){buildHBar('fundPareto',[{code:'鉅亨',name:'鉅亨網基金',val:411,type:'ETF'},{code:'HSBC',name:'HSBC結構型',val:314,type:'現金替代'},{code:'基富通',name:'基富通基金',val:143,type:'ETF'}],'基金帳戶');}
   if(name==='trend'){
     mkLine('trendChart',[
       {label:'總資產',data:HT,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:DARK?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.06)',tension:0.3},
