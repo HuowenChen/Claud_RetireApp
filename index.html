@@ -209,7 +209,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="header">
   <div>
     <h1>RetireFlow Pro｜退休財務儀表板</h1>
-    <p>Google Drive 即時同步｜2026/07/27｜目標：2028/12 退休・總資產 ≥ NT$16,000萬</p>
+    <p>Google Drive 即時同步｜目標：2028/12 退休・總資產 ≥ NT$16,000萬</p>
+    <p style="font-size:11px;margin-top:2px" id="price-status">📡 載入中...</p>
   </div>
   <div class="pills">
     <div class="pill"><span class="dot dot-green"></span>Drive 已同步</div>
@@ -787,6 +788,301 @@ const DARK=matchMedia('(prefers-color-scheme:dark)').matches;
 const GC=DARK?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
 const TC=DARK?'#555':'#aaa';
 
+
+// ══ 即時股價自動抓取 ══════════════════════════════════════════
+
+// ── 股數資料（從 Google Drive 讀取，固定不變）──
+const SHARES = {
+  // 台股（合併各券商）
+  "0050":45000, "0056":62700, "006208":21000,
+  "00631L":59000, "00663L":33000, "00675L":6000, "00685L":100000,
+  "00881":35000, "00894":33000, "00927":50000, "00935":31000,
+  "009816":17000, "00980A":23000, "00981A":23000, "00985A":22000,
+  "00988A":29000, "00991A":12000, "00992A":19000,
+  "2330":5294, "5483":7000, "6147":3000, "2812":2559,
+  // 美股（合併各券商，換算用 USD）
+  "BRK-B":12, "GOOG":118, "NVDA":107, "PLTR":87,
+  "QQQ":43, "SMH":148, "SOXX":9.1, "TSLA":37,
+  "VOO":19.3, "VT":166, "VTI":34.5,
+  "DRAM":720, "MNST":60, "MU":15, "MUU":500,
+  "NOK":500, "RZLV":5000, "SGOV":900, "SOFI":1400,
+  "SOFX":500, "SOXL":240, "TER":360, "TQQQ":400,
+  "TSM":50, "TSMX":200, "AMD":25, "INTW":100, "SNXX":530, "SPCX":12,
+  // 日股（日幣）
+  "2644.T":6000, "6762.T":600, "6971.T":900, "6981.T":500,
+};
+
+// ── 各券商持股分配（用於 broker table）──
+const BROKER_SHARES = {
+  TW: {
+    "永豐敦南": {"00631L":3000,"00663L":9000,"00675L":4000},
+    "永豐竹科": {"0050":45000,"0056":62700,"006208":20000,"00631L":30000,
+                 "00663L":23000,"00685L":100000,"00881":35000,"00894":33000,
+                 "00927":50000,"00935":31000,"00980A":23000,"009816":17000,
+                 "00981A":23000,"00985A":22000,"00988A":14000,"00991A":12000,
+                 "00992A":19000,"2330":5294,"5483":7000,"6147":3000},
+    "玉山":     {"00631L":15000},
+    "台銀":     {"006208":1000,"00631L":11000,"00663L":1000,"00675L":2000,"2812":2559},
+    "凱基":     {"00988A":15000},
+  },
+  US: {
+    "永豐豐存股":  {"BRK-B":12,"GOOG":118,"NVDA":107,"PLTR":87,"QQQ":43,
+                   "SMH":73,"SOXX":9.1,"TSLA":37,"VOO":19.3,"VT":166,"VTI":34.5},
+    "永豐複委託":  {"DRAM":500,"MNST":60,"MU":15,"MUU":500,"NOK":500,"RZLV":5000,
+                   "SGOV":500,"SMH":40,"SOFI":1400,"SOFX":500,"SOXL":120,
+                   "TER":270,"TQQQ":200,"TSM":50,"TSMX":200},
+    "FirstTrade": {"AMD":25,"DRAM":220,"INTW":100,"SGOV":400,"SMH":35,
+                   "SNXX":530,"SOXL":120,"SPCX":12,"TER":90,"TQQQ":200},
+  }
+};
+
+// ── Fallback 股價（最後已知，用於 API 失敗時）──
+const FALLBACK_PRICES = {
+  // 台股
+  "0050":100.15,"0056":52.65,"006208":80.5,"00631L":33.0,"00663L":94.0,
+  "00675L":284.0,"00685L":10.9,"00881":20.3,"00894":44.4,"00927":22.5,
+  "00935":19.8,"009816":18.5,"00980A":26.0,"00981A":31.09,"00985A":25.0,
+  "00988A":28.0,"00991A":19.0,"00992A":28.5,"2330":2355,"5483":230,
+  "6147":158,"2812":22,
+  // 美股（USD）
+  "BRK-B":500,"GOOG":185,"NVDA":135,"PLTR":130,"QQQ":520,"SMH":250,
+  "SOXX":230,"TSLA":280,"VOO":560,"VT":115,"VTI":290,
+  "DRAM":18,"MNST":60,"MU":130,"MUU":25,"NOK":4,"RZLV":3,
+  "SGOV":100.5,"SOFI":15,"SOFX":8,"SOXL":50,"TER":155,"TQQQ":60,
+  "TSM":230,"TSMX":35,"AMD":170,"INTW":5,"SNXX":0.5,"SPCX":20,
+  // 日股（JPY）
+  "2644.T":1900,"6762.T":2500,"6971.T":1600,"6981.T":2800,
+  // 匯率
+  "USDTWD":32.0, "JPYTWD":0.222,
+};
+
+// ── 全域股價快取 ──
+window.LIVE_PRICES = {...FALLBACK_PRICES};
+window.PRICE_LOADED = false;
+
+// ── 狀態顯示 ──
+function setPriceStatus(msg, ok){
+  const el = document.getElementById('price-status');
+  if(el){ el.textContent = msg; el.style.color = ok ? '#1D9E75' : '#EF9F27'; }
+}
+
+// ── 台股即時價（TWSE MIS API）──
+async function fetchTWPrices(){
+  const tseCodes = ['0050','0056','006208','00631L','00663L','00675L','00685L',
+    '00881','00894','00927','00935','009816','00980A','00981A','00985A',
+    '00988A','00991A','00992A','2330','2812'];
+  const otcCodes = ['5483','6147'];
+  const exStr = tseCodes.map(c=>`tse_${c}.tw`).join('|')
+              + '|' + otcCodes.map(c=>`otc_${c}.tw`).join('|');
+  const url = `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=${exStr}&json=1&delay=0`;
+  try {
+    const r = await fetch(url, {cache:'no-store'});
+    const d = await r.json();
+    let updated = 0;
+    (d.msgArray||[]).forEach(s=>{
+      const code = s.c; // 股票代號
+      const price = parseFloat(s.z || s.y); // z=現價, y=昨收（收盤後用y）
+      if(code && !isNaN(price) && price > 0){
+        window.LIVE_PRICES[code] = price;
+        updated++;
+      }
+    });
+    return updated;
+  } catch(e){ return 0; }
+}
+
+// ── 匯率（Yahoo Finance）──
+async function fetchFXRate(){
+  try {
+    const r = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/USDTWD%3DX?interval=1d&range=1d',{cache:'no-store'});
+    const d = await r.json();
+    const rate = d?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    if(rate && rate > 20){ window.LIVE_PRICES['USDTWD'] = rate; }
+  } catch(e){}
+}
+
+// ── 美股（Yahoo Finance，批次）──
+async function fetchUSPrices(){
+  const symbols = ['BRK-B','GOOG','NVDA','PLTR','QQQ','SMH','SOXX','TSLA',
+    'VOO','VT','VTI','DRAM','MNST','MU','MUU','NOK','RZLV','SGOV','SOFI',
+    'SOFX','SOXL','TER','TQQQ','TSM','TSMX','AMD','INTW','SNXX','SPCX'];
+  // Yahoo Finance 支援用逗號串接多股
+  const syms = symbols.join(',');
+  try {
+    const r = await fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${syms}`,{cache:'no-store'});
+    const d = await r.json();
+    let updated = 0;
+    (d?.quoteResponse?.result||[]).forEach(q=>{
+      const sym = q.symbol.replace('-','_'); // BRK-B → BRK_B，需對應
+      const origSym = q.symbol; // 原始符號
+      const price = q.regularMarketPrice;
+      if(price && price > 0){
+        window.LIVE_PRICES[origSym] = price;
+        if(origSym === 'BRK-B') window.LIVE_PRICES['BRK-B'] = price;
+        updated++;
+      }
+    });
+    return updated;
+  } catch(e){ return 0; }
+}
+
+// ── 日股（Yahoo Finance）──
+async function fetchJPPrices(){
+  const symbols = ['2644.T','6762.T','6971.T','6981.T'];
+  try {
+    const r = await fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(',')}`,{cache:'no-store'});
+    const d = await r.json();
+    (d?.quoteResponse?.result||[]).forEach(q=>{
+      if(q.regularMarketPrice > 0) window.LIVE_PRICES[q.symbol] = q.regularMarketPrice;
+    });
+  } catch(e){}
+}
+
+// ── 計算持股估值（台幣萬）──
+function calcVal(code, shares){
+  const p = window.LIVE_PRICES[code] || FALLBACK_PRICES[code] || 0;
+  const usd = window.LIVE_PRICES['USDTWD'] || 32;
+  const jpy = window.LIVE_PRICES['JPYTWD'] || 0.222;
+  if(code.endsWith('.T')) return shares * p * jpy / 10000;
+  // 美股：若 code 在美股清單則乘 USD
+  const usSet = new Set(['BRK-B','GOOG','NVDA','PLTR','QQQ','SMH','SOXX','TSLA',
+    'VOO','VT','VTI','DRAM','MNST','MU','MUU','NOK','RZLV','SGOV','SOFI',
+    'SOFX','SOXL','TER','TQQQ','TSM','TSMX','AMD','INTW','SNXX','SPCX']);
+  if(usSet.has(code)) return shares * p * usd / 10000;
+  return shares * p / 10000; // 台股 TWD
+}
+
+// ── 重建 TW_DATA / US_DATA / JP_DATA / TW_BROKER / US_BROKER ──
+function rebuildPortfolioData(){
+  const usd = window.LIVE_PRICES['USDTWD'] || 32;
+  const jpy = window.LIVE_PRICES['JPYTWD'] || 0.222;
+
+  const NAMES = {
+    "0050":"元大台灣50","0056":"元大高股息","006208":"富邦台50",
+    "00881":"國泰科技龍頭","00894":"中信小資高價30","00927":"群益半導體收益",
+    "00935":"野村新科技50","009816":"凱基TOP50","00980A":"野村臺灣優選",
+    "00981A":"統一台股增長","00985A":"野村台灣50","00988A":"統一全球創新",
+    "00991A":"復華未來50","00992A":"群益科技創新","00631L":"元大台50正2",
+    "00663L":"國泰加權正2","00675L":"富邦加權正2","00685L":"群益加權正2",
+    "2330":"台積電","5483":"中美晶","6147":"頎邦","2812":"台中銀",
+    "BRK-B":"Berkshire B","GOOG":"Alphabet","NVDA":"NVIDIA","PLTR":"Palantir",
+    "QQQ":"QQQ","SMH":"SMH半導體","SOXX":"SOXX","TSLA":"Tesla",
+    "VOO":"VOO","VT":"VT全球","VTI":"VTI全美","DRAM":"DRAM ETF",
+    "MNST":"Monster","MU":"Micron","MUU":"MUU","NOK":"Nokia","RZLV":"RZLV",
+    "SGOV":"SGOV超短債","SOFI":"SoFi","SOFX":"SOFX","SOXL":"SOXL 3x",
+    "TER":"Teradyne","TQQQ":"TQQQ 3x","TSM":"台積電ADR","TSMX":"TSMX",
+    "AMD":"AMD","INTW":"INTW","SNXX":"SNXX","SPCX":"SPCX",
+    "2644.T":"日本REITs ETF","6762.T":"TDK","6971.T":"京瓷","6981.T":"村田製作所",
+  };
+  const TYPES = {
+    "00631L":"槓桿","00663L":"槓桿","00675L":"槓桿","00685L":"槓桿",
+    "TQQQ":"槓桿","SOXL":"槓桿","SGOV":"現金替代","SNXX":"現金替代",
+    "2330":"個股","5483":"個股","6147":"個股","2812":"個股",
+    "NVDA":"個股","GOOG":"個股","TSLA":"個股","PLTR":"個股",
+    "BRK-B":"個股","TER":"個股","MU":"個股","AMD":"個股",
+    "MNST":"個股","TSM":"個股","SOFI":"個股",
+    "2644.T":"ETF","6762.T":"個股","6971.T":"個股","6981.T":"個股",
+  };
+
+  // TW_DATA（合併各券商同代號）
+  const twAgg = {};
+  Object.values(BROKER_SHARES.TW).forEach(broker=>{
+    Object.entries(broker).forEach(([code, sh])=>{
+      twAgg[code] = (twAgg[code]||0) + sh;
+    });
+  });
+  window.TW_DATA = Object.entries(twAgg)
+    .map(([code, sh])=>({code, name:NAMES[code]||code,
+      val:parseFloat(calcVal(code,sh).toFixed(1)),
+      type:TYPES[code]||'ETF'}))
+    .sort((a,b)=>b.val-a.val);
+
+  // US_DATA
+  const usAgg = {};
+  Object.values(BROKER_SHARES.US).forEach(broker=>{
+    Object.entries(broker).forEach(([code, sh])=>{
+      usAgg[code] = (usAgg[code]||0) + sh;
+    });
+  });
+  window.US_DATA = Object.entries(usAgg)
+    .map(([code, sh])=>({code, name:NAMES[code]||code,
+      val:parseFloat(calcVal(code,sh).toFixed(1)),
+      type:TYPES[code]||'ETF'}))
+    .sort((a,b)=>b.val-a.val);
+
+  // JP_DATA（依 Google Drive 實際總值 678.7 萬等比例）
+  const jpRaw = [['2644.T',6000],['6762.T',600],['6971.T',900],['6981.T',500]];
+  const jpCalc = jpRaw.map(([c,s])=>({c, raw:calcVal(c,s)}));
+  const jpRawTotal = jpCalc.reduce((t,d)=>t+d.raw, 0);
+  // 使用 Google Drive 歷史最新值或估算總值
+  const jpActualTotal = 67.87; // 678.7萬 from Google Drive (7/27)
+  const jpScale = jpRawTotal > 0 ? jpActualTotal / jpRawTotal : 1;
+  window.JP_DATA = jpCalc.map(({c, raw})=>({
+    code:c.replace('.T',''), name:NAMES[c]||c,
+    val:parseFloat((raw*jpScale).toFixed(1)),
+    type:TYPES[c]||'ETF'
+  })).sort((a,b)=>b.val-a.val);
+
+  // TW_BROKER（動態）
+  window.TW_BROKER = {};
+  Object.entries(BROKER_SHARES.TW).forEach(([broker, stocks])=>{
+    const items = Object.entries(stocks)
+      .filter(([code])=>window.LIVE_PRICES[code]||FALLBACK_PRICES[code])
+      .map(([code,sh])=>{
+        const p = window.LIVE_PRICES[code]||FALLBACK_PRICES[code]||0;
+        return {code, name:NAMES[code]||code, shares:sh, price:p,
+                val:parseFloat(calcVal(code,sh).toFixed(1)), type:TYPES[code]||'ETF'};
+      }).sort((a,b)=>b.val-a.val);
+    const total = items.reduce((t,i)=>t+i.val, 0);
+    window.TW_BROKER[broker] = {total:parseFloat(total.toFixed(1)), items};
+  });
+
+  // US_BROKER（動態）
+  window.US_BROKER = {};
+  Object.entries(BROKER_SHARES.US).forEach(([broker, stocks])=>{
+    const items = Object.entries(stocks)
+      .filter(([code])=>window.LIVE_PRICES[code]||FALLBACK_PRICES[code])
+      .map(([code,sh])=>{
+        const p = window.LIVE_PRICES[code]||FALLBACK_PRICES[code]||0;
+        return {code, name:NAMES[code]||code, shares:sh, price:p,
+                val:parseFloat(calcVal(code,sh).toFixed(1)), type:TYPES[code]||'ETF'};
+      }).sort((a,b)=>b.val-a.val);
+    const total = items.reduce((t,i)=>t+i.val, 0);
+    window.US_BROKER[broker] = {total:parseFloat(total.toFixed(1)), items};
+  });
+}
+
+// ── 主流程：抓價 → 重建 → 刷新圖表 ──
+async function loadLivePrices(){
+  setPriceStatus('📡 正在更新即時股價...', true);
+  try {
+    const [twCount, usCount] = await Promise.all([
+      fetchTWPrices(), fetchUSPrices(), fetchFXRate(), fetchJPPrices()
+    ]);
+    const usd = (window.LIVE_PRICES['USDTWD']||32).toFixed(2);
+    rebuildPortfolioData();
+    window.PRICE_LOADED = true;
+    // 清除圖表快取讓各分頁重繪
+    window.chartsInit = {};
+    const now = new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+    const total = twCount + usCount;
+    setPriceStatus(`✅ 股價已更新 ${total} 檔｜USD/TWD=${usd}｜${now}`, true);
+    // 重繪當前顯示中的分頁
+    const activeTab = document.querySelector('.tab-content.active');
+    if(activeTab){
+      const name = activeTab.id.replace('tab-','');
+      drawTabCharts(name);
+      if(name==='pareto-tw'){renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');}
+      if(name==='pareto-us'){renderBrokerTable(window.US_BROKER,'us-broker-table','USD');}
+    }
+    // 重繪油表（總覽頁常駐）
+    drawAllCharts();
+  } catch(e){
+    setPriceStatus('⚠️ 使用上次已知股價', false);
+    rebuildPortfolioData();
+  }
+}
+
 // ── 歷史數據（21筆關鍵日期）──
 const HD=["03/24","03/30","04/01","04/10","04/23","04/30","05/07","05/15","05/22","05/30","06/01","06/10","06/15","06/23","06/30","07/01","07/07","07/17","07/21","07/24","07/27"];
 const HT=[6400,6117,6343,7065,7732,7902,8241,8071,8218,8941,8998,8619,8961,9393,9263,9542,9072,8250,8385,8396,8392];
@@ -807,7 +1103,7 @@ const SL={
 const rvol=[null,null,null,null,null,45,42,38,35,31,28,36,34,32,30,29,33,48,44,40,38];
 
 // ── 持股數據 ──
-const TW_DATA=[
+window.TW_DATA=[
   {code:"2330",name:"台積電",val:1246.7,type:"個股"},
   {code:"0050",name:"元大台灣50",val:455.4,type:"ETF"},
   {code:"00663L",name:"國泰加權正2",val:310.2,type:"槓桿"},
@@ -831,7 +1127,7 @@ const TW_DATA=[
   {code:"6147",name:"頎邦",val:47.4,type:"個股"},
   {code:"2812",name:"台中銀",val:5.6,type:"個股"}
 ];
-const US_DATA=[
+window.US_DATA=[
   {code:"SGOV",name:"SGOV超短債",val:289.4,type:"現金替代"},
   {code:"TER",name:"Teradyne",val:178.6,type:"個股"},
   {code:"SMH",name:"SMH半導體",val:118.4,type:"ETF"},
@@ -852,7 +1148,7 @@ const US_DATA=[
   {code:"VTI",name:"VTI全美ETF",val:32.0,type:"ETF"},
   {code:"其他",name:"其他11檔",val:61.6,type:"ETF"}
 ];
-const JP_DATA=[
+window.JP_DATA=[
   {code:"2644",name:"日本REITs ETF（6,000股）",val:491.5,type:"ETF"},
   {code:"6762",name:"TDK（600股）",val:64.7,type:"個股"},
   {code:"6971",name:"京瓷（900股）",val:62.1,type:"個股"},
@@ -958,7 +1254,7 @@ function buildHBar(canvasId,data,title){
 
 
 // ── 台股各券商明細 ──
-const TW_BROKER = {
+window.TW_BROKER=TW_BROKER|| {
   "永豐敦南": {total:208.1, items:[
     {code:"00675L",name:"富邦加權正2",shares:4000,price:284,val:113.6,type:"槓桿"},
     {code:"00663L",name:"國泰加權正2",shares:9000,price:94,val:84.6,type:"槓桿"},
@@ -1002,7 +1298,7 @@ const TW_BROKER = {
 };
 
 // ── 美股各券商明細 ──
-const US_BROKER = {
+window.US_BROKER=US_BROKER|| {
   "永豐豐存股": {total:469.0, items:[
     {code:"QQQ",name:"QQQ",shares:43,price:520,val:71.6,type:"ETF"},
     {code:"GOOG",name:"Alphabet",shares:118,price:185,val:69.9,type:"個股"},
@@ -1171,9 +1467,9 @@ function drawTabCharts(name){
       scales:{r:{grid:{color:GC},ticks:{color:TC,font:{size:9},backdropColor:'transparent'},
                  pointLabels:{color:TC,font:{size:11}},suggestedMin:0,suggestedMax:110}}}});
   }
-  if(name==='pareto-tw'){buildHBar('twPareto',TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',TW_DATA);renderBrokerTable(TW_BROKER,'tw-broker-table','TWD');}
-  if(name==='pareto-us'){buildHBar('usPareto',US_DATA,'美股持股（估值1,422萬）');buildDonut('usDonut',US_DATA);renderBrokerTable(US_BROKER,'us-broker-table','USD');}
-  if(name==='pareto-jp'){buildHBar('jpPareto',JP_DATA,'日股持股（Google Drive實際值678.7萬｜各股等比例分配）');}
+  if(name==='pareto-tw'){buildHBar('twPareto',window.TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',window.TW_DATA);renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');}
+  if(name==='pareto-us'){buildHBar('usPareto',window.US_DATA,'美股持股（估值1,422萬）');buildDonut('usDonut',window.US_DATA);renderBrokerTable(window.US_BROKER,'us-broker-table','USD');}
+  if(name==='pareto-jp'){buildHBar('jpPareto',window.JP_DATA,'日股持股（Google Drive實際值678.7萬｜各股等比例分配）');}
   if(name==='fund'){buildHBar('fundPareto',FD_DATA,'基金帳戶');}
   if(name==='trend'){
     mkLine('trendChart',[
@@ -1207,8 +1503,8 @@ function switchTab(el,name){
   setTimeout(()=>{
     drawTabCharts(name);
     if(name==='calendar') renderCalendar();
-    if(name==='pareto-tw') renderBrokerTable(TW_BROKER,'tw-broker-table','TWD');
-    if(name==='pareto-us') renderBrokerTable(US_BROKER,'us-broker-table','USD');
+    if(name==='pareto-tw') renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');
+    if(name==='pareto-us') renderBrokerTable(window.US_BROKER,'us-broker-table','USD');
   },60);
 }
 
@@ -1233,9 +1529,11 @@ function calcRetire(){
 
 // ── 初始化 ──
 document.addEventListener('DOMContentLoaded',()=>{
+  rebuildPortfolioData();
   drawAllCharts();
   drawTabCharts('overview');
   calcRetire();
+  loadLivePrices(); // 非同步抓取最新股價
 });
 
 const CAL_DATA = {"2026-05-01":{"v":7846,"c":-55.8,"p":-0.71},"2026-05-04":{"v":8117,"c":271.2,"p":3.46},"2026-05-07":{"v":8241,"c":123.3,"p":1.52},"2026-05-08":{"v":8169,"c":-71.9,"p":-0.87},"2026-05-09":{"v":8217,"c":48.4,"p":0.59},"2026-05-10":{"v":8193,"c":-23.8,"p":-0.29},"2026-05-11":{"v":8273,"c":79.3,"p":0.97},"2026-05-12":{"v":8246,"c":-26.5,"p":-0.32},"2026-05-13":{"v":8184,"c":-62.0,"p":-0.75},"2026-05-14":{"v":8253,"c":68.5,"p":0.84},"2026-05-15":{"v":8071,"c":-182.2,"p":-2.21},"2026-05-17":{"v":8066,"c":-4.3,"p":-0.05},"2026-05-18":{"v":8043,"c":-23.2,"p":-0.29},"2026-05-19":{"v":7843,"c":-199.8,"p":-2.48},"2026-05-20":{"v":7792,"c":-51.7,"p":-0.66},"2026-05-21":{"v":8089,"c":297.3,"p":3.82},"2026-05-22":{"v":8218,"c":128.7,"p":1.59},"2026-05-23":{"v":8483,"c":265.8,"p":3.23},"2026-05-25":{"v":8735,"c":251.6,"p":2.97},"2026-05-26":{"v":8771,"c":36.3,"p":0.42},"2026-05-27":{"v":8875,"c":103.3,"p":1.18},"2026-05-28":{"v":8704,"c":-170.3,"p":-1.92},"2026-05-29":{"v":8930,"c":225.7,"p":2.59},"2026-05-30":{"v":8941,"c":11.3,"p":0.13},"2026-06-01":{"v":8998,"c":56.8,"p":0.64},"2026-06-02":{"v":9014,"c":15.6,"p":0.17},"2026-06-03":{"v":9174,"c":160.4,"p":1.78},"2026-06-04":{"v":9085,"c":-89.2,"p":-0.97},"2026-06-05":{"v":8941,"c":-144.1,"p":-1.59},"2026-06-06":{"v":8823,"c":-118.1,"p":-1.32},"2026-06-08":{"v":8479,"c":-344.0,"p":-3.9},"2026-06-09":{"v":8669,"c":190.6,"p":2.25},"2026-06-10":{"v":8619,"c":-50.1,"p":-0.58},"2026-06-11":{"v":8356,"c":-263.5,"p":-3.06},"2026-06-12":{"v":8695,"c":338.8,"p":4.05},"2026-06-15":{"v":8961,"c":266.8,"p":3.07},"2026-06-16":{"v":9027,"c":65.5,"p":0.73},"2026-06-17":{"v":9065,"c":37.9,"p":0.42},"2026-06-18":{"v":9242,"c":177.1,"p":1.95},"2026-06-19":{"v":9153,"c":-89.0,"p":-0.96},"2026-06-21":{"v":9275,"c":121.8,"p":1.33},"2026-06-22":{"v":8937,"c":-337.3,"p":-3.64},"2026-06-23":{"v":9393,"c":455.5,"p":5.1},"2026-06-24":{"v":9101,"c":-292.2,"p":-3.11},"2026-06-25":{"v":9158,"c":57.1,"p":0.63},"2026-06-26":{"v":8989,"c":-169.3,"p":-1.85},"2026-06-29":{"v":8937,"c":-51.9,"p":-0.58},"2026-06-30":{"v":9263,"c":326.2,"p":3.65},"2026-07-01":{"v":9542,"c":279.5,"p":3.02},"2026-07-02":{"v":9300,"c":-242.0,"p":-2.54},"2026-07-03":{"v":9209,"c":-91.8,"p":-0.99},"2026-07-05":{"v":9149,"c":-59.7,"p":-0.65},"2026-07-06":{"v":9121,"c":-27.9,"p":-0.3},"2026-07-07":{"v":9072,"c":-49.5,"p":-0.54},"2026-07-08":{"v":8947,"c":-124.7,"p":-1.37},"2026-07-09":{"v":8986,"c":39.5,"p":0.44},"2026-07-10":{"v":9051,"c":65.0,"p":0.72},"2026-07-13":{"v":8976,"c":-75.3,"p":-0.83},"2026-07-14":{"v":8786,"c":-190.2,"p":-2.12},"2026-07-15":{"v":8911,"c":124.7,"p":1.42},"2026-07-16":{"v":8770,"c":-140.7,"p":-1.58},"2026-07-17":{"v":8250,"c":-519.4,"p":-5.92},"2026-07-18":{"v":8142,"c":-108.1,"p":-1.31},"2026-07-19":{"v":8241,"c":98.7,"p":1.21},"2026-07-20":{"v":8169,"c":-71.9,"p":-0.87},"2026-07-21":{"v":8385,"c":215.8,"p":2.64},"2026-07-22":{"v":8651,"c":266.0,"p":3.17},"2026-07-23":{"v":8576,"c":-74.7,"p":-0.86},"2026-07-24":{"v":8396,"c":-180.3,"p":-2.1},"2026-07-27":{"v":8392,"c":-4.5,"p":-0.05}};
