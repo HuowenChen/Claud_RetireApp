@@ -6,232 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RetireFlow">
 <title>RetireFlow Pro｜退休財務儀表板</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js">
-
-// roundRect polyfill
-if(!CanvasRenderingContext2D.prototype.roundRect){
-  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
-    if(w<2*r)r=w/2;if(h<2*r)r=h/2;
-    this.beginPath();this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);
-    this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();
-    return this;
-  };
-}
-
-// ══ 資產月曆 JS ══════════════════════════════════════════════
-
-const CAL_DATA = {"2026-05-01":{"v":7846,"c":-55.8,"p":-0.71},"2026-05-04":{"v":8117,"c":271.2,"p":3.46},"2026-05-07":{"v":8241,"c":123.3,"p":1.52},"2026-05-08":{"v":8169,"c":-71.9,"p":-0.87},"2026-05-09":{"v":8217,"c":48.4,"p":0.59},"2026-05-10":{"v":8193,"c":-23.8,"p":-0.29},"2026-05-11":{"v":8273,"c":79.3,"p":0.97},"2026-05-12":{"v":8246,"c":-26.5,"p":-0.32},"2026-05-13":{"v":8184,"c":-62.0,"p":-0.75},"2026-05-14":{"v":8253,"c":68.5,"p":0.84},"2026-05-15":{"v":8071,"c":-182.2,"p":-2.21},"2026-05-17":{"v":8066,"c":-4.3,"p":-0.05},"2026-05-18":{"v":8043,"c":-23.2,"p":-0.29},"2026-05-19":{"v":7843,"c":-199.8,"p":-2.48},"2026-05-20":{"v":7792,"c":-51.7,"p":-0.66},"2026-05-21":{"v":8089,"c":297.3,"p":3.82},"2026-05-22":{"v":8218,"c":128.7,"p":1.59},"2026-05-23":{"v":8483,"c":265.8,"p":3.23},"2026-05-25":{"v":8735,"c":251.6,"p":2.97},"2026-05-26":{"v":8771,"c":36.3,"p":0.42},"2026-05-27":{"v":8875,"c":103.3,"p":1.18},"2026-05-28":{"v":8704,"c":-170.3,"p":-1.92},"2026-05-29":{"v":8930,"c":225.7,"p":2.59},"2026-05-30":{"v":8941,"c":11.3,"p":0.13},"2026-06-01":{"v":8998,"c":56.8,"p":0.64},"2026-06-02":{"v":9014,"c":15.6,"p":0.17},"2026-06-03":{"v":9174,"c":160.4,"p":1.78},"2026-06-04":{"v":9085,"c":-89.2,"p":-0.97},"2026-06-05":{"v":8941,"c":-144.1,"p":-1.59},"2026-06-06":{"v":8823,"c":-118.1,"p":-1.32},"2026-06-08":{"v":8479,"c":-344.0,"p":-3.9},"2026-06-09":{"v":8669,"c":190.6,"p":2.25},"2026-06-10":{"v":8619,"c":-50.1,"p":-0.58},"2026-06-11":{"v":8356,"c":-263.5,"p":-3.06},"2026-06-12":{"v":8695,"c":338.8,"p":4.05},"2026-06-15":{"v":8961,"c":266.8,"p":3.07},"2026-06-16":{"v":9027,"c":65.5,"p":0.73},"2026-06-17":{"v":9065,"c":37.9,"p":0.42},"2026-06-18":{"v":9242,"c":177.1,"p":1.95},"2026-06-19":{"v":9153,"c":-89.0,"p":-0.96},"2026-06-21":{"v":9275,"c":121.8,"p":1.33},"2026-06-22":{"v":8937,"c":-337.3,"p":-3.64},"2026-06-23":{"v":9393,"c":455.5,"p":5.1},"2026-06-24":{"v":9101,"c":-292.2,"p":-3.11},"2026-06-25":{"v":9158,"c":57.1,"p":0.63},"2026-06-26":{"v":8989,"c":-169.3,"p":-1.85},"2026-06-29":{"v":8937,"c":-51.9,"p":-0.58},"2026-06-30":{"v":9263,"c":326.2,"p":3.65},"2026-07-01":{"v":9542,"c":279.5,"p":3.02},"2026-07-02":{"v":9300,"c":-242.0,"p":-2.54},"2026-07-03":{"v":9209,"c":-91.8,"p":-0.99},"2026-07-05":{"v":9149,"c":-59.7,"p":-0.65},"2026-07-06":{"v":9121,"c":-27.9,"p":-0.3},"2026-07-07":{"v":9072,"c":-49.5,"p":-0.54},"2026-07-08":{"v":8947,"c":-124.7,"p":-1.37},"2026-07-09":{"v":8986,"c":39.5,"p":0.44},"2026-07-10":{"v":9051,"c":65.0,"p":0.72},"2026-07-13":{"v":8976,"c":-75.3,"p":-0.83},"2026-07-14":{"v":8786,"c":-190.2,"p":-2.12},"2026-07-15":{"v":8911,"c":124.7,"p":1.42},"2026-07-16":{"v":8770,"c":-140.7,"p":-1.58},"2026-07-17":{"v":8250,"c":-519.4,"p":-5.92},"2026-07-18":{"v":8142,"c":-108.1,"p":-1.31},"2026-07-19":{"v":8241,"c":98.7,"p":1.21},"2026-07-20":{"v":8169,"c":-71.9,"p":-0.87},"2026-07-21":{"v":8385,"c":215.8,"p":2.64},"2026-07-22":{"v":8651,"c":266.0,"p":3.17},"2026-07-23":{"v":8576,"c":-74.7,"p":-0.86},"2026-07-24":{"v":8396,"c":-180.3,"p":-2.1},"2026-07-27":{"v":8392,"c":-4.5,"p":-0.05}};
-
-const CAL_MONTHS = ["2026-05","2026-06","2026-07"];
-const MONTH_NAMES = {"2026-05":"2026年 5月","2026-06":"2026年 6月","2026-07":"2026年 7月"};
-let calCurrentIdx = 2; // 預設最新月份
-let calMiniChart = null;
-
-function pad(n){ return String(n).padStart(2,'0'); }
-function dateKey(y,m,d){ return `${y}-${pad(m)}-${pad(d)}`; }
-
-function getCellClass(p){
-  if(p===0) return 'flat';
-  if(p>= 3) return 'up-big';
-  if(p>= 1) return 'up-mid';
-  if(p>  0) return 'up-sm';
-  if(p<=-3) return 'dn-big';
-  if(p<=-1) return 'dn-mid';
-  return 'dn-sm';
-}
-
-function renderCalendar(){
-  const ym = CAL_MONTHS[calCurrentIdx];
-  const [yr, mo] = ym.split('-').map(Number);
-  document.getElementById('cal-month-title').textContent = MONTH_NAMES[ym];
-
-  // 本月天數 & 起始星期
-  const daysInMonth = new Date(yr, mo, 0).getDate();
-  const firstDow = new Date(yr, mo-1, 1).getDay(); // 0=日
-
-  // 今日
-  const today = new Date();
-  const todayKey = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
-
-  const grid = document.getElementById('cal-grid');
-  grid.innerHTML = '';
-
-  // 月統計
-  const monthEntries = Object.entries(CAL_DATA).filter(([k])=>k.startsWith(ym));
-  const vals = monthEntries.map(([,d])=>d.v);
-  const chgs = monthEntries.map(([,d])=>d.c);
-
-  // 月初、月末：找當月第一筆和最後一筆
-  const firstEntry = monthEntries[0];
-  const lastEntry = monthEntries[monthEntries.length-1];
-
-  if(firstEntry){
-    // 月初資產=前月末（若有）or 第一筆
-    const firstKey = firstEntry[0];
-    const [fy,fm,fd] = firstKey.split('-').map(Number);
-    // 找前一天的資產
-    let prevVal = firstEntry[1].v - firstEntry[1].c;
-    document.getElementById('cs-start').textContent = Math.round(prevVal).toLocaleString()+'萬';
-    document.getElementById('cs-end').textContent = lastEntry[1].v.toLocaleString()+'萬';
-    const monthChg = lastEntry[1].v - Math.round(prevVal);
-    const monthPct = (monthChg/Math.round(prevVal)*100).toFixed(1);
-    const cEl = document.getElementById('cs-chg');
-    cEl.textContent = (monthChg>=0?'+':'')+Math.round(monthChg)+'萬 ('+monthPct+'%)';
-    cEl.className = 'cs-val '+(monthChg>=0?'up':'dn');
-    const maxChg = Math.max(...chgs);
-    const minChg = Math.min(...chgs);
-    document.getElementById('cs-max').textContent = '+'+maxChg.toFixed(1)+'萬';
-    document.getElementById('cs-min').textContent = minChg.toFixed(1)+'萬';
-    document.getElementById('cs-days').textContent = monthEntries.length+'日';
-  }
-
-  // 空格
-  for(let i=0;i<firstDow;i++){
-    const el=document.createElement('div');
-    el.className='cal-cell empty';
-    grid.appendChild(el);
-  }
-
-  // 每天格子
-  for(let d=1;d<=daysInMonth;d++){
-    const key = dateKey(yr,mo,d);
-    const dow = (firstDow+d-1)%7;
-    const isWeekend = dow===0||dow===6;
-    const data = CAL_DATA[key];
-    const isToday = key===todayKey;
-
-    const cell = document.createElement('div');
-    cell.className = 'cal-cell '+(data?'has-data '+getCellClass(data.p):'no-data')+(isWeekend?' weekend':'')+(isToday?' today':'');
-
-    const dayEl = document.createElement('div');
-    dayEl.className='cal-day';
-    dayEl.textContent=d;
-
-    if(data){
-      const totalEl=document.createElement('div');
-      totalEl.className='cal-total';
-      totalEl.textContent=data.v.toLocaleString();
-
-      const chgEl=document.createElement('div');
-      chgEl.className='cal-chg '+(data.c>=0?'up':'dn');
-      chgEl.textContent=(data.c>=0?'+':'')+data.c.toFixed(1);
-
-      const pctEl=document.createElement('div');
-      pctEl.className='cal-pct';
-      pctEl.textContent=(data.p>=0?'+':'')+data.p+'%';
-
-      cell.appendChild(dayEl);
-      cell.appendChild(totalEl);
-      cell.appendChild(chgEl);
-      cell.appendChild(pctEl);
-
-      // tooltip
-      cell.title = `${key}\n資產：${data.v.toLocaleString()}萬\n變化：${data.c>=0?'+':''}${data.c}萬（${data.p>=0?'+':''}${data.p}%）`;
-    } else {
-      cell.appendChild(dayEl);
-    }
-    grid.appendChild(cell);
-  }
-
-  // 填末尾空格讓滿7列
-  const total = firstDow + daysInMonth;
-  const remain = total%7===0?0:7-total%7;
-  for(let i=0;i<remain;i++){
-    const el=document.createElement('div');
-    el.className='cal-cell empty';
-    grid.appendChild(el);
-  }
-
-  renderWeeklyTable(ym, yr, mo, firstDow, daysInMonth);
-  renderMiniChart(ym);
-}
-
-function renderWeeklyTable(ym, yr, mo, firstDow, daysInMonth){
-  // 計算每週
-  const weeks=[];
-  let weekStart=null, weekChg=0, weekDays=[];
-
-  for(let d=1;d<=daysInMonth;d++){
-    const key=dateKey(yr,mo,d);
-    const dow=(firstDow+d-1)%7;
-    if(dow===1||d===1){ weekStart=d; weekChg=0; weekDays=[]; }
-    const data=CAL_DATA[key];
-    if(data){ weekChg+=data.c; weekDays.push({d,key,data}); }
-    if(dow===5||d===daysInMonth){
-      weeks.push({start:weekStart,end:d,chg:weekChg,days:weekDays});
-    }
-  }
-
-  let html='<table class="weekly-tbl"><thead><tr><th>週</th><th>交易日</th><th>週變化（萬）</th><th>週報酬</th><th>走勢</th></tr></thead><tbody>';
-  weeks.forEach((wk,i)=>{
-    if(!wk.days.length){ return; }
-    const startVal=wk.days[0].data.v-wk.days[0].data.c;
-    const endVal=wk.days[wk.days.length-1].data.v;
-    const pct=startVal?((endVal-startVal)/startVal*100).toFixed(2):0;
-    const isPos=wk.chg>=0;
-    const barW=Math.min(Math.abs(wk.chg)/500*100,100);
-    html+=`<tr>
-      <td style="padding:7px 8px;font-weight:600">第${i+1}週（${ym.slice(5)}/${pad(wk.start)}～${pad(wk.end)}）</td>
-      <td style="padding:7px 8px;color:var(--muted)">${wk.days.length}日</td>
-      <td style="padding:7px 8px;font-weight:600" class="${isPos?'up':'dn'}">${isPos?'+':''}${wk.chg.toFixed(1)}萬</td>
-      <td style="padding:7px 8px;font-weight:600" class="${isPos?'up':'dn'}">${isPos?'+':''}${pct}%</td>
-      <td style="padding:7px 8px"><div class="week-bar" style="width:${barW}%;background:${isPos?'#1D9E75':'#E24B4A'}"></div></td>
-    </tr>`;
-  });
-  html+='</tbody></table>';
-  document.getElementById('weekly-table').innerHTML=html;
-}
-
-function renderMiniChart(ym){
-  const entries=Object.entries(CAL_DATA).filter(([k])=>k.startsWith(ym));
-  if(!entries.length) return;
-
-  const labels=entries.map(([k])=>k.slice(8)); // 只顯示日
-  const vals=entries.map(([,d])=>d.v);
-  const chgs=entries.map(([,d])=>d.c);
-  const bgColors=chgs.map(c=>c>=0?'rgba(29,158,117,0.7)':'rgba(226,75,74,0.7)');
-
-  const ctx=document.getElementById('calMiniChart');
-  if(!ctx) return;
-
-  if(calMiniChart){ calMiniChart.destroy(); calMiniChart=null; }
-
-  calMiniChart=new Chart(ctx,{
-    data:{labels,datasets:[
-      {type:'line',label:'總資產',data:vals,borderColor:'#378ADD',borderWidth:2.5,pointRadius:3,pointBackgroundColor:bgColors,fill:true,backgroundColor:'rgba(55,138,221,0.06)',tension:0.3,yAxisID:'y'},
-      {type:'bar',label:'日變化',data:chgs,backgroundColor:bgColors,borderRadius:2,yAxisID:'y2'},
-    ]},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},
-        tooltip:{callbacks:{
-          label:c=>c.datasetIndex===0?` 資產: ${c.parsed.y.toLocaleString()}萬`:` 變化: ${c.parsed.y>=0?'+':''}${c.parsed.y}萬`
-        }}},
-      scales:{
-        x:{grid:{display:false},ticks:{color:TC,font:{size:10},maxTicksLimit:16}},
-        y:{position:'left',grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
-        y2:{position:'right',grid:{display:false},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
-      }
-    }
-  });
-}
-
-function navMonth(dir){
-  calCurrentIdx=Math.max(0,Math.min(CAL_MONTHS.length-1,calCurrentIdx+dir));
-  renderCalendar();
-}
-
-// ── 擴充 switchTab 讓月曆在切換時初始化 ──
-const _origSwitch=switchTab;
-switchTab=function(el,name){
-  _origSwitch(el,name);
-  if(name==='calendar'){
-    setTimeout(renderCalendar,60);
-  }
-};
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -507,6 +282,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tab" onclick="switchTab(this,'pareto-tw')">🇹🇼 台股</button>
   <button class="tab" onclick="switchTab(this,'pareto-us')">🇺🇸 美股</button>
   <button class="tab" onclick="switchTab(this,'pareto-jp')">🇯🇵 日股</button>
+  <button class="tab" onclick="switchTab(this,'fund')">📦 基金</button>
   <button class="tab" onclick="switchTab(this,'leverage')">🔧 槓桿管理</button>
   <button class="tab" onclick="switchTab(this,'cash')">💰 現金管理</button>
   <button class="tab" onclick="switchTab(this,'trend')">📉 走勢圖</button>
@@ -690,6 +466,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </tbody>
     </table>
     <div class="alert alert-good" style="margin-top:10px">✓ 結構健全，考慮每季追加1306 TOPIX ETF約50萬，2年達成目標1,000萬。</div>
+  </div>
+</div>
+
+
+<!-- ════ 基金 ════ -->
+<div id="tab-fund" class="tab-content">
+  <div class="card">
+    <div class="stitle">基金帳戶 Bar Chart（總計869萬，目標1,000萬達成86.9%）</div>
+    <div style="position:relative;width:100%;height:180px"><canvas id="fundPareto"></canvas></div>
+  </div>
+  <div class="card" style="margin-top:0">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div><div style="font-size:13px;font-weight:500">鉅亨基金總額</div><div style="font-size:11px;color:var(--hint)">鉅亨網｜殖利率2%</div></div>
+      <div style="text-align:right"><div style="font-size:13px;font-weight:600">411萬</div><div style="font-size:11px;color:var(--blue)">47.3%</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div><div style="font-size:13px;font-weight:500">HSBC結構型商品</div><div style="font-size:11px;color:var(--hint)">HSBC｜殖利率5%</div></div>
+      <div style="text-align:right"><div style="font-size:13px;font-weight:600">314萬</div><div style="font-size:11px;color:var(--green)">36.2%</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+      <div><div style="font-size:13px;font-weight:500">基富通基金總額</div><div style="font-size:11px;color:var(--hint)">基富通｜殖利率2%</div></div>
+      <div style="text-align:right"><div style="font-size:13px;font-weight:600">143萬</div><div style="font-size:11px;color:var(--amber)">16.5%</div></div>
+    </div>
+    <div class="alert alert-good" style="margin-top:10px">✓ 再追加131萬即可達成基金目標1,000萬。HSBC結構型殖利率5%最高，到期後建議續約。</div>
+    <div class="alert alert-info" style="margin-top:0">💡 資金來源：槓桿ETF減碼釋放的資金優先補入鉅亨/基富通。</div>
   </div>
 </div>
 
@@ -969,12 +770,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 </div>
 
+
 <script>
+
 const DARK=matchMedia('(prefers-color-scheme:dark)').matches;
 const GC=DARK?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
 const TC=DARK?'#555':'#aaa';
 
-// ── 歷史數據（關鍵21筆）──
+// ── 歷史數據（21筆關鍵日期）──
 const HD=["03/24","03/30","04/01","04/10","04/23","04/30","05/07","05/15","05/22","05/30","06/01","06/10","06/15","06/23","06/30","07/01","07/07","07/17","07/21","07/24","07/27"];
 const HT=[6400,6117,6343,7065,7732,7902,8241,8071,8218,8941,8998,8619,8961,9393,9263,9542,9072,8250,8385,8396,8392];
 const HN=[2556,2357,2526,3164,3357,3598,3919,3749,3896,4628,4719,4341,4683,5121,4991,5274,4803,3982,4116,4127,4123];
@@ -983,18 +786,17 @@ const HTW=[3190,3130,3270,3618,4138,4474,4607,4461,4553,4899,4957,4591,4807,5067
 const HUS=[2025,1878,1900,2158,2264,2097,2280,2265,2298,2547,2541,2428,2499,2662,2609,2748,2525,2291,2285,2386,2388];
 const HJP=[527,451,541,588,605,605,618,609,629,688,692,687,741,751,788,825,747,670,698,680,679];
 const HFD=[657,657,631,702,726,726,737,737,737,807,807,914,914,914,914,905,905,905,869,869,869];
-
-// 月/季成長率
 const SL={
   labels:["3月","4月","5月","6月","7月(迄今)","Q1(3~4)","Q2(5~6)","全期"],
-  tw:   [-2.7,+36.8,+12.7,-0.2,-12.0,+40.3,+12.5,+39.7],
-  us:   [-8.6,+10.4,+19.4,+2.1,-13.1, +3.6,+22.6,+17.9],
-  jp:   [-4.4,+11.8,+19.1,+14.2,-17.8,+14.6,+35.6,+28.7],
-  fund: [-4.0,+15.0, +9.6,+13.2, -4.0,+10.4,+24.0,+32.1],
-  total:[-4.8,+24.6,+14.7, +2.8,-12.1,+23.5,+18.1,+31.1],
+  tw:[-2.7,36.8,12.7,-0.2,-12.0,40.3,12.5,39.7],
+  us:[-8.6,10.4,19.4,2.1,-13.1,3.6,22.6,17.9],
+  jp:[-4.4,11.8,19.1,14.2,-17.8,14.6,35.6,28.7],
+  fund:[-4.0,15.0,9.6,13.2,-4.0,10.4,24.0,32.1],
+  total:[-4.8,24.6,14.7,2.8,-12.1,23.5,18.1,31.1],
 };
+const rvol=[null,null,null,null,null,45,42,38,35,31,28,36,34,32,30,29,33,48,44,40,38];
 
-// 持股 Pareto 數據
+// ── 持股數據 ──
 const TW_DATA=[
   {code:"2330",name:"台積電",val:1246.7,type:"個股"},
   {code:"0050",name:"元大台灣50",val:455.4,type:"ETF"},
@@ -1046,10 +848,14 @@ const JP_DATA=[
   {code:"6971",name:"京瓷",val:32.0,type:"個股"},
   {code:"6981",name:"村田製作所",val:31.1,type:"個股"}
 ];
-
+const FD_DATA=[
+  {code:"鉅亨",name:"鉅亨網基金",val:411,type:"ETF"},
+  {code:"HSBC",name:"HSBC結構型",val:314,type:"現金替代"},
+  {code:"基富通",name:"基富通基金",val:143,type:"ETF"}
+];
 const TYPE_C={"個股":"#E24B4A","ETF":"#378ADD","槓桿":"#EF9F27","主動ETF":"#1D9E75","現金替代":"#7F77DD"};
 
-// ── 油表 Canvas ──
+// ── 油表 ──
 function drawGauge(id,pct,label,color){
   const c=document.getElementById(id);if(!c)return;
   const W=c.clientWidth||c.width,H=c.clientHeight||c.height;
@@ -1057,11 +863,11 @@ function drawGauge(id,pct,label,color){
   const ctx=c.getContext('2d');
   const cx=W/2,cy=H*0.88,r=Math.min(W,H*2)*0.36;
   const cl=Math.min(pct,100);
-  const barColor=pct<40?'#E24B4A':pct<70?'#EF9F27':pct<90?'#1D9E75':'#378ADD';
+  const bc=pct<40?'#E24B4A':pct<70?'#EF9F27':pct<90?'#1D9E75':'#378ADD';
   ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,2*Math.PI);
   ctx.strokeStyle=DARK?'#333':'#eee';ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();
   if(cl>0){ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+Math.PI*cl/100);
-  ctx.strokeStyle=barColor;ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();}
+  ctx.strokeStyle=bc;ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();}
   ctx.fillStyle=DARK?'#f0efe9':'#1a1a1a';
   ctx.font='bold '+Math.round(r*0.48)+'px -apple-system,sans-serif';
   ctx.textAlign='center';ctx.textBaseline='middle';
@@ -1070,8 +876,8 @@ function drawGauge(id,pct,label,color){
   ctx.fillText(label,cx,cy+r*0.3);
 }
 
-// ── 橫向 Bar Chart ─────────────────────────────────────────
-function buildHBar(canvasId, data, title){
+// ── 橫向 Bar Chart ──
+function buildHBar(canvasId,data,title){
   const ctx=document.getElementById(canvasId);if(!ctx)return;
   const top=data.slice(0,15);
   const rest=data.slice(15);
@@ -1081,21 +887,17 @@ function buildHBar(canvasId, data, title){
   }
   const total=data.reduce((s,d)=>s+d.val,0);
   const items=[...top].reverse();
-  const labels=items.map(d=>d.code+' '+d.name);
-  const vals=items.map(d=>d.val);
-  const pcts=items.map(d=>parseFloat((d.val/total*100).toFixed(1)));
-  const colors=items.map(d=>TYPE_C[d.type]||'#999');
-  new Chart(ctx,{type:'bar',data:{labels,datasets:[{
-    label:'市值（萬）',data:vals,
-    backgroundColor:colors.map(c=>c+'BB'),borderColor:colors,
-    borderWidth:1,borderRadius:4
-  }]},options:{
+  new Chart(ctx,{type:'bar',data:{
+    labels:items.map(d=>d.code+' '+d.name),
+    datasets:[{label:'市值（萬）',data:items.map(d=>d.val),
+      backgroundColor:items.map(d=>(TYPE_C[d.type]||'#999')+'BB'),
+      borderColor:items.map(d=>TYPE_C[d.type]||'#999'),
+      borderWidth:1,borderRadius:4}]
+  },options:{
     indexAxis:'y',responsive:true,maintainAspectRatio:false,
-    plugins:{
-      legend:{display:false},
-      tooltip:{callbacks:{label:c=>` ${c.parsed.x}萬（${pcts[c.dataIndex]}%）`}},
-      title:{display:!!title,text:title,color:TC,font:{size:12,weight:'600'},padding:{bottom:6}}
-    },
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>` ${c.parsed.x}萬（${(c.parsed.x/total*100).toFixed(1)}%）`}},
+      title:{display:!!title,text:title,color:TC,font:{size:12,weight:'600'},padding:{bottom:6}}},
     scales:{
       x:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
       y:{grid:{display:false},ticks:{color:TC,font:{size:10}}}
@@ -1103,10 +905,79 @@ function buildHBar(canvasId, data, title){
   }});
 }
 
-if(name==='pareto-tw'){buildHBar('twPareto',TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',TW_DATA);}
+// ── Donut ──
+function buildDonut(canvasId,data){
+  const ctx=document.getElementById(canvasId);if(!ctx)return;
+  const groups={};
+  data.forEach(d=>{const k=d.type||'其他';groups[k]=(groups[k]||0)+d.val;});
+  const labels=Object.keys(groups);
+  new Chart(ctx,{type:'doughnut',
+    data:{labels,datasets:[{data:labels.map(l=>parseFloat(groups[l].toFixed(1))),
+      backgroundColor:labels.map(l=>TYPE_C[l]||'#999'),borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
+      plugins:{legend:{display:true,position:'right',labels:{font:{size:11},color:TC,boxWidth:10}},
+               tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}萬`}}}}});
+}
+
+// ── Line chart ──
+function mkLine(id,ds,pct){
+  const c=document.getElementById(id);if(!c)return;
+  new Chart(c,{type:'line',data:{labels:HD,datasets:ds},options:{
+    responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y?.toLocaleString()}${pct?'%':'萬'}`}}},
+    scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10},maxTicksLimit:12}},
+            y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+(pct?'%':'萬')}}}}});
+}
+
+// ── 圖表狀態 ──
+let chartsInit={};
+
+function drawAllCharts(){
+  if(!chartsInit['g']){chartsInit['g']=1;
+    drawGauge('g-tw',44.6,'4,456萬','#378ADD');
+    drawGauge('g-us',59.7,'2,388萬','#1D9E75');
+    drawGauge('g-jp',67.9,'679萬','#EF9F27');
+    drawGauge('g-fd',86.9,'869萬','#7F77DD');
+  }
+  if(!chartsInit['overview']){chartsInit['overview']=1;
+    const od=document.getElementById('overviewDonut');
+    if(od)new Chart(od,{type:'doughnut',
+      data:{labels:['台股','美股','日股','基金'],datasets:[{
+        data:[53.1,28.5,8.1,10.4],backgroundColor:['#378ADD','#1D9E75','#EF9F27','#7F77DD'],borderWidth:0,hoverOffset:4}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false}}}});
+  }
+}
+
+function drawTabCharts(name){
+  if(chartsInit[name]) return; chartsInit[name]=1;
+  if(name==='growth'){
+    const bc=document.getElementById('growthChart');
+    if(bc)new Chart(bc,{type:'bar',data:{labels:SL.labels,datasets:[
+      {label:'台股',data:SL.tw,backgroundColor:'rgba(55,138,221,0.85)',borderRadius:3},
+      {label:'美股',data:SL.us,backgroundColor:'rgba(29,158,117,0.85)',borderRadius:3},
+      {label:'日股',data:SL.jp,backgroundColor:'rgba(239,159,39,0.85)',borderRadius:3},
+      {label:'基金',data:SL.fund,backgroundColor:'rgba(127,119,221,0.85)',borderRadius:3},
+      {label:'總資產',data:SL.total,backgroundColor:'rgba(80,80,80,0.6)',borderRadius:3},
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{size:11},color:TC,boxWidth:10}}},
+      scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10}}},
+              y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'%'}}}}});
+    mkLine('volChart',[{label:'20日滾動波動度',data:rvol,borderColor:'#EF9F27',backgroundColor:'rgba(239,159,39,0.1)',borderWidth:2,pointRadius:3,fill:true,tension:0.3,spanGaps:true}],true);
+  }
+  if(name==='alloc'){
+    const rc=document.getElementById('radarChart');
+    if(rc)new Chart(rc,{type:'radar',data:{labels:['台股','美股','日股','基金','現金'],datasets:[
+      {label:'實際%',data:[44.6,59.7,67.9,86.9,53],borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.2)',borderWidth:2,pointBackgroundColor:'#378ADD'},
+      {label:'目標%',data:[100,100,100,100,100],borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.1)',borderWidth:2,borderDash:[5,3],pointBackgroundColor:'#1D9E75'},
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:TC,boxWidth:10}}},
+      scales:{r:{grid:{color:GC},ticks:{color:TC,font:{size:9},backdropColor:'transparent'},
+                 pointLabels:{color:TC,font:{size:11}},suggestedMin:0,suggestedMax:110}}}});
+  }
+  if(name==='pareto-tw'){buildHBar('twPareto',TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',TW_DATA);}
   if(name==='pareto-us'){buildHBar('usPareto',US_DATA,'美股持股（估值1,422萬）');buildDonut('usDonut',US_DATA);}
   if(name==='pareto-jp'){buildHBar('jpPareto',JP_DATA,'日股持股（估值349萬）');}
-  if(name==='fund'){buildHBar('fundPareto',[{code:'鉅亨',name:'鉅亨網基金',val:411,type:'ETF'},{code:'HSBC',name:'HSBC結構型',val:314,type:'現金替代'},{code:'基富通',name:'基富通基金',val:143,type:'ETF'}],'基金帳戶');}
+  if(name==='fund'){buildHBar('fundPareto',FD_DATA,'基金帳戶');}
   if(name==='trend'){
     mkLine('trendChart',[
       {label:'總資產',data:HT,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:DARK?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.06)',tension:0.3},
@@ -1120,8 +991,8 @@ if(name==='pareto-tw'){buildHBar('twPareto',TW_DATA,'台股持股（估值3,736�
       {label:'基金',data:HFD,borderColor:'#7F77DD',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
     ]);
     const chg=HT.map((v,i)=>i===0?0:v-HT[i-1]);
-    const bc=document.getElementById('barChart');
-    if(bc)new Chart(bc,{type:'bar',data:{labels:HD,datasets:[{data:chg,
+    const bc2=document.getElementById('barChart');
+    if(bc2)new Chart(bc2,{type:'bar',data:{labels:HD,datasets:[{data:chg,
       backgroundColor:chg.map(v=>v>=0?'rgba(29,158,117,0.75)':'rgba(226,75,74,0.75)'),borderRadius:2,label:'每日變化'}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
         tooltip:{callbacks:{label:c=>` ${c.parsed.y>=0?'+':''}${c.parsed.y}萬`}}},
@@ -1136,7 +1007,7 @@ function switchTab(el,name){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
-  setTimeout(()=>drawTabCharts(name),60);
+  setTimeout(()=>{drawTabCharts(name);if(name==='calendar')renderCalendar();},60);
 }
 
 // ── 退休試算 ──
@@ -1151,12 +1022,11 @@ function calcRetire(){
   while(bal<tgt&&months<600){bal=bal*(1+mr)+mon;months++;}
   const yr=2026+Math.floor(months/12);
   const age=(age0+months/12).toFixed(1);
-  const dur=Math.min((bal*0.04/(exp*12)*25),99).toFixed(1);
   document.getElementById('r-years').textContent=(months/12).toFixed(1)+'年後';
   document.getElementById('r-date').textContent='約'+yr+'年（'+age+'歲）';
   document.getElementById('r-final').textContent='NT$'+Math.round(bal).toLocaleString()+'萬';
   document.getElementById('r-fs').textContent='目標'+tgt.toLocaleString()+'萬達成';
-  document.getElementById('r-dur').textContent=dur+'年';
+  document.getElementById('r-dur').textContent=Math.min((bal*0.04/(exp*12)*25),99).toFixed(1)+'年';
 }
 
 // ── 初始化 ──
@@ -1165,19 +1035,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   drawTabCharts('overview');
   calcRetire();
 });
-
-
-// roundRect polyfill
-if(!CanvasRenderingContext2D.prototype.roundRect){
-  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
-    if(w<2*r)r=w/2;if(h<2*r)r=h/2;
-    this.beginPath();this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);
-    this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();
-    return this;
-  };
-}
-
-// ══ 資產月曆 JS ══════════════════════════════════════════════
 
 const CAL_DATA = {"2026-05-01":{"v":7846,"c":-55.8,"p":-0.71},"2026-05-04":{"v":8117,"c":271.2,"p":3.46},"2026-05-07":{"v":8241,"c":123.3,"p":1.52},"2026-05-08":{"v":8169,"c":-71.9,"p":-0.87},"2026-05-09":{"v":8217,"c":48.4,"p":0.59},"2026-05-10":{"v":8193,"c":-23.8,"p":-0.29},"2026-05-11":{"v":8273,"c":79.3,"p":0.97},"2026-05-12":{"v":8246,"c":-26.5,"p":-0.32},"2026-05-13":{"v":8184,"c":-62.0,"p":-0.75},"2026-05-14":{"v":8253,"c":68.5,"p":0.84},"2026-05-15":{"v":8071,"c":-182.2,"p":-2.21},"2026-05-17":{"v":8066,"c":-4.3,"p":-0.05},"2026-05-18":{"v":8043,"c":-23.2,"p":-0.29},"2026-05-19":{"v":7843,"c":-199.8,"p":-2.48},"2026-05-20":{"v":7792,"c":-51.7,"p":-0.66},"2026-05-21":{"v":8089,"c":297.3,"p":3.82},"2026-05-22":{"v":8218,"c":128.7,"p":1.59},"2026-05-23":{"v":8483,"c":265.8,"p":3.23},"2026-05-25":{"v":8735,"c":251.6,"p":2.97},"2026-05-26":{"v":8771,"c":36.3,"p":0.42},"2026-05-27":{"v":8875,"c":103.3,"p":1.18},"2026-05-28":{"v":8704,"c":-170.3,"p":-1.92},"2026-05-29":{"v":8930,"c":225.7,"p":2.59},"2026-05-30":{"v":8941,"c":11.3,"p":0.13},"2026-06-01":{"v":8998,"c":56.8,"p":0.64},"2026-06-02":{"v":9014,"c":15.6,"p":0.17},"2026-06-03":{"v":9174,"c":160.4,"p":1.78},"2026-06-04":{"v":9085,"c":-89.2,"p":-0.97},"2026-06-05":{"v":8941,"c":-144.1,"p":-1.59},"2026-06-06":{"v":8823,"c":-118.1,"p":-1.32},"2026-06-08":{"v":8479,"c":-344.0,"p":-3.9},"2026-06-09":{"v":8669,"c":190.6,"p":2.25},"2026-06-10":{"v":8619,"c":-50.1,"p":-0.58},"2026-06-11":{"v":8356,"c":-263.5,"p":-3.06},"2026-06-12":{"v":8695,"c":338.8,"p":4.05},"2026-06-15":{"v":8961,"c":266.8,"p":3.07},"2026-06-16":{"v":9027,"c":65.5,"p":0.73},"2026-06-17":{"v":9065,"c":37.9,"p":0.42},"2026-06-18":{"v":9242,"c":177.1,"p":1.95},"2026-06-19":{"v":9153,"c":-89.0,"p":-0.96},"2026-06-21":{"v":9275,"c":121.8,"p":1.33},"2026-06-22":{"v":8937,"c":-337.3,"p":-3.64},"2026-06-23":{"v":9393,"c":455.5,"p":5.1},"2026-06-24":{"v":9101,"c":-292.2,"p":-3.11},"2026-06-25":{"v":9158,"c":57.1,"p":0.63},"2026-06-26":{"v":8989,"c":-169.3,"p":-1.85},"2026-06-29":{"v":8937,"c":-51.9,"p":-0.58},"2026-06-30":{"v":9263,"c":326.2,"p":3.65},"2026-07-01":{"v":9542,"c":279.5,"p":3.02},"2026-07-02":{"v":9300,"c":-242.0,"p":-2.54},"2026-07-03":{"v":9209,"c":-91.8,"p":-0.99},"2026-07-05":{"v":9149,"c":-59.7,"p":-0.65},"2026-07-06":{"v":9121,"c":-27.9,"p":-0.3},"2026-07-07":{"v":9072,"c":-49.5,"p":-0.54},"2026-07-08":{"v":8947,"c":-124.7,"p":-1.37},"2026-07-09":{"v":8986,"c":39.5,"p":0.44},"2026-07-10":{"v":9051,"c":65.0,"p":0.72},"2026-07-13":{"v":8976,"c":-75.3,"p":-0.83},"2026-07-14":{"v":8786,"c":-190.2,"p":-2.12},"2026-07-15":{"v":8911,"c":124.7,"p":1.42},"2026-07-16":{"v":8770,"c":-140.7,"p":-1.58},"2026-07-17":{"v":8250,"c":-519.4,"p":-5.92},"2026-07-18":{"v":8142,"c":-108.1,"p":-1.31},"2026-07-19":{"v":8241,"c":98.7,"p":1.21},"2026-07-20":{"v":8169,"c":-71.9,"p":-0.87},"2026-07-21":{"v":8385,"c":215.8,"p":2.64},"2026-07-22":{"v":8651,"c":266.0,"p":3.17},"2026-07-23":{"v":8576,"c":-74.7,"p":-0.86},"2026-07-24":{"v":8396,"c":-180.3,"p":-2.1},"2026-07-27":{"v":8392,"c":-4.5,"p":-0.05}};
 
@@ -1389,6 +1246,7 @@ switchTab=function(el,name){
     setTimeout(renderCalendar,60);
   }
 };
+
 
 </script>
 </body>
