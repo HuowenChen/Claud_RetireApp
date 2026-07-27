@@ -7,6 +7,17 @@
 <meta name="apple-mobile-web-app-title" content="RetireFlow">
 <title>RetireFlow Pro｜退休財務儀表板</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js">
+
+// roundRect polyfill
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    if(w<2*r)r=w/2;if(h<2*r)r=h/2;
+    this.beginPath();this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);
+    this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();
+    return this;
+  };
+}
+
 // ══ 資產月曆 JS ══════════════════════════════════════════════
 
 const CAL_DATA = {"2026-05-01":{"v":7846,"c":-55.8,"p":-0.71},"2026-05-04":{"v":8117,"c":271.2,"p":3.46},"2026-05-07":{"v":8241,"c":123.3,"p":1.52},"2026-05-08":{"v":8169,"c":-71.9,"p":-0.87},"2026-05-09":{"v":8217,"c":48.4,"p":0.59},"2026-05-10":{"v":8193,"c":-23.8,"p":-0.29},"2026-05-11":{"v":8273,"c":79.3,"p":0.97},"2026-05-12":{"v":8246,"c":-26.5,"p":-0.32},"2026-05-13":{"v":8184,"c":-62.0,"p":-0.75},"2026-05-14":{"v":8253,"c":68.5,"p":0.84},"2026-05-15":{"v":8071,"c":-182.2,"p":-2.21},"2026-05-17":{"v":8066,"c":-4.3,"p":-0.05},"2026-05-18":{"v":8043,"c":-23.2,"p":-0.29},"2026-05-19":{"v":7843,"c":-199.8,"p":-2.48},"2026-05-20":{"v":7792,"c":-51.7,"p":-0.66},"2026-05-21":{"v":8089,"c":297.3,"p":3.82},"2026-05-22":{"v":8218,"c":128.7,"p":1.59},"2026-05-23":{"v":8483,"c":265.8,"p":3.23},"2026-05-25":{"v":8735,"c":251.6,"p":2.97},"2026-05-26":{"v":8771,"c":36.3,"p":0.42},"2026-05-27":{"v":8875,"c":103.3,"p":1.18},"2026-05-28":{"v":8704,"c":-170.3,"p":-1.92},"2026-05-29":{"v":8930,"c":225.7,"p":2.59},"2026-05-30":{"v":8941,"c":11.3,"p":0.13},"2026-06-01":{"v":8998,"c":56.8,"p":0.64},"2026-06-02":{"v":9014,"c":15.6,"p":0.17},"2026-06-03":{"v":9174,"c":160.4,"p":1.78},"2026-06-04":{"v":9085,"c":-89.2,"p":-0.97},"2026-06-05":{"v":8941,"c":-144.1,"p":-1.59},"2026-06-06":{"v":8823,"c":-118.1,"p":-1.32},"2026-06-08":{"v":8479,"c":-344.0,"p":-3.9},"2026-06-09":{"v":8669,"c":190.6,"p":2.25},"2026-06-10":{"v":8619,"c":-50.1,"p":-0.58},"2026-06-11":{"v":8356,"c":-263.5,"p":-3.06},"2026-06-12":{"v":8695,"c":338.8,"p":4.05},"2026-06-15":{"v":8961,"c":266.8,"p":3.07},"2026-06-16":{"v":9027,"c":65.5,"p":0.73},"2026-06-17":{"v":9065,"c":37.9,"p":0.42},"2026-06-18":{"v":9242,"c":177.1,"p":1.95},"2026-06-19":{"v":9153,"c":-89.0,"p":-0.96},"2026-06-21":{"v":9275,"c":121.8,"p":1.33},"2026-06-22":{"v":8937,"c":-337.3,"p":-3.64},"2026-06-23":{"v":9393,"c":455.5,"p":5.1},"2026-06-24":{"v":9101,"c":-292.2,"p":-3.11},"2026-06-25":{"v":9158,"c":57.1,"p":0.63},"2026-06-26":{"v":8989,"c":-169.3,"p":-1.85},"2026-06-29":{"v":8937,"c":-51.9,"p":-0.58},"2026-06-30":{"v":9263,"c":326.2,"p":3.65},"2026-07-01":{"v":9542,"c":279.5,"p":3.02},"2026-07-02":{"v":9300,"c":-242.0,"p":-2.54},"2026-07-03":{"v":9209,"c":-91.8,"p":-0.99},"2026-07-05":{"v":9149,"c":-59.7,"p":-0.65},"2026-07-06":{"v":9121,"c":-27.9,"p":-0.3},"2026-07-07":{"v":9072,"c":-49.5,"p":-0.54},"2026-07-08":{"v":8947,"c":-124.7,"p":-1.37},"2026-07-09":{"v":8986,"c":39.5,"p":0.44},"2026-07-10":{"v":9051,"c":65.0,"p":0.72},"2026-07-13":{"v":8976,"c":-75.3,"p":-0.83},"2026-07-14":{"v":8786,"c":-190.2,"p":-2.12},"2026-07-15":{"v":8911,"c":124.7,"p":1.42},"2026-07-16":{"v":8770,"c":-140.7,"p":-1.58},"2026-07-17":{"v":8250,"c":-519.4,"p":-5.92},"2026-07-18":{"v":8142,"c":-108.1,"p":-1.31},"2026-07-19":{"v":8241,"c":98.7,"p":1.21},"2026-07-20":{"v":8169,"c":-71.9,"p":-0.87},"2026-07-21":{"v":8385,"c":215.8,"p":2.64},"2026-07-22":{"v":8651,"c":266.0,"p":3.17},"2026-07-23":{"v":8576,"c":-74.7,"p":-0.86},"2026-07-24":{"v":8396,"c":-180.3,"p":-2.1},"2026-07-27":{"v":8392,"c":-4.5,"p":-0.05}};
@@ -296,6 +307,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .chart-md{position:relative;width:100%;height:220px}
 .chart-sm{position:relative;width:100%;height:190px}
 .chart-pareto{position:relative;width:100%;height:310px}
+.bar-race-wrap{position:relative;width:100%;overflow:hidden;border-radius:8px;background:var(--bg)}
+.bar-race-canvas{display:block;width:100%}
+.br-ctrl{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.br-btn{padding:5px 14px;border-radius:99px;border:1px solid var(--border);background:var(--card);font-size:12px;cursor:pointer;font-family:inherit;color:var(--text);transition:background .15s}
+.br-btn:hover{background:var(--bg)}
+.br-btn.active{background:var(--text);color:var(--card);border-color:transparent}
+.br-speed{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.br-speed input{width:80px;accent-color:#378ADD}
 .chart-xs{position:relative;width:100%;height:160px}
 .legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
 .legend-item{display:flex;align-items:center;gap:4px}
@@ -612,7 +631,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>槓桿ETF</span>
       <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>主動ETF</span>
     </div>
-    <div class="chart-pareto"><canvas id="twPareto"></canvas></div>
+    <div class="bar-race-wrap" id="twRace"></div>
     <div class="key-insight">🔍 台積電（1,247萬/33.4%）+ 0050（455萬/12.2%）= 台股前兩大佔45.6%。前5大（2330+0050+00663L+0056+00631L）合計65.9%。槓桿ETF四檔合計784萬佔台股21%，超過建議15%上限。</div>
   </div>
   <div class="g2">
@@ -641,7 +660,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>ETF</span>
       <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>槓桿</span>
     </div>
-    <div class="chart-pareto"><canvas id="usPareto"></canvas></div>
+    <div class="bar-race-wrap" id="usRace"></div>
     <div class="key-insight">🔍 SGOV（289萬/20.4%）居首但屬現金替代，合理。TER（179萬/12.6%）是最大個股部位，須確認估值。SOFI/RZLV/NOK等高風險小型股合計約120萬，建議清倉轉核心ETF。</div>
   </div>
   <div class="g2">
@@ -663,7 +682,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div id="tab-pareto-jp" class="tab-content">
   <div class="card">
     <div class="stitle">日股持股 Pareto 分析（估值 349萬，4檔）</div>
-    <div class="chart-pareto" style="height:220px"><canvas id="jpPareto"></canvas></div>
+    <div class="bar-race-wrap" id="jpRace"></div>
     <div class="key-insight">🔍 日本REITs ETF（2644）佔72.4%（253萬），集中在REIT資產但配息穩定。TDK/京瓷/村田均為電子零件龍頭，財務健全。整體349萬距目標1,000萬仍差651萬，建議分季加碼。</div>
   </div>
   <div class="card">
@@ -1058,33 +1077,203 @@ function drawGauge(id,pct,label,color){
   ctx.fillText(label,cx,cy+r*0.3);
 }
 
-// ── Pareto ──
-function buildPareto(canvasId,data){
-  const ctx=document.getElementById(canvasId);if(!ctx)return;
-  const total=data.reduce((s,d)=>s+d.val,0);
-  let cum=0;
-  const cumPct=data.map(d=>{cum+=d.val;return parseFloat((cum/total*100).toFixed(1));});
-  const barColors=data.map(d=>(TYPE_C[d.type]||'#999')+'CC');
-  const borderColors=data.map(d=>TYPE_C[d.type]||'#999');
-  new Chart(ctx,{data:{
-    labels:data.map(d=>d.code),
-    datasets:[
-      {type:'bar',label:'市值（萬）',data:data.map(d=>d.val),
-       backgroundColor:barColors,borderColor:borderColors,borderWidth:1,borderRadius:3,yAxisID:'y'},
-      {type:'line',label:'累計%',data:cumPct,
-       borderColor:'#333',backgroundColor:'transparent',
-       borderWidth:2,pointRadius:3,pointBackgroundColor:'#333',tension:0.1,yAxisID:'y2'}
-    ]
-  },options:{
-    responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-    plugins:{legend:{display:true,position:'top',labels:{font:{size:11},color:TC,boxWidth:10}},
-      tooltip:{callbacks:{label:c=>c.datasetIndex===0?` ${c.label}: ${c.parsed.y}萬 (${(c.parsed.y/total*100).toFixed(1)}%)`:` 累計: ${c.parsed.y}%`}}},
-    scales:{
-      x:{grid:{color:GC},ticks:{color:TC,font:{size:10},maxRotation:40}},
-      y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'},title:{display:true,text:'市值（萬）',color:TC,font:{size:10}}},
-      y2:{position:'right',min:0,max:100,grid:{display:false},ticks:{color:TC,font:{size:10},callback:v=>v+'%'},title:{display:true,text:'累計%',color:TC,font:{size:10}}}
+// ══ Bar Race Chart ════════════════════════════════════════════
+
+class BarRace {
+  constructor(containerId, data, title=''){
+    this.el = document.getElementById(containerId);
+    if(!this.el) return;
+    this.data = [...data].sort((a,b)=>b.val-a.val);
+    this.title = title;
+    this.total = data.reduce((s,d)=>s+d.val,0);
+    this.animating = false;
+    this.raf = null;
+    this.progress = 0;       // 0→1 全部展開完畢
+    this.speed = 1;          // 倍速
+    this.topN = Math.min(data.length, 12);
+    this.topData = this.data.slice(0, this.topN);
+    this.build();
+    this.reset();
+  }
+
+  build(){
+    // Canvas 高度依條數決定
+    const h = this.topN * 38 + 60;
+    this.el.innerHTML = `
+      <canvas class="bar-race-canvas" id="cvs-${this.el.id}" height="${h}"></canvas>
+      <div class="br-ctrl">
+        <button class="br-btn active" id="btn-play-${this.el.id}" onclick="window._br_${this.el.id}.toggle()">▶ 播放</button>
+        <button class="br-btn" onclick="window._br_${this.el.id}.reset()">↺ 重置</button>
+        <div class="br-speed">
+          速度 <input type="range" min="0.5" max="3" step="0.5" value="1"
+            oninput="window._br_${this.el.id}.setSpeed(+this.value);this.nextSibling.textContent=this.value+'x'">
+          <span>1x</span>
+        </div>
+        <div style="font-size:11px;color:var(--hint);margin-left:auto" id="lbl-${this.el.id}">0%</div>
+      </div>`;
+    this.canvas = document.getElementById('cvs-'+this.el.id);
+    this.ctx = this.canvas.getContext('2d');
+    window['_br_'+this.el.id] = this;
+    this.btnPlay = document.getElementById('btn-play-'+this.el.id);
+    this.lbl     = document.getElementById('lbl-'+this.el.id);
+    // resize observer
+    if(window.ResizeObserver){
+      new ResizeObserver(()=>this.draw(this.progress)).observe(this.el);
     }
-  }});
+  }
+
+  reset(){
+    cancelAnimationFrame(this.raf);
+    this.animating = false;
+    this.progress = 0;
+    this.btnPlay.textContent = '▶ 播放';
+    this.btnPlay.classList.add('active');
+    this.draw(0);
+    this.lbl.textContent = '0%';
+  }
+
+  toggle(){
+    if(this.progress >= 1){ this.reset(); return; }
+    this.animating = !this.animating;
+    this.btnPlay.textContent = this.animating ? '⏸ 暫停' : '▶ 繼續';
+    if(this.animating) this._tick();
+  }
+
+  setSpeed(s){ this.speed = s; }
+
+  _tick(){
+    if(!this.animating) return;
+    this.progress = Math.min(1, this.progress + 0.012 * this.speed);
+    this.draw(this.progress);
+    this.lbl.textContent = Math.round(this.progress*100)+'%';
+    if(this.progress < 1) this.raf = requestAnimationFrame(()=>this._tick());
+    else {
+      this.animating = false;
+      this.btnPlay.textContent = '↺ 重播';
+    }
+  }
+
+  draw(prog){
+    const cvs = this.canvas;
+    const dpr = window.devicePixelRatio||1;
+    const W = cvs.offsetWidth||cvs.parentElement.offsetWidth||600;
+    const H = cvs.height || this.topN*38+60;
+    cvs.width  = W * dpr;
+    cvs.height = H * dpr;
+    cvs.style.height = H+'px';
+    const ctx = this.ctx;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    const isDk = DARK;
+    ctx.clearRect(0,0,W,H);
+
+    const PAD_L = 10, PAD_R = 130, PAD_TOP = 36, BAR_H = 26, GAP = 12;
+    const maxVal = this.topData[0].val;
+    const availW = W - PAD_L - PAD_R;
+
+    // 標題
+    ctx.fillStyle = isDk?'#f0efe9':'#1a1a1a';
+    ctx.font = 'bold 13px -apple-system,sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(this.title, PAD_L, 20);
+
+    // 總計標
+    ctx.fillStyle = isDk?'#555':'#aaa';
+    ctx.font = '11px -apple-system,sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('總計 '+Math.round(this.total)+'萬', W-PAD_L, 20);
+
+    this.topData.forEach((item, i) => {
+      const y = PAD_TOP + i*(BAR_H+GAP);
+      const targetW = (item.val / maxVal) * availW;
+      const curW = targetW * prog;
+      const pct = (item.val/this.total*100);
+      const color = TYPE_C[item.type] || '#999';
+
+      // 背景條（淡）
+      ctx.fillStyle = (isDk?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.04)');
+      ctx.beginPath();
+      ctx.roundRect(PAD_L, y, availW, BAR_H, 4);
+      ctx.fill();
+
+      // 動畫條
+      if(curW > 0){
+        ctx.fillStyle = color + (isDk?'CC':'DD');
+        ctx.beginPath();
+        ctx.roundRect(PAD_L, y, curW, BAR_H, 4);
+        ctx.fill();
+
+        // 漸層高光
+        const grad = ctx.createLinearGradient(PAD_L, y, PAD_L, y+BAR_H);
+        grad.addColorStop(0,'rgba(255,255,255,0.15)');
+        grad.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.roundRect(PAD_L, y, curW, BAR_H, 4);
+        ctx.fill();
+      }
+
+      // 排名圓圈
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(PAD_L+11, y+BAR_H/2, 9, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 9px -apple-system,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(i+1, PAD_L+11, y+BAR_H/2+3.5);
+
+      // 代號
+      ctx.fillStyle = isDk?'#f0efe9':'#1a1a1a';
+      ctx.font = 'bold 11px -apple-system,sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(item.code, PAD_L+24, y+BAR_H/2+4);
+
+      // 右側資訊（隨動畫顯示）
+      const showVal = Math.round(item.val * prog);
+      const showPct = (pct * prog).toFixed(1);
+      ctx.fillStyle = isDk?'#aaa':'#666';
+      ctx.font = '11px -apple-system,sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(item.name, W - PAD_R + 6, y+12);
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px -apple-system,sans-serif';
+      ctx.fillText(showVal+'萬', W - PAD_R + 6, y+BAR_H-2);
+      ctx.fillStyle = isDk?'#555':'#aaa';
+      ctx.font = '10px -apple-system,sans-serif';
+      ctx.fillText(showPct+'%', W - PAD_R + 70, y+BAR_H-2);
+
+      // 類型標籤（小badge on bar）
+      if(curW > 60 && prog > 0.3){
+        const badge = item.type;
+        ctx.font = '9px -apple-system,sans-serif';
+        const bw = ctx.measureText(badge).width + 8;
+        ctx.fillStyle = 'rgba(0,0,0,0.18)';
+        ctx.beginPath();
+        ctx.roundRect(PAD_L+curW-bw-4, y+BAR_H/2-7, bw, 14, 3);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.fillText(badge, PAD_L+curW-bw/2-4, y+BAR_H/2+3.5);
+      }
+    });
+  }
+}
+
+// ── 基金 Bar Race（靜態，因只有3筆）──
+function buildFundBar(containerId){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  const items=[
+    {name:'鉅亨網基金',val:411,type:'基金',color:'#378ADD'},
+    {name:'HSBC結構型',val:314,type:'基金',color:'#1D9E75'},
+    {name:'基富通基金',val:143,type:'基金',color:'#EF9F27'},
+  ];
+  new BarRace(containerId,[
+    {code:'鉅亨',name:'鉅亨網基金',val:411,type:'ETF'},
+    {code:'HSBC',name:'HSBC結構型',val:314,type:'現金替代'},
+    {code:'基富通',name:'基富通基金',val:143,type:'ETF'},
+  ],'基金帳戶 Pareto（總計869萬）');
 }
 
 // ── Donut ──
@@ -1155,9 +1344,10 @@ function drawTabCharts(name){
       plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:TC,boxWidth:10}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.r}%`}}},
       scales:{r:{grid:{color:GC},ticks:{color:TC,font:{size:9},backdropColor:'transparent'},pointLabels:{color:TC,font:{size:11}},suggestedMin:0,suggestedMax:110}}}});
   }
-  if(name==='pareto-tw'){buildPareto('twPareto',TW_DATA);buildDonut('twDonut',TW_DATA);}
-  if(name==='pareto-us'){buildPareto('usPareto',US_DATA);buildDonut('usDonut',US_DATA);}
-  if(name==='pareto-jp'){buildPareto('jpPareto',JP_DATA);}
+  if(name==='pareto-tw'){new BarRace('twRace',TW_DATA,'台股持股 Bar Race（估值3,736萬）');buildDonut('twDonut',TW_DATA);}
+  if(name==='pareto-us'){new BarRace('usRace',US_DATA,'美股持股 Bar Race（估值1,422萬）');buildDonut('usDonut',US_DATA);}
+  if(name==='pareto-jp'){new BarRace('jpRace',JP_DATA,'日股持股 Bar Race（估值349萬）');}
+  if(name==='fund'){new BarRace('fundRace',[{code:'鉅亨',name:'鉅亨網基金',val:411,type:'ETF'},{code:'HSBC',name:'HSBC結構型',val:314,type:'現金替代'},{code:'基富通',name:'基富通基金',val:143,type:'ETF'}],'基金帳戶 Bar Race（總計869萬）');}
   if(name==='trend'){
     mkLine('trendChart',[
       {label:'總資產',data:HT,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:DARK?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.06)',tension:0.3},
@@ -1216,6 +1406,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   drawTabCharts('overview');
   calcRetire();
 });
+
+
+// roundRect polyfill
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    if(w<2*r)r=w/2;if(h<2*r)r=h/2;
+    this.beginPath();this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);
+    this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();
+    return this;
+  };
+}
 
 // ══ 資產月曆 JS ══════════════════════════════════════════════
 
