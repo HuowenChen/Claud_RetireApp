@@ -887,19 +887,59 @@ function buildHBar(canvasId,data,title){
   }
   const total=data.reduce((s,d)=>s+d.val,0);
   const items=[...top].reverse();
+  const vals=items.map(d=>d.val);
+  const pcts=items.map(d=>parseFloat((d.val/total*100).toFixed(1)));
+  const colors=items.map(d=>TYPE_C[d.type]||'#999');
+  const maxVal=Math.max(...vals);
+
+  // inline label plugin：在 bar 右端繪製「XX萬 (YY%)」
+  const labelPlugin={
+    id:'hbarLabel',
+    afterDatasetsDraw(chart){
+      const {ctx:c,scales:{x,y}}=chart;
+      chart.data.datasets[0].data.forEach((val,i)=>{
+        const bar=chart.getDatasetMeta(0).data[i];
+        const pct=pcts[i];
+        const txt=`${val}萬 (${pct}%)`;
+        c.save();
+        c.font='600 11px -apple-system,sans-serif';
+        c.fillStyle=DARK?'#ccc':'#333';
+        c.textBaseline='middle';
+        const bx=bar.x; // bar 右端 x 座標
+        const by=bar.y;
+        // 若 bar 夠長，文字放 bar 內部右側；否則放 bar 外
+        const txtW=c.measureText(txt).width;
+        const barW=bx-x.getPixelForValue(0);
+        if(barW>txtW+16){
+          c.fillStyle='rgba(255,255,255,0.92)';
+          c.textAlign='right';
+          c.fillText(txt,bx-6,by);
+        }else{
+          c.fillStyle=DARK?'#ccc':'#444';
+          c.textAlign='left';
+          c.fillText(txt,bx+6,by);
+        }
+        c.restore();
+      });
+    }
+  };
+
   new Chart(ctx,{type:'bar',data:{
     labels:items.map(d=>d.code+' '+d.name),
-    datasets:[{label:'市值（萬）',data:items.map(d=>d.val),
-      backgroundColor:items.map(d=>(TYPE_C[d.type]||'#999')+'BB'),
-      borderColor:items.map(d=>TYPE_C[d.type]||'#999'),
+    datasets:[{label:'市值（萬）',data:vals,
+      backgroundColor:colors.map(c=>c+'BB'),
+      borderColor:colors,
       borderWidth:1,borderRadius:4}]
-  },options:{
+  },plugins:[labelPlugin],
+  options:{
     indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
     plugins:{legend:{display:false},
-      tooltip:{callbacks:{label:c=>` ${c.parsed.x}萬（${(c.parsed.x/total*100).toFixed(1)}%）`}},
+      tooltip:{callbacks:{label:c=>` ${c.parsed.x}萬（${pcts[c.dataIndex]}%）`}},
       title:{display:!!title,text:title,color:TC,font:{size:12,weight:'600'},padding:{bottom:6}}},
     scales:{
-      x:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
+      x:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'},
+         max:maxVal*1.45},
       y:{grid:{display:false},ticks:{color:TC,font:{size:10}}}
     }
   }});
