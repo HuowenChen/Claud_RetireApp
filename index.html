@@ -6,7 +6,221 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RetireFlow">
 <title>RetireFlow Pro｜退休財務儀表板</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js">
+// ══ 資產月曆 JS ══════════════════════════════════════════════
+
+const CAL_DATA = {"2026-05-01":{"v":7846,"c":-55.8,"p":-0.71},"2026-05-04":{"v":8117,"c":271.2,"p":3.46},"2026-05-07":{"v":8241,"c":123.3,"p":1.52},"2026-05-08":{"v":8169,"c":-71.9,"p":-0.87},"2026-05-09":{"v":8217,"c":48.4,"p":0.59},"2026-05-10":{"v":8193,"c":-23.8,"p":-0.29},"2026-05-11":{"v":8273,"c":79.3,"p":0.97},"2026-05-12":{"v":8246,"c":-26.5,"p":-0.32},"2026-05-13":{"v":8184,"c":-62.0,"p":-0.75},"2026-05-14":{"v":8253,"c":68.5,"p":0.84},"2026-05-15":{"v":8071,"c":-182.2,"p":-2.21},"2026-05-17":{"v":8066,"c":-4.3,"p":-0.05},"2026-05-18":{"v":8043,"c":-23.2,"p":-0.29},"2026-05-19":{"v":7843,"c":-199.8,"p":-2.48},"2026-05-20":{"v":7792,"c":-51.7,"p":-0.66},"2026-05-21":{"v":8089,"c":297.3,"p":3.82},"2026-05-22":{"v":8218,"c":128.7,"p":1.59},"2026-05-23":{"v":8483,"c":265.8,"p":3.23},"2026-05-25":{"v":8735,"c":251.6,"p":2.97},"2026-05-26":{"v":8771,"c":36.3,"p":0.42},"2026-05-27":{"v":8875,"c":103.3,"p":1.18},"2026-05-28":{"v":8704,"c":-170.3,"p":-1.92},"2026-05-29":{"v":8930,"c":225.7,"p":2.59},"2026-05-30":{"v":8941,"c":11.3,"p":0.13},"2026-06-01":{"v":8998,"c":56.8,"p":0.64},"2026-06-02":{"v":9014,"c":15.6,"p":0.17},"2026-06-03":{"v":9174,"c":160.4,"p":1.78},"2026-06-04":{"v":9085,"c":-89.2,"p":-0.97},"2026-06-05":{"v":8941,"c":-144.1,"p":-1.59},"2026-06-06":{"v":8823,"c":-118.1,"p":-1.32},"2026-06-08":{"v":8479,"c":-344.0,"p":-3.9},"2026-06-09":{"v":8669,"c":190.6,"p":2.25},"2026-06-10":{"v":8619,"c":-50.1,"p":-0.58},"2026-06-11":{"v":8356,"c":-263.5,"p":-3.06},"2026-06-12":{"v":8695,"c":338.8,"p":4.05},"2026-06-15":{"v":8961,"c":266.8,"p":3.07},"2026-06-16":{"v":9027,"c":65.5,"p":0.73},"2026-06-17":{"v":9065,"c":37.9,"p":0.42},"2026-06-18":{"v":9242,"c":177.1,"p":1.95},"2026-06-19":{"v":9153,"c":-89.0,"p":-0.96},"2026-06-21":{"v":9275,"c":121.8,"p":1.33},"2026-06-22":{"v":8937,"c":-337.3,"p":-3.64},"2026-06-23":{"v":9393,"c":455.5,"p":5.1},"2026-06-24":{"v":9101,"c":-292.2,"p":-3.11},"2026-06-25":{"v":9158,"c":57.1,"p":0.63},"2026-06-26":{"v":8989,"c":-169.3,"p":-1.85},"2026-06-29":{"v":8937,"c":-51.9,"p":-0.58},"2026-06-30":{"v":9263,"c":326.2,"p":3.65},"2026-07-01":{"v":9542,"c":279.5,"p":3.02},"2026-07-02":{"v":9300,"c":-242.0,"p":-2.54},"2026-07-03":{"v":9209,"c":-91.8,"p":-0.99},"2026-07-05":{"v":9149,"c":-59.7,"p":-0.65},"2026-07-06":{"v":9121,"c":-27.9,"p":-0.3},"2026-07-07":{"v":9072,"c":-49.5,"p":-0.54},"2026-07-08":{"v":8947,"c":-124.7,"p":-1.37},"2026-07-09":{"v":8986,"c":39.5,"p":0.44},"2026-07-10":{"v":9051,"c":65.0,"p":0.72},"2026-07-13":{"v":8976,"c":-75.3,"p":-0.83},"2026-07-14":{"v":8786,"c":-190.2,"p":-2.12},"2026-07-15":{"v":8911,"c":124.7,"p":1.42},"2026-07-16":{"v":8770,"c":-140.7,"p":-1.58},"2026-07-17":{"v":8250,"c":-519.4,"p":-5.92},"2026-07-18":{"v":8142,"c":-108.1,"p":-1.31},"2026-07-19":{"v":8241,"c":98.7,"p":1.21},"2026-07-20":{"v":8169,"c":-71.9,"p":-0.87},"2026-07-21":{"v":8385,"c":215.8,"p":2.64},"2026-07-22":{"v":8651,"c":266.0,"p":3.17},"2026-07-23":{"v":8576,"c":-74.7,"p":-0.86},"2026-07-24":{"v":8396,"c":-180.3,"p":-2.1},"2026-07-27":{"v":8392,"c":-4.5,"p":-0.05}};
+
+const CAL_MONTHS = ["2026-05","2026-06","2026-07"];
+const MONTH_NAMES = {"2026-05":"2026年 5月","2026-06":"2026年 6月","2026-07":"2026年 7月"};
+let calCurrentIdx = 2; // 預設最新月份
+let calMiniChart = null;
+
+function pad(n){ return String(n).padStart(2,'0'); }
+function dateKey(y,m,d){ return `${y}-${pad(m)}-${pad(d)}`; }
+
+function getCellClass(p){
+  if(p===0) return 'flat';
+  if(p>= 3) return 'up-big';
+  if(p>= 1) return 'up-mid';
+  if(p>  0) return 'up-sm';
+  if(p<=-3) return 'dn-big';
+  if(p<=-1) return 'dn-mid';
+  return 'dn-sm';
+}
+
+function renderCalendar(){
+  const ym = CAL_MONTHS[calCurrentIdx];
+  const [yr, mo] = ym.split('-').map(Number);
+  document.getElementById('cal-month-title').textContent = MONTH_NAMES[ym];
+
+  // 本月天數 & 起始星期
+  const daysInMonth = new Date(yr, mo, 0).getDate();
+  const firstDow = new Date(yr, mo-1, 1).getDay(); // 0=日
+
+  // 今日
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  // 月統計
+  const monthEntries = Object.entries(CAL_DATA).filter(([k])=>k.startsWith(ym));
+  const vals = monthEntries.map(([,d])=>d.v);
+  const chgs = monthEntries.map(([,d])=>d.c);
+
+  // 月初、月末：找當月第一筆和最後一筆
+  const firstEntry = monthEntries[0];
+  const lastEntry = monthEntries[monthEntries.length-1];
+
+  if(firstEntry){
+    // 月初資產=前月末（若有）or 第一筆
+    const firstKey = firstEntry[0];
+    const [fy,fm,fd] = firstKey.split('-').map(Number);
+    // 找前一天的資產
+    let prevVal = firstEntry[1].v - firstEntry[1].c;
+    document.getElementById('cs-start').textContent = Math.round(prevVal).toLocaleString()+'萬';
+    document.getElementById('cs-end').textContent = lastEntry[1].v.toLocaleString()+'萬';
+    const monthChg = lastEntry[1].v - Math.round(prevVal);
+    const monthPct = (monthChg/Math.round(prevVal)*100).toFixed(1);
+    const cEl = document.getElementById('cs-chg');
+    cEl.textContent = (monthChg>=0?'+':'')+Math.round(monthChg)+'萬 ('+monthPct+'%)';
+    cEl.className = 'cs-val '+(monthChg>=0?'up':'dn');
+    const maxChg = Math.max(...chgs);
+    const minChg = Math.min(...chgs);
+    document.getElementById('cs-max').textContent = '+'+maxChg.toFixed(1)+'萬';
+    document.getElementById('cs-min').textContent = minChg.toFixed(1)+'萬';
+    document.getElementById('cs-days').textContent = monthEntries.length+'日';
+  }
+
+  // 空格
+  for(let i=0;i<firstDow;i++){
+    const el=document.createElement('div');
+    el.className='cal-cell empty';
+    grid.appendChild(el);
+  }
+
+  // 每天格子
+  for(let d=1;d<=daysInMonth;d++){
+    const key = dateKey(yr,mo,d);
+    const dow = (firstDow+d-1)%7;
+    const isWeekend = dow===0||dow===6;
+    const data = CAL_DATA[key];
+    const isToday = key===todayKey;
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell '+(data?'has-data '+getCellClass(data.p):'no-data')+(isWeekend?' weekend':'')+(isToday?' today':'');
+
+    const dayEl = document.createElement('div');
+    dayEl.className='cal-day';
+    dayEl.textContent=d;
+
+    if(data){
+      const totalEl=document.createElement('div');
+      totalEl.className='cal-total';
+      totalEl.textContent=data.v.toLocaleString();
+
+      const chgEl=document.createElement('div');
+      chgEl.className='cal-chg '+(data.c>=0?'up':'dn');
+      chgEl.textContent=(data.c>=0?'+':'')+data.c.toFixed(1);
+
+      const pctEl=document.createElement('div');
+      pctEl.className='cal-pct';
+      pctEl.textContent=(data.p>=0?'+':'')+data.p+'%';
+
+      cell.appendChild(dayEl);
+      cell.appendChild(totalEl);
+      cell.appendChild(chgEl);
+      cell.appendChild(pctEl);
+
+      // tooltip
+      cell.title = `${key}\n資產：${data.v.toLocaleString()}萬\n變化：${data.c>=0?'+':''}${data.c}萬（${data.p>=0?'+':''}${data.p}%）`;
+    } else {
+      cell.appendChild(dayEl);
+    }
+    grid.appendChild(cell);
+  }
+
+  // 填末尾空格讓滿7列
+  const total = firstDow + daysInMonth;
+  const remain = total%7===0?0:7-total%7;
+  for(let i=0;i<remain;i++){
+    const el=document.createElement('div');
+    el.className='cal-cell empty';
+    grid.appendChild(el);
+  }
+
+  renderWeeklyTable(ym, yr, mo, firstDow, daysInMonth);
+  renderMiniChart(ym);
+}
+
+function renderWeeklyTable(ym, yr, mo, firstDow, daysInMonth){
+  // 計算每週
+  const weeks=[];
+  let weekStart=null, weekChg=0, weekDays=[];
+
+  for(let d=1;d<=daysInMonth;d++){
+    const key=dateKey(yr,mo,d);
+    const dow=(firstDow+d-1)%7;
+    if(dow===1||d===1){ weekStart=d; weekChg=0; weekDays=[]; }
+    const data=CAL_DATA[key];
+    if(data){ weekChg+=data.c; weekDays.push({d,key,data}); }
+    if(dow===5||d===daysInMonth){
+      weeks.push({start:weekStart,end:d,chg:weekChg,days:weekDays});
+    }
+  }
+
+  let html='<table class="weekly-tbl"><thead><tr><th>週</th><th>交易日</th><th>週變化（萬）</th><th>週報酬</th><th>走勢</th></tr></thead><tbody>';
+  weeks.forEach((wk,i)=>{
+    if(!wk.days.length){ return; }
+    const startVal=wk.days[0].data.v-wk.days[0].data.c;
+    const endVal=wk.days[wk.days.length-1].data.v;
+    const pct=startVal?((endVal-startVal)/startVal*100).toFixed(2):0;
+    const isPos=wk.chg>=0;
+    const barW=Math.min(Math.abs(wk.chg)/500*100,100);
+    html+=`<tr>
+      <td style="padding:7px 8px;font-weight:600">第${i+1}週（${ym.slice(5)}/${pad(wk.start)}～${pad(wk.end)}）</td>
+      <td style="padding:7px 8px;color:var(--muted)">${wk.days.length}日</td>
+      <td style="padding:7px 8px;font-weight:600" class="${isPos?'up':'dn'}">${isPos?'+':''}${wk.chg.toFixed(1)}萬</td>
+      <td style="padding:7px 8px;font-weight:600" class="${isPos?'up':'dn'}">${isPos?'+':''}${pct}%</td>
+      <td style="padding:7px 8px"><div class="week-bar" style="width:${barW}%;background:${isPos?'#1D9E75':'#E24B4A'}"></div></td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('weekly-table').innerHTML=html;
+}
+
+function renderMiniChart(ym){
+  const entries=Object.entries(CAL_DATA).filter(([k])=>k.startsWith(ym));
+  if(!entries.length) return;
+
+  const labels=entries.map(([k])=>k.slice(8)); // 只顯示日
+  const vals=entries.map(([,d])=>d.v);
+  const chgs=entries.map(([,d])=>d.c);
+  const bgColors=chgs.map(c=>c>=0?'rgba(29,158,117,0.7)':'rgba(226,75,74,0.7)');
+
+  const ctx=document.getElementById('calMiniChart');
+  if(!ctx) return;
+
+  if(calMiniChart){ calMiniChart.destroy(); calMiniChart=null; }
+
+  calMiniChart=new Chart(ctx,{
+    data:{labels,datasets:[
+      {type:'line',label:'總資產',data:vals,borderColor:'#378ADD',borderWidth:2.5,pointRadius:3,pointBackgroundColor:bgColors,fill:true,backgroundColor:'rgba(55,138,221,0.06)',tension:0.3,yAxisID:'y'},
+      {type:'bar',label:'日變化',data:chgs,backgroundColor:bgColors,borderRadius:2,yAxisID:'y2'},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{
+          label:c=>c.datasetIndex===0?` 資產: ${c.parsed.y.toLocaleString()}萬`:` 變化: ${c.parsed.y>=0?'+':''}${c.parsed.y}萬`
+        }}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:TC,font:{size:10},maxTicksLimit:16}},
+        y:{position:'left',grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
+        y2:{position:'right',grid:{display:false},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
+      }
+    }
+  });
+}
+
+function navMonth(dir){
+  calCurrentIdx=Math.max(0,Math.min(CAL_MONTHS.length-1,calCurrentIdx+dir));
+  renderCalendar();
+}
+
+// ── 擴充 switchTab 讓月曆在切換時初始化 ──
+const _origSwitch=switchTab;
+switchTab=function(el,name){
+  _origSwitch(el,name);
+  if(name==='calendar'){
+    setTimeout(renderCalendar,60);
+  }
+};
+
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -154,6 +368,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ── Pareto ── */
 .key-insight{background:var(--bg);border-radius:8px;padding:12px 14px;margin-top:10px;font-size:12px;color:var(--muted);line-height:1.7;border-left:3px solid var(--blue)}
 .TYPE_COLORS_ETF{color:#378ADD}.TYPE_COLORS_lev{color:#E24B4A}.TYPE_COLORS_cash{color:#7F77DD}
+
+/* ══ Calendar ══ */
+.cal-header-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-month-title{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.cal-nav{background:var(--bg);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;font-size:18px;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;transition:background .15s}
+.cal-nav:hover{background:var(--border)}
+.cal-summary{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:640px){.cal-summary{grid-template-columns:repeat(3,1fr)}}
+.cs-item{background:var(--bg);border-radius:8px;padding:9px 10px;text-align:center}
+.cs-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px}
+.cs-val{font-size:14px;font-weight:700}
+.cal-week-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}
+.cal-week-header div{text-align:center;font-size:11px;font-weight:600;color:var(--hint);padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-cell{min-height:72px;border-radius:8px;padding:6px 7px;position:relative;cursor:default;transition:transform .1s}
+.cal-cell:hover{transform:scale(1.02);z-index:2}
+.cal-cell.empty{background:transparent}
+.cal-cell.no-data{background:var(--bg);opacity:.4}
+.cal-cell.has-data{border:1px solid transparent}
+.cal-cell.up-big{background:rgba(29,158,117,0.22);border-color:rgba(29,158,117,0.4)}
+.cal-cell.up-mid{background:rgba(29,158,117,0.12);border-color:rgba(29,158,117,0.25)}
+.cal-cell.up-sm{background:rgba(29,158,117,0.06);border-color:rgba(29,158,117,0.15)}
+.cal-cell.dn-big{background:rgba(226,75,74,0.22);border-color:rgba(226,75,74,0.4)}
+.cal-cell.dn-mid{background:rgba(226,75,74,0.12);border-color:rgba(226,75,74,0.25)}
+.cal-cell.dn-sm{background:rgba(226,75,74,0.06);border-color:rgba(226,75,74,0.15)}
+.cal-cell.flat{background:var(--bg);border-color:var(--border)}
+.cal-cell.today{box-shadow:0 0 0 2px #378ADD}
+.cal-cell.weekend .cal-day{color:var(--muted)}
+.cal-day{font-size:11px;font-weight:600;color:var(--hint);margin-bottom:4px}
+.cal-total{font-size:13px;font-weight:700;letter-spacing:-.3px;line-height:1.1}
+.cal-chg{font-size:11px;font-weight:600;margin-top:2px}
+.cal-pct{font-size:10px;color:var(--hint);margin-top:1px}
+.weekly-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.weekly-tbl th{font-size:10px;font-weight:600;color:var(--hint);padding:5px 8px;text-align:left;border-bottom:1.5px solid var(--border);letter-spacing:.05em;text-transform:uppercase}
+.weekly-tbl td{padding:6px 8px;border-bottom:.5px solid var(--border)}
+.weekly-tbl tr:last-child td{border-bottom:none}
+.weekly-tbl tr:hover td{background:var(--bg)}
+.week-bar{height:5px;border-radius:3px;margin-top:3px}
+@media(max-width:480px){
+  .cal-cell{min-height:58px;padding:4px 5px}
+  .cal-total{font-size:11px}
+  .cal-chg{font-size:10px}
+  .cal-pct{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -241,6 +500,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tab" onclick="switchTab(this,'trend')">📉 走勢圖</button>
   <button class="tab" onclick="switchTab(this,'advice')">💡 專家建議</button>
   <button class="tab" onclick="switchTab(this,'calc')">🧮 退休試算</button>
+  <button class="tab" onclick="switchTab(this,'calendar')">📅 資產月曆</button>
 </div>
 
 <!-- ════ 總覽 ════ -->
@@ -654,6 +914,44 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- ════ 資產月曆 ════ -->
+<div id="tab-calendar" class="tab-content">
+  <div class="cal-header-bar">
+    <button class="cal-nav" onclick="navMonth(-1)">‹</button>
+    <div class="cal-month-title" id="cal-month-title">2026年5月</div>
+    <button class="cal-nav" onclick="navMonth(1)">›</button>
+  </div>
+
+  <div class="cal-summary">
+    <div class="cs-item"><div class="cs-label">月初資產</div><div class="cs-val" id="cs-start">—</div></div>
+    <div class="cs-item"><div class="cs-label">月末資產</div><div class="cs-val" id="cs-end">—</div></div>
+    <div class="cs-item"><div class="cs-label">月變化</div><div class="cs-val" id="cs-chg">—</div></div>
+    <div class="cs-item"><div class="cs-label">最大單日漲</div><div class="cs-val up" id="cs-max">—</div></div>
+    <div class="cs-item"><div class="cs-label">最大單日跌</div><div class="cs-val dn" id="cs-min">—</div></div>
+    <div class="cs-item"><div class="cs-label">交易日數</div><div class="cs-val" id="cs-days">—</div></div>
+  </div>
+
+  <div class="cal-week-header">
+    <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+
+  <div class="sdiv" style="margin-top:16px"><span>週累積統計</span></div>
+  <div class="card" style="padding:10px 14px">
+    <div id="weekly-table"></div>
+  </div>
+
+  <div class="sdiv"><span>本月每日資產走勢</span></div>
+  <div class="card">
+    <div class="legend-row">
+      <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>資產（萬）</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#1D9E75;opacity:.5;height:4px;border-radius:2px;width:14px"></span>正成長</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#E24B4A;opacity:.5;height:4px;border-radius:2px;width:14px"></span>負成長</span>
+    </div>
+    <div style="position:relative;width:100%;height:160px"><canvas id="calMiniChart"></canvas></div>
+  </div>
+</div>
+
 <div style="text-align:center;font-size:11px;color:var(--hint);margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
   RetireFlow Pro v3.3 完整版 ｜ Google Drive 即時同步 ｜ 2026/07/27 ｜ 僅供個人財務規劃參考，不構成投資建議
 </div>
@@ -918,6 +1216,220 @@ document.addEventListener('DOMContentLoaded',()=>{
   drawTabCharts('overview');
   calcRetire();
 });
+
+// ══ 資產月曆 JS ══════════════════════════════════════════════
+
+const CAL_DATA = {"2026-05-01":{"v":7846,"c":-55.8,"p":-0.71},"2026-05-04":{"v":8117,"c":271.2,"p":3.46},"2026-05-07":{"v":8241,"c":123.3,"p":1.52},"2026-05-08":{"v":8169,"c":-71.9,"p":-0.87},"2026-05-09":{"v":8217,"c":48.4,"p":0.59},"2026-05-10":{"v":8193,"c":-23.8,"p":-0.29},"2026-05-11":{"v":8273,"c":79.3,"p":0.97},"2026-05-12":{"v":8246,"c":-26.5,"p":-0.32},"2026-05-13":{"v":8184,"c":-62.0,"p":-0.75},"2026-05-14":{"v":8253,"c":68.5,"p":0.84},"2026-05-15":{"v":8071,"c":-182.2,"p":-2.21},"2026-05-17":{"v":8066,"c":-4.3,"p":-0.05},"2026-05-18":{"v":8043,"c":-23.2,"p":-0.29},"2026-05-19":{"v":7843,"c":-199.8,"p":-2.48},"2026-05-20":{"v":7792,"c":-51.7,"p":-0.66},"2026-05-21":{"v":8089,"c":297.3,"p":3.82},"2026-05-22":{"v":8218,"c":128.7,"p":1.59},"2026-05-23":{"v":8483,"c":265.8,"p":3.23},"2026-05-25":{"v":8735,"c":251.6,"p":2.97},"2026-05-26":{"v":8771,"c":36.3,"p":0.42},"2026-05-27":{"v":8875,"c":103.3,"p":1.18},"2026-05-28":{"v":8704,"c":-170.3,"p":-1.92},"2026-05-29":{"v":8930,"c":225.7,"p":2.59},"2026-05-30":{"v":8941,"c":11.3,"p":0.13},"2026-06-01":{"v":8998,"c":56.8,"p":0.64},"2026-06-02":{"v":9014,"c":15.6,"p":0.17},"2026-06-03":{"v":9174,"c":160.4,"p":1.78},"2026-06-04":{"v":9085,"c":-89.2,"p":-0.97},"2026-06-05":{"v":8941,"c":-144.1,"p":-1.59},"2026-06-06":{"v":8823,"c":-118.1,"p":-1.32},"2026-06-08":{"v":8479,"c":-344.0,"p":-3.9},"2026-06-09":{"v":8669,"c":190.6,"p":2.25},"2026-06-10":{"v":8619,"c":-50.1,"p":-0.58},"2026-06-11":{"v":8356,"c":-263.5,"p":-3.06},"2026-06-12":{"v":8695,"c":338.8,"p":4.05},"2026-06-15":{"v":8961,"c":266.8,"p":3.07},"2026-06-16":{"v":9027,"c":65.5,"p":0.73},"2026-06-17":{"v":9065,"c":37.9,"p":0.42},"2026-06-18":{"v":9242,"c":177.1,"p":1.95},"2026-06-19":{"v":9153,"c":-89.0,"p":-0.96},"2026-06-21":{"v":9275,"c":121.8,"p":1.33},"2026-06-22":{"v":8937,"c":-337.3,"p":-3.64},"2026-06-23":{"v":9393,"c":455.5,"p":5.1},"2026-06-24":{"v":9101,"c":-292.2,"p":-3.11},"2026-06-25":{"v":9158,"c":57.1,"p":0.63},"2026-06-26":{"v":8989,"c":-169.3,"p":-1.85},"2026-06-29":{"v":8937,"c":-51.9,"p":-0.58},"2026-06-30":{"v":9263,"c":326.2,"p":3.65},"2026-07-01":{"v":9542,"c":279.5,"p":3.02},"2026-07-02":{"v":9300,"c":-242.0,"p":-2.54},"2026-07-03":{"v":9209,"c":-91.8,"p":-0.99},"2026-07-05":{"v":9149,"c":-59.7,"p":-0.65},"2026-07-06":{"v":9121,"c":-27.9,"p":-0.3},"2026-07-07":{"v":9072,"c":-49.5,"p":-0.54},"2026-07-08":{"v":8947,"c":-124.7,"p":-1.37},"2026-07-09":{"v":8986,"c":39.5,"p":0.44},"2026-07-10":{"v":9051,"c":65.0,"p":0.72},"2026-07-13":{"v":8976,"c":-75.3,"p":-0.83},"2026-07-14":{"v":8786,"c":-190.2,"p":-2.12},"2026-07-15":{"v":8911,"c":124.7,"p":1.42},"2026-07-16":{"v":8770,"c":-140.7,"p":-1.58},"2026-07-17":{"v":8250,"c":-519.4,"p":-5.92},"2026-07-18":{"v":8142,"c":-108.1,"p":-1.31},"2026-07-19":{"v":8241,"c":98.7,"p":1.21},"2026-07-20":{"v":8169,"c":-71.9,"p":-0.87},"2026-07-21":{"v":8385,"c":215.8,"p":2.64},"2026-07-22":{"v":8651,"c":266.0,"p":3.17},"2026-07-23":{"v":8576,"c":-74.7,"p":-0.86},"2026-07-24":{"v":8396,"c":-180.3,"p":-2.1},"2026-07-27":{"v":8392,"c":-4.5,"p":-0.05}};
+
+const CAL_MONTHS = ["2026-05","2026-06","2026-07"];
+const MONTH_NAMES = {"2026-05":"2026年 5月","2026-06":"2026年 6月","2026-07":"2026年 7月"};
+let calCurrentIdx = 2; // 預設最新月份
+let calMiniChart = null;
+
+function pad(n){ return String(n).padStart(2,'0'); }
+function dateKey(y,m,d){ return `${y}-${pad(m)}-${pad(d)}`; }
+
+function getCellClass(p){
+  if(p===0) return 'flat';
+  if(p>= 3) return 'up-big';
+  if(p>= 1) return 'up-mid';
+  if(p>  0) return 'up-sm';
+  if(p<=-3) return 'dn-big';
+  if(p<=-1) return 'dn-mid';
+  return 'dn-sm';
+}
+
+function renderCalendar(){
+  const ym = CAL_MONTHS[calCurrentIdx];
+  const [yr, mo] = ym.split('-').map(Number);
+  document.getElementById('cal-month-title').textContent = MONTH_NAMES[ym];
+
+  // 本月天數 & 起始星期
+  const daysInMonth = new Date(yr, mo, 0).getDate();
+  const firstDow = new Date(yr, mo-1, 1).getDay(); // 0=日
+
+  // 今日
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  // 月統計
+  const monthEntries = Object.entries(CAL_DATA).filter(([k])=>k.startsWith(ym));
+  const vals = monthEntries.map(([,d])=>d.v);
+  const chgs = monthEntries.map(([,d])=>d.c);
+
+  // 月初、月末：找當月第一筆和最後一筆
+  const firstEntry = monthEntries[0];
+  const lastEntry = monthEntries[monthEntries.length-1];
+
+  if(firstEntry){
+    // 月初資產=前月末（若有）or 第一筆
+    const firstKey = firstEntry[0];
+    const [fy,fm,fd] = firstKey.split('-').map(Number);
+    // 找前一天的資產
+    let prevVal = firstEntry[1].v - firstEntry[1].c;
+    document.getElementById('cs-start').textContent = Math.round(prevVal).toLocaleString()+'萬';
+    document.getElementById('cs-end').textContent = lastEntry[1].v.toLocaleString()+'萬';
+    const monthChg = lastEntry[1].v - Math.round(prevVal);
+    const monthPct = (monthChg/Math.round(prevVal)*100).toFixed(1);
+    const cEl = document.getElementById('cs-chg');
+    cEl.textContent = (monthChg>=0?'+':'')+Math.round(monthChg)+'萬 ('+monthPct+'%)';
+    cEl.className = 'cs-val '+(monthChg>=0?'up':'dn');
+    const maxChg = Math.max(...chgs);
+    const minChg = Math.min(...chgs);
+    document.getElementById('cs-max').textContent = '+'+maxChg.toFixed(1)+'萬';
+    document.getElementById('cs-min').textContent = minChg.toFixed(1)+'萬';
+    document.getElementById('cs-days').textContent = monthEntries.length+'日';
+  }
+
+  // 空格
+  for(let i=0;i<firstDow;i++){
+    const el=document.createElement('div');
+    el.className='cal-cell empty';
+    grid.appendChild(el);
+  }
+
+  // 每天格子
+  for(let d=1;d<=daysInMonth;d++){
+    const key = dateKey(yr,mo,d);
+    const dow = (firstDow+d-1)%7;
+    const isWeekend = dow===0||dow===6;
+    const data = CAL_DATA[key];
+    const isToday = key===todayKey;
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell '+(data?'has-data '+getCellClass(data.p):'no-data')+(isWeekend?' weekend':'')+(isToday?' today':'');
+
+    const dayEl = document.createElement('div');
+    dayEl.className='cal-day';
+    dayEl.textContent=d;
+
+    if(data){
+      const totalEl=document.createElement('div');
+      totalEl.className='cal-total';
+      totalEl.textContent=data.v.toLocaleString();
+
+      const chgEl=document.createElement('div');
+      chgEl.className='cal-chg '+(data.c>=0?'up':'dn');
+      chgEl.textContent=(data.c>=0?'+':'')+data.c.toFixed(1);
+
+      const pctEl=document.createElement('div');
+      pctEl.className='cal-pct';
+      pctEl.textContent=(data.p>=0?'+':'')+data.p+'%';
+
+      cell.appendChild(dayEl);
+      cell.appendChild(totalEl);
+      cell.appendChild(chgEl);
+      cell.appendChild(pctEl);
+
+      // tooltip
+      cell.title = `${key}\n資產：${data.v.toLocaleString()}萬\n變化：${data.c>=0?'+':''}${data.c}萬（${data.p>=0?'+':''}${data.p}%）`;
+    } else {
+      cell.appendChild(dayEl);
+    }
+    grid.appendChild(cell);
+  }
+
+  // 填末尾空格讓滿7列
+  const total = firstDow + daysInMonth;
+  const remain = total%7===0?0:7-total%7;
+  for(let i=0;i<remain;i++){
+    const el=document.createElement('div');
+    el.className='cal-cell empty';
+    grid.appendChild(el);
+  }
+
+  renderWeeklyTable(ym, yr, mo, firstDow, daysInMonth);
+  renderMiniChart(ym);
+}
+
+function renderWeeklyTable(ym, yr, mo, firstDow, daysInMonth){
+  // 計算每週
+  const weeks=[];
+  let weekStart=null, weekChg=0, weekDays=[];
+
+  for(let d=1;d<=daysInMonth;d++){
+    const key=dateKey(yr,mo,d);
+    const dow=(firstDow+d-1)%7;
+    if(dow===1||d===1){ weekStart=d; weekChg=0; weekDays=[]; }
+    const data=CAL_DATA[key];
+    if(data){ weekChg+=data.c; weekDays.push({d,key,data}); }
+    if(dow===5||d===daysInMonth){
+      weeks.push({start:weekStart,end:d,chg:weekChg,days:weekDays});
+    }
+  }
+
+  let html='<table class="weekly-tbl"><thead><tr><th>週</th><th>交易日</th><th>週變化（萬）</th><th>週報酬</th><th>走勢</th></tr></thead><tbody>';
+  weeks.forEach((wk,i)=>{
+    if(!wk.days.length){ return; }
+    const startVal=wk.days[0].data.v-wk.days[0].data.c;
+    const endVal=wk.days[wk.days.length-1].data.v;
+    const pct=startVal?((endVal-startVal)/startVal*100).toFixed(2):0;
+    const isPos=wk.chg>=0;
+    const barW=Math.min(Math.abs(wk.chg)/500*100,100);
+    html+=`<tr>
+      <td style="padding:7px 8px;font-weight:600">第${i+1}週（${ym.slice(5)}/${pad(wk.start)}～${pad(wk.end)}）</td>
+      <td style="padding:7px 8px;color:var(--muted)">${wk.days.length}日</td>
+      <td style="padding:7px 8px;font-weight:600" class="${isPos?'up':'dn'}">${isPos?'+':''}${wk.chg.toFixed(1)}萬</td>
+      <td style="padding:7px 8px;font-weight:600" class="${isPos?'up':'dn'}">${isPos?'+':''}${pct}%</td>
+      <td style="padding:7px 8px"><div class="week-bar" style="width:${barW}%;background:${isPos?'#1D9E75':'#E24B4A'}"></div></td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('weekly-table').innerHTML=html;
+}
+
+function renderMiniChart(ym){
+  const entries=Object.entries(CAL_DATA).filter(([k])=>k.startsWith(ym));
+  if(!entries.length) return;
+
+  const labels=entries.map(([k])=>k.slice(8)); // 只顯示日
+  const vals=entries.map(([,d])=>d.v);
+  const chgs=entries.map(([,d])=>d.c);
+  const bgColors=chgs.map(c=>c>=0?'rgba(29,158,117,0.7)':'rgba(226,75,74,0.7)');
+
+  const ctx=document.getElementById('calMiniChart');
+  if(!ctx) return;
+
+  if(calMiniChart){ calMiniChart.destroy(); calMiniChart=null; }
+
+  calMiniChart=new Chart(ctx,{
+    data:{labels,datasets:[
+      {type:'line',label:'總資產',data:vals,borderColor:'#378ADD',borderWidth:2.5,pointRadius:3,pointBackgroundColor:bgColors,fill:true,backgroundColor:'rgba(55,138,221,0.06)',tension:0.3,yAxisID:'y'},
+      {type:'bar',label:'日變化',data:chgs,backgroundColor:bgColors,borderRadius:2,yAxisID:'y2'},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{
+          label:c=>c.datasetIndex===0?` 資產: ${c.parsed.y.toLocaleString()}萬`:` 變化: ${c.parsed.y>=0?'+':''}${c.parsed.y}萬`
+        }}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:TC,font:{size:10},maxTicksLimit:16}},
+        y:{position:'left',grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
+        y2:{position:'right',grid:{display:false},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'}},
+      }
+    }
+  });
+}
+
+function navMonth(dir){
+  calCurrentIdx=Math.max(0,Math.min(CAL_MONTHS.length-1,calCurrentIdx+dir));
+  renderCalendar();
+}
+
+// ── 擴充 switchTab 讓月曆在切換時初始化 ──
+const _origSwitch=switchTab;
+switchTab=function(el,name){
+  _origSwitch(el,name);
+  if(name==='calendar'){
+    setTimeout(renderCalendar,60);
+  }
+};
+
 </script>
 </body>
 </html>
