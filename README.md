@@ -1,98 +1,110 @@
 # RetireFlow 退休財務儀表板
 
-自動從 `RetireFlow_DB.xlsx` 讀取資料，產生互動式退休財務儀表板，部署於 GitHub Pages。
+> 目標：總資產超過 NT$16,000萬，55歲前退休（2028/12）
 
-## 快速開始
+---
 
-### 1. Fork 或 Clone 這個 Repo
+## 快速更新
 
-```bash
-git clone https://github.com/你的帳號/retireflow.git
-cd retireflow
+對 Claude 說：**「更新儀表板」**
+
+Claude 自動執行：
+1. 讀取 Google Drive `RetireFlow_DB`
+2. 產生最新 HTML
+3. Push 到 GitHub Pages
+
+**儀表板網址：** https://huowenchen.github.io/Claud_RetireApp/
+
+---
+
+## 系統架構
+
 ```
-
-### 2. 放入你的 Excel 檔
-
-把 `RetireFlow_DB.xlsx` 放到專案根目錄（和 `index.html` 同層）。
-
-> ⚠️ 如果檔案含有個人資料，建議設定 Repo 為 **Private**。
-
-### 3. 啟用 GitHub Pages
-
-1. GitHub Repo 頁面 → **Settings**
-2. 左側 **Pages**
-3. Source 選 **Deploy from a branch**
-4. Branch 選 **main**，目錄選 **/ (root)**
-5. 按 **Save**
-
-約 1 分鐘後，網址 `https://你的帳號.github.io/retireflow/` 就上線了。
-
----
-
-## 更新方式
-
-### 方式 A：手動 git push（每次更新後自己推）
-
-```bash
-# 1. 更新 RetireFlow_DB.xlsx
-
-# 2. 在本機產生新 HTML
-pip install openpyxl
-python scripts/generate.py RetireFlow_DB.xlsx
-
-# 3. 推上 GitHub（Pages 會自動更新）
-git add .
-git commit -m "更新資產 $(date +'%Y/%m/%d')"
-git push
-```
-
-### 方式 B：GitHub Actions 自動排程
-
-每天台灣時間 09:00 自動執行，前提是：
-
-1. **把 `RetireFlow_DB.xlsx` 保持在 repo 裡並定期 push 更新**
-2. GitHub Actions 會自動讀取最新 xlsx → 產生 HTML → push 回去
-3. GitHub Pages 自動發布
-
-#### 手動觸發（臨時更新）
-GitHub Repo → **Actions** → **更新 RetireFlow 儀表板** → **Run workflow**
-
----
-
-## 手機加入主畫面（像 App 一樣）
-
-**iOS Safari：**
-1. 開啟 `https://你的帳號.github.io/retireflow/`
-2. 點下方分享圖示 ⎋
-3. 選「**加入主畫面**」
-4. 名稱填 `RetireFlow` → 新增
-
-**Android Chrome：**
-1. 開啟網址
-2. 右上角 ⋮ → 「**新增至主畫面**」
-
----
-
-## 本機測試
-
-```bash
-pip install openpyxl
-python scripts/generate.py RetireFlow_DB.xlsx
-open index.html   # macOS
-# 或直接用瀏覽器開啟 index.html
+Google Drive（RetireFlow_DB.xlsx）
+  └─ Claude 直接讀取（File ID: 1-r40XU4l_Lt7rEZX0PZuZolccI4PbN7QMZ1xwwLby_o）
+       └─ 產生 index.html
+            └─ Push → GitHub HuowenChen/Claud_RetireApp
+                 └─ GitHub Pages 自動發布 → 固定網址
 ```
 
 ---
 
-## 工作表結構（RetireFlow_DB.xlsx）
+## 資料來源
 
-| 工作表名稱 | 說明 |
-|-----------|------|
-| 工作表1 | 持股明細（市場/券商/代號/股數/殖利率/名稱） |
-| 基金帳戶 | 基金總額（名稱/平台/金額/殖利率） |
-| 負債清單 | 負債（項目/機構/餘額/利率） |
-| 資產歷史紀錄 | 每日快照（日期/總資產/總負債/淨資產/股息/台股/美股/日股/基金） |
+| 項目 | 說明 |
+|------|------|
+| Google Drive 檔案 | RetireFlow_DB.xlsx |
+| 工作表1 | 持股明細（市場/券商/代號/股數/殖利率） |
+| 基金帳戶 | 基富通・鉅亨・HSBC 結構型 |
+| 負債清單 | 房貸・股票質借 |
+| 資產歷史紀錄 | 每日資產快照（目前 107 筆，03/24～07/27） |
 
 ---
 
-*RetireFlow v2.0 ｜ 僅供個人財務規劃參考，不構成投資建議*
+## 最新資產狀況（2026/07/27）
+
+| 指標 | 數值 |
+|------|------|
+| 總資產 | **NT$8,396萬** |
+| 總負債 | NT$4,269萬（房貸3,505＋質借763） |
+| 淨資產 | NT$4,128萬 |
+| 退休達成率 | **52.5%**（目標16,000萬） |
+| 距退休 | 約 2年5個月 |
+| 預估年股息 | 135萬（月均11萬） |
+| 期間報酬 | +31.2%（03/24起，125天） |
+
+### 資產配置
+
+| 類別 | 現值 | 佔比 | 目標 | 偏差 |
+|------|------|------|------|------|
+| 台股 | 4,461萬 | 53.1% | 40% | +13.1% ⚠️ |
+| 美股 | 2,388萬 | 28.4% | 30% | -1.6% ✓ |
+| 日股 | 679萬 | 8.1% | 10% | -1.9% ✓ |
+| 基金 | 869萬 | 10.3% | 10% | +0.3% ✓ |
+
+---
+
+## 儀表板功能
+
+| 分頁 | 內容 |
+|------|------|
+| 總覽 | 資產現值、報酬率、負債、基金、現金倉位 |
+| 油表達成率 | SVG 半圓儀表，各類資產目標達成率 |
+| 風險管控 | CNN/VIX 燈號、槓桿風險評估、匯率風險 |
+| 持股明細 | 完整台股/美股/日股持股清單 |
+| 走勢圖 | 107天折線圖＋每日漲跌長條圖 |
+| 退休試算 | 可調整目標、報酬率、月支出即時試算 |
+
+---
+
+## 風險提示
+
+- ⚠️ **台股超重 +13%**：槓桿ETF（00631L/00663L/00685L）部位大，VIX>20 需注意耗損
+- ⚠️ **台幣升值**：外幣資產約 3,067萬，每升1%損失約31萬
+- ✓ **股息 > 利息**：年股息135萬 > 年利息107萬，正向現金流
+- ✓ **高股息除息旺季**：Q2-Q3 0050/0056/00927/00881 受惠
+
+---
+
+## GitHub 資訊
+
+| 項目 | 內容 |
+|------|------|
+| Repo | `HuowenChen/Claud_RetireApp` |
+| 分支 | `main` |
+| Pages | https://huowenchen.github.io/Claud_RetireApp/ |
+| Token | Fine-grained，repo Contents/Pages 讀寫 |
+
+---
+
+## 更新紀錄
+
+| 版本 | 日期 | 說明 |
+|------|------|------|
+| v1.0 | 2026/05/09 | 初版，手動上傳 xlsx |
+| v2.0 | 2026/05/17 | 油表、風險管控、報酬率分析 |
+| v2.1 | 2026/07/27 | 直接讀取 Google Drive，107筆歷史，自動 push GitHub |
+
+---
+
+*僅供個人財務規劃參考，不構成投資建議*
