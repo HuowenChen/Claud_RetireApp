@@ -794,6 +794,13 @@ const TYPE_C={
   "主動ETF":"#1D9E75","現金替代":"#7F77DD"
 };
 
+// ── 基金帳戶數據（全域）──
+window.FD_DATA=[
+  {code:"鉅亨",name:"鉅亨網基金",val:411.4,type:"ETF"},
+  {code:"HSBC",name:"HSBC結構型",val:314.5,type:"現金替代"},
+  {code:"基富通",name:"基富通基金",val:142.7,type:"ETF"}
+];
+
 // ── 券商明細表 ──
 function renderBrokerTable(brokerData,containerId,currency){
   const el=document.getElementById(containerId);
@@ -1125,12 +1132,7 @@ function rebuildPortfolioData(){
 
   // TW_BROKER（動態）
   
-// ── 基金帳戶數據 ──
-const FD_DATA=[
-  {code:"鉅亨",name:"鉅亨網基金",val:411.4,type:"ETF"},
-  {code:"HSBC",name:"HSBC結構型",val:314.5,type:"現金替代"},
-  {code:"基富通",name:"基富通基金",val:142.7,type:"ETF"}
-];
+// 基金數據已移至全域（見 window.FD_DATA）
 
 window.TW_BROKER = {
   "永豐敦南": {total:212.5, items:[
