@@ -461,19 +461,58 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- ════ 日股 ════ -->
 <div id="tab-pareto-jp" class="tab-content">
   <div class="card">
-    <div class="stitle">日股持股 Pareto 分析（估值 349萬，4檔）</div>
+    <div class="stitle">日股持股分析（615.3萬｜0.1957 JPY/TWD）</div>
     <div style="position:relative;width:100%;height:200px"><canvas id="jpPareto"></canvas></div>
-    <div class="key-insight">🔍 股數×股價×匯率（JPY/TWD=0.1957）直接計算，合計615.3萬，達成率61.5%，達成率67.9%。圖表依Google Drive實際值等比例分配各股估值，各股實際市值請以券商系統為準。日本REITs ETF（2644）仍為最大部位，TDK/京瓷/村田為電子零件龍頭。距目標1,000萬尚差321萬，建議分季加碼。</div>
+    <div class="key-insight">🔍 股數×JPY股價×0.1957直接計算，合計615.3萬，達成率61.5%（目標1,000萬）。2644日本REITs ETF佔72.5%為核心部位，配息穩定。村田/京瓷/TDK為電子零件龍頭，受惠AI需求。距目標尚差384.7萬，建議每季追加TOPIX ETF（1306）約50萬。</div>
   </div>
   <div class="card">
     <div class="stitle">日股明細</div>
     <table class="tbl">
-      <thead><tr><th>代號</th><th>名稱</th><th style="text-align:right">股數</th><th style="text-align:right">估值</th><th style="text-align:right">佔日股</th><th>建議</th></tr></thead>
+      <thead><tr>
+        <th>代號</th><th>名稱</th>
+        <th style="text-align:right">股數</th>
+        <th style="text-align:right">日幣股價</th>
+        <th style="text-align:right">台幣估值</th>
+        <th style="text-align:right">佔日股</th>
+        <th>建議</th>
+      </tr></thead>
       <tbody>
-        <tr><td style="padding:7px 8px;font-weight:500">2644</td><td style="padding:7px 8px">日本REITs ETF</td><td style="padding:7px 8px;text-align:right">6,000</td><td style="padding:7px 8px;text-align:right">253萬</td><td style="padding:7px 8px;text-align:right">72.4%</td><td style="padding:7px 8px;color:var(--muted)">核心，配息穩定</td></tr>
-        <tr><td style="padding:7px 8px;font-weight:500">6762</td><td style="padding:7px 8px">TDK</td><td style="padding:7px 8px;text-align:right">600</td><td style="padding:7px 8px;text-align:right">33萬</td><td style="padding:7px 8px;text-align:right">9.5%</td><td style="padding:7px 8px;color:var(--muted)">電子零件龍頭，持有</td></tr>
-        <tr><td style="padding:7px 8px;font-weight:500">6971</td><td style="padding:7px 8px">京瓷</td><td style="padding:7px 8px;text-align:right">900</td><td style="padding:7px 8px;text-align:right">32萬</td><td style="padding:7px 8px;text-align:right">9.2%</td><td style="padding:7px 8px;color:var(--muted)">精密陶瓷，穩健持有</td></tr>
-        <tr><td style="padding:7px 8px;font-weight:500">6981</td><td style="padding:7px 8px">村田製作所</td><td style="padding:7px 8px;text-align:right">500</td><td style="padding:7px 8px;text-align:right">31萬</td><td style="padding:7px 8px;text-align:right">8.9%</td><td style="padding:7px 8px;color:var(--muted)">MLCC龍頭，AI受惠</td></tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">2644</td>
+          <td style="padding:7px 8px">日本REITs ETF</td>
+          <td style="padding:7px 8px;text-align:right">6,000</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">¥3,802</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">446.4萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">72.5%</td>
+          <td style="padding:7px 8px;color:var(--muted)">核心，配息穩定</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">6981</td>
+          <td style="padding:7px 8px">村田製作所</td>
+          <td style="padding:7px 8px;text-align:right">500</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">¥7,197</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">70.4萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">11.4%</td>
+          <td style="padding:7px 8px;color:var(--muted)">MLCC龍頭，AI受惠</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">6971</td>
+          <td style="padding:7px 8px">京瓷</td>
+          <td style="padding:7px 8px;text-align:right">900</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">¥3,648</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">64.3萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">10.5%</td>
+          <td style="padding:7px 8px;color:var(--muted)">精密陶瓷，穩健持有</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">6762</td>
+          <td style="padding:7px 8px">TDK</td>
+          <td style="padding:7px 8px;text-align:right">600</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">¥2,911</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">34.2萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">5.6%</td>
+          <td style="padding:7px 8px;color:var(--muted)">電子零件龍頭，持有</td>
+        </tr>
       </tbody>
     </table>
     <div class="alert alert-good" style="margin-top:10px">✓ 結構健全，考慮每季追加1306 TOPIX ETF約50萬，2年達成目標1,000萬。</div>
@@ -1357,10 +1396,10 @@ window.US_DATA=
 ];
 window.JP_DATA=
 [
-  {code:"2644",name:"日本REITs ETF（6,000股×¥3,802）",val:446.4,type:"ETF"},
-  {code:"6981",name:"村田製作所（500股×¥7,197）",val:70.4,type:"個股"},
-  {code:"6971",name:"京瓷（900股×¥3,648）",val:64.3,type:"個股"},
-  {code:"6762",name:"TDK（600股×¥2,911.5）",val:34.2,type:"個股"}
+  {code:"2644",name:"日本REITs ETF",val:446.4,type:"ETF"},
+  {code:"6981",name:"村田製作所",val:70.4,type:"個股"},
+  {code:"6971",name:"京瓷",val:64.3,type:"個股"},
+  {code:"6762",name:"TDK",val:34.2,type:"個股"}
 ];
 
 // ── 油表（半圓 Canvas）──
