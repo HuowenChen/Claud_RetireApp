@@ -1124,7 +1124,15 @@ function rebuildPortfolioData(){
   })).sort((a,b)=>b.val-a.val);
 
   // TW_BROKER（動態）
-  window.TW_BROKER = {
+  
+// ── 基金帳戶數據 ──
+const FD_DATA=[
+  {code:"鉅亨",name:"鉅亨網基金",val:411.4,type:"ETF"},
+  {code:"HSBC",name:"HSBC結構型",val:314.5,type:"現金替代"},
+  {code:"基富通",name:"基富通基金",val:142.7,type:"ETF"}
+];
+
+window.TW_BROKER = {
   "永豐敦南": {total:212.5, items:[
     {code:"00675L",name:"富邦加權正2",shares:4000,price:290.05,val:116.0,type:"槓桿"},
     {code:"00663L",name:"國泰加權正2",shares:9000,price:95.95,val:86.4,type:"槓桿"},
