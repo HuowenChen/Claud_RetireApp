@@ -1382,6 +1382,9 @@ function drawGauge(id,pct,label,color){
 // ── 橫向 Bar Chart（含即時百分比標籤）──
 function buildHBar(canvasId,data,title){
   const ctx=document.getElementById(canvasId);if(!ctx)return;
+  // 銷毀舊的 Chart 實例，避免 "Canvas is already in use" 錯誤
+  const existing=Chart.getChart(ctx);
+  if(existing) existing.destroy();
   const top=data.slice(0,15);
   const rest=data.slice(15);
   if(rest.length){
@@ -1504,14 +1507,7 @@ function drawTabCharts(name){
   if(name==='pareto-tw'){buildHBar('twPareto',window.TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',window.TW_DATA);renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');}
   if(name==='pareto-us'){buildHBar('usPareto',window.US_DATA,'美股持股（估值1,422萬）');buildDonut('usDonut',window.US_DATA);renderBrokerTable(window.US_BROKER,'us-broker-table','USD');}
   if(name==='pareto-jp'){buildHBar('jpPareto',window.JP_DATA,'日股持股（Google Drive實際值678.7萬｜各股等比例分配）');}
-  if(name==='fund'){
-    // 每次都重建 canvas 避免快取問題
-    const wrap=document.getElementById('fundChartWrap');
-    if(wrap){wrap.innerHTML='<canvas id="fundPareto"></canvas>';}
-    buildHBar('fundPareto',FD_DATA,'基金帳戶（869萬）');
-    // 清除快取讓下次仍可重繪
-    delete window.chartsInit['fund'];
-  }
+  if(name==='fund'){buildHBar('fundPareto',FD_DATA,'基金帳戶（869萬）');delete window.chartsInit['fund'];}
   if(name==='trend'){
     mkLine('trendChart',[
       {label:'總資產',data:HT,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:DARK?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.06)',tension:0.3},
