@@ -462,7 +462,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div id="tab-pareto-jp" class="tab-content">
   <div class="card">
     <div class="stitle">日股持股分析（615.3萬｜0.1957 JPY/TWD）</div>
-    <div style="position:relative;width:100%;height:200px"><canvas id="jpPareto"></canvas></div>
+    <div id="jpBarWrap" style="margin-top:8px"></div>
     <div class="key-insight">🔍 股數×JPY股價×0.1957直接計算，合計615.3萬，達成率61.5%（目標1,000萬）。2644日本REITs ETF佔72.5%為核心部位，配息穩定。村田/京瓷/TDK為電子零件龍頭，受惠AI需求。距目標尚差384.7萬，建議每季追加TOPIX ETF（1306）約50萬。</div>
   </div>
   <div class="card">
@@ -1550,7 +1550,28 @@ function drawTabCharts(name){
   }
   if(name==='pareto-tw'){buildHBar('twPareto',window.TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',window.TW_DATA);renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');}
   if(name==='pareto-us'){buildHBar('usPareto',window.US_DATA,'美股持股（估值1,422萬）');buildDonut('usDonut',window.US_DATA);renderBrokerTable(window.US_BROKER,'us-broker-table','USD');}
-  if(name==='pareto-jp'){buildHBar('jpPareto',window.JP_DATA,'日股持股（615.3萬｜¥×0.1957 TWD）');}
+  if(name==='pareto-jp'){
+    const jw=document.getElementById('jpBarWrap');
+    if(!jw) return;
+    const jitems=[{code:'2644',name:'日本REITs ETF',val:446.4,pct:72.5,color:'#378ADD'},
+      {code:'6981',name:'村田製作所',val:70.4,pct:11.4,color:'#E24B4A'},
+      {code:'6971',name:'京瓷',val:64.3,pct:10.5,color:'#E24B4A'},
+      {code:'6762',name:'TDK',val:34.2,pct:5.6,color:'#E24B4A'}];
+    const jmax=446.4;
+    jw.innerHTML=jitems.map(it=>`
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+          <span style="font-weight:600;color:var(--text)">${it.code} ${it.name}</span>
+          <span style="color:${it.color};font-weight:700">${it.val}萬 (${it.pct}%)</span>
+        </div>
+        <div style="background:var(--bg);border-radius:6px;height:30px;overflow:hidden">
+          <div style="background:${it.color};width:${(it.val/jmax*100).toFixed(1)}%;height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;min-width:4px">
+            <span style="color:#fff;font-size:11px;font-weight:600;white-space:nowrap">${it.val}萬</span>
+          </div>
+        </div>
+      </div>`).join('');
+    delete window.chartsInit['pareto-jp'];
+  }
   if(name==='fund'){
     const fw=document.getElementById('fundBarWrap');
     if(!fw) return;
