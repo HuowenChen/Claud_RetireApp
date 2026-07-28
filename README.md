@@ -1,6 +1,6 @@
 # RetireFlow Pro v3.4 開發日誌
 
-> 記錄日期：2026/07/28
+> 最後更新：2026/07/28
 > 網址：https://huowenchen.github.io/Claud_RetireApp/
 > Repo：HuowenChen/Claud_RetireApp（main）
 
@@ -26,11 +26,10 @@
 
 **原因：** 用固定匯率 JPY/TWD=0.222 估算，但券商實際淨值更高。
 
-**解法：** 改用 Google Drive 歷史記錄的實際總值，反推正確匯率後等比例分配各持股。
+**解法：** 每次從 Google Drive 歷史記錄反推正確匯率後等比例分配各持股。
 
 ```python
-jp_raw_jpy = 6000*3876 + 600*2926 + 900*3692 + 500*7381  # ¥32,024,900
-jpy_twd = jp_gd_total / jp_raw_jpy  # 0.195（每次從GD推算）
+jpy_twd = gd_jp_total / sum(shares * price for each jp stock)  # 每次動態推算
 ```
 
 ---
@@ -44,7 +43,6 @@ jpy_twd = jp_gd_total / jp_raw_jpy  # 0.195（每次從GD推算）
 | 0056 元大高股息 | 40.5元 | 50.20元 | 估值+76萬 |
 | 006208 富邦台50 | 80.5元 | 233元 | 估值+308萬 |
 | 00881 國泰科技龍頭 | 20.3元 | 51.15元 | 估值+107萬 |
-| 00927 群益半導體收益 | 22.5元 | 35.83元 | 估值+67萬 |
 | 00935 野村新科技50 | 19.8元 | 55.15元 | 估值+109萬 |
 | 5483 中美晶 | 65元 | 204元 | 估值+97萬 |
 | 6147 頎邦 | 55元 | 155元（跌停後） | 估值+30萬 |
@@ -53,15 +51,15 @@ jpy_twd = jp_gd_total / jp_raw_jpy  # 0.195（每次從GD推算）
 
 ---
 
-### 問題三：自動抓取股價機制失敗
+### 問題三：自動抓取股價機制（結論）
 
 **嘗試方案：**
-1. TWSE MIS API（`mis.twse.com.tw`）→ CORS 問題，瀏覽器端無法直接呼叫
-2. Yahoo Finance API（`query1.finance.yahoo.com`）→ 同樣 CORS 限制
+1. TWSE MIS API → CORS 限制，瀏覽器端無法直接呼叫
+2. Yahoo Finance API → 同樣 CORS 限制
 
-**最終解法：Google Sheets GOOGLEFINANCE 函式**
+**最終確定流程：Google Sheets GOOGLEFINANCE 函式**
 
-在 RetireFlow_DB.xlsx 新增「股價」工作表，D 欄填入公式：
+在 RetireFlow_DB.xlsx 工作表1 的股數後面加入股價欄，用公式自動更新：
 
 ```
 =GOOGLEFINANCE("TPE:0050","price")     # 台股
@@ -70,16 +68,7 @@ jpy_twd = jp_gd_total / jp_raw_jpy  # 0.195（每次從GD推算）
 =GOOGLEFINANCE("CURRENCY:USDTWD")      # 匯率
 ```
 
-Google Sheets 每 15 分鐘自動更新，Claude 每次更新儀表板時讀取 D 欄真實股價注入 HTML。
-
-**工作表格式：**
-
-| A（代號） | B（名稱） | C（市場） | D（收盤價/公式） |
-|----------|---------|---------|----------------|
-| 0050 | 元大台灣50 | 台股 | =GOOGLEFINANCE("TPE:0050","price") |
-| NVDA | NVIDIA | 美股 | =GOOGLEFINANCE("NASDAQ:NVDA","price") |
-| 2644 | 日本REITs ETF | 日股 | =GOOGLEFINANCE("TYO:2644","price") |
-| USDTWD | 美元/台幣 | 匯率 | =GOOGLEFINANCE("CURRENCY:USDTWD") |
+Will 更新完 Google Sheets 後，對 Claude 說「依照參考股價，更新儀表板」即可。
 
 ---
 
@@ -87,17 +76,7 @@ Google Sheets 每 15 分鐘自動更新，Claude 每次更新儀表板時讀取 
 
 **原因：** HTML 容器 `div`（`id="tw-broker-table"`）沒有正確插入，`document.getElementById()` 回傳 null 直接 return。
 
-**解法：** 用精確的 HTML 注釋標記定位插入點：
-
-```python
-# 在「美股 Pareto」分頁標記前面插入容器
-html = html.replace(
-    '</div>\n\n<!-- ════ 美股 Pareto ════ -->',
-    BROKER_DIV + '</div>\n\n<!-- ════ 美股 Pareto ════ -->'
-)
-```
-
-同時把 `renderBrokerTable` 移到 `switchTab` 直接呼叫（繞過 `chartsInit` 快取）：
+**解法：** 用精確的 HTML 注釋標記定位插入點，並把 `renderBrokerTable` 移到 `switchTab` 直接呼叫（繞過 `chartsInit` 快取）：
 
 ```javascript
 function switchTab(el, name){
@@ -112,98 +91,174 @@ function switchTab(el, name){
 
 ---
 
-### 問題五：所有圖表反覆失效（最常見問題）
+### 問題五：基金頁面 Bar Chart 無法顯示
 
-#### 根本原因彙整
-
-**Bug A — `TYPE_C` 常數未定義**
-
-`buildHBar` 執行時用 `TYPE_C[d.type]` 決定顏色，常數被誤刪後整張圖表噴錯中止。
+**根本原因：作用域錯誤（Scope Bug）**
 
 ```javascript
-// 必須在 buildHBar 之前定義
+// ❌ 問題：FD_DATA 被困在 rebuildPortfolioData() 函式內部
+function rebuildPortfolioData() {
+  // ... 大量程式碼 ...
+  const FD_DATA = [...];  // 只有函式內部能看到！
+}
+
+// drawTabCharts 呼叫時：
+buildHBar('fundPareto', FD_DATA, ...)  // FD_DATA 在外部 = undefined
+```
+
+台股/美股/日股 用 `window.TW_DATA`、`window.US_DATA`、`window.JP_DATA`（全域）正常。
+基金用 `const FD_DATA`（函式作用域），外部看不到 → `buildHBar` 拿到 `undefined` → 不渲染。
+
+**解法：** 將 `FD_DATA` 移至頂層全域：
+
+```javascript
+// ✅ 正確：頂層定義，全域可見
+window.FD_DATA = [
+  {code:"鉅亨", name:"鉅亨網基金", val:411.4, type:"ETF"},
+  {code:"HSBC", name:"HSBC結構型", val:314.5, type:"現金替代"},
+  {code:"基富通", name:"基富通基金", val:142.7, type:"ETF"}
+];
+```
+
+**驗證方法：** 計算 `const FD_DATA=` 定義時的大括號深度，必須為 0（頂層）：
+
+```python
+depth = 0
+for ch in js[:fd_idx]:
+    if ch == '{': depth += 1
+    elif ch == '}': depth -= 1
+assert depth == 0, f"FD_DATA 不在頂層！深度={depth}"
+```
+
+**額外措施：** 基金分頁改用純 HTML 橫向進度條（不依賴 Chart.js），保證任何情況下都能顯示：
+
+```javascript
+if(name === 'fund'){
+  const fw = document.getElementById('fundBarWrap');
+  const items = [...]; // 直接寫入數據
+  fw.innerHTML = items.map(it => `
+    <div>...</div>  // 純 HTML bar
+  `).join('');
+  delete window.chartsInit['fund'];  // 允許下次重繪
+}
+```
+
+**為什麼台股/美股/日股沒有這個問題？**
+因為它們的數據陣列從一開始就定義為 `window.TW_DATA` 全域變數，從未放進函式內部。
+
+---
+
+### 問題六：所有圖表反覆失效（彙整）
+
+#### Bug A — `TYPE_C` 常數未定義
+
+`buildHBar` 執行時用 `TYPE_C[d.type]` 決定顏色，常數被誤刪後整張圖表 crash。
+
+```javascript
+// 必須在 buildHBar 之前定義，置於頂層
 const TYPE_C = {
   "個股":"#E24B4A", "ETF":"#378ADD", "槓桿":"#EF9F27",
   "主動ETF":"#1D9E75", "現金替代":"#7F77DD"
 };
 ```
 
-**Bug B — `<script src="chart.umd.js">` 未閉合**
+#### Bug B — `<script src="chart.umd.js">` 未閉合
 
 ```html
-<!-- ❌ 錯誤：JS 寫在 src script 標籤裡，瀏覽器忽略 -->
+<!-- ❌ 錯誤 -->
 <script src="chart.umd.js">
-const DARK = ...
-function buildHBar(){...}
+  const DARK = ...
 </script>
 
 <!-- ✅ 正確：兩個 script 分開 -->
 <script src="chart.umd.js"></script>
 <script>
-const DARK = ...
-function buildHBar(){...}
+  const DARK = ...
 </script>
 ```
 
-**Bug C — `TW_BROKER=TW_BROKER||{...}` 引用未定義變數**
+#### Bug C — `TW_BROKER=TW_BROKER||{}` 引用未定義變數
 
 ```javascript
-// ❌ 錯誤：TW_BROKER 這個名稱從未定義，直接 ReferenceError
+// ❌ 錯誤：TW_BROKER 未定義，ReferenceError
 window.TW_BROKER = TW_BROKER || { ... }
 
-// ✅ 正確：直接賦值
+// ✅ 正確
 window.TW_BROKER = { ... }
 ```
 
-**Bug D — `chartsInit` 作用域不一致**
+#### Bug D — `chartsInit` 作用域不一致
 
 ```javascript
-// ❌ 錯誤：let 是區塊作用域，window.chartsInit={} 清空無效
+// ❌ 錯誤：let 與 window.chartsInit 是不同變數
 let chartsInit = {};
-// 在 loadLivePrices 裡：
-window.chartsInit = {};  // 清空的是 window.chartsInit，不是 let chartsInit
+window.chartsInit = {};  // 清空的不是同一個
 
-// ✅ 正確：統一用 window
+// ✅ 正確：統一用 window.chartsInit
 window.chartsInit = {};
-// 所有地方都用 window.chartsInit[name]
 ```
 
-**Bug E — JP_DATA 陣列替換時，舊 labelPlugin 程式碼殘留其後**
+#### Bug E — JP_DATA 替換殘留舊程式碼
 
-每次替換 `window.JP_DATA=[...]` 區塊時，若用 `replace(old_block, new_block)` 且 `old_block` 邊界不精確，舊 `buildHBar` 的 label plugin 程式碼（~1.3萬字元）會殘留在 JP_DATA 結尾後，導致語法錯誤。
+替換 `window.JP_DATA=[...]` 區塊時，若邊界不精確，舊 `buildHBar` 的 label plugin（~1.3萬字元）會殘留其後，導致語法錯誤。
 
-**解法：** 精確定位 `window.JP_DATA` 結束（`];\n`）到 `// ── Donut ──` 之間，清除所有殘留。
+**解法：** 精確定位結束邊界，清除殘留：
 
 ```python
-idx_jp_end = js.find(jp_end_marker, idx_jp_start) + len(jp_end_marker)
+idx_jp_end = js.find('];\n', idx_jp_start) + 3
 idx_donut  = js.find('\n// ── Donut ──')
-js_clean   = js[:idx_jp_end] + js[idx_donut:]  # 清除殘留程式碼
+js_clean   = js[:idx_jp_end] + js[idx_donut:]
 ```
 
-**Bug F — `renderBrokerTable` 函式被誤刪**
+#### Bug F — `renderBrokerTable` 函式被誤刪
 
-多次替換操作後，`renderBrokerTable` 消失，導致台股美股券商明細表無法渲染。
+多次替換操作後消失。補入完整函式後加入必要函式驗證清單。
+
+#### Bug G — `buildHBar` 未加 `Chart.destroy()`
+
+同一個 canvas 被 `new Chart()` 初始化兩次，Chart.js 拒絕渲染。
+
+```javascript
+function buildHBar(canvasId, data, title){
+  const ctx = document.getElementById(canvasId); if(!ctx) return;
+  // ✅ 先銷毀舊實例
+  const existing = Chart.getChart(ctx);
+  if(existing) existing.destroy();
+  // 再建立新的...
+}
+```
+
+#### Bug H — US_DATA / JP_DATA 無靜態初始值
+
+只在 `rebuildPortfolioData` 動態生成，但 `drawTabCharts` 在動態生成前就可能被呼叫。
+
+**解法：** 在頂層加入靜態初始值（同 TW_DATA），確保頁面一開啟就有數據：
+
+```javascript
+// 頂層靜態初始值（rebuildPortfolioData 執行後會被覆蓋為最新值）
+window.TW_DATA = [...];
+window.US_DATA = [...];  // ← 必須有
+window.JP_DATA = [...];  // ← 必須有
+window.FD_DATA = [...];  // ← 必須有（不能用 const）
+```
 
 ---
 
-## 安全更新 SOP（往後每次更新必須遵守）
+## 安全更新 SOP（每次更新必執行）
 
-### 1. 更新數據前，先備份
+### 1. 替換 JS 數據用精確邊界
+
 ```python
-shutil.copy('/tmp/retireflow_full.html', '/tmp/retireflow_backup.html')
+# 找開始
+idx = html.find('window.TW_DATA=\n[')
+# 找結束（第一個 ];）
+end = html.find('];\n', idx) + 3
+# 只替換數據，不碰周圍程式碼
+html = html[:idx] + 'window.TW_DATA=\n' + new_data + ';\n' + html[end:]
 ```
 
-### 2. 替換 JS 數據區塊，用精確邊界
-```python
-# 找開始位置
-idx_start = html.find('window.TW_DATA=\n[')
-# 找結束位置（第一個 ];）
-idx_end = html.find('];\n', idx_start) + 3
-# 只替換數據部分，不碰後面的程式碼
-html = html[:idx_start] + 'window.TW_DATA=\n' + new_data + '\n' + html[idx_end:]
-```
+### 2. JS 語法驗證（必做）
 
-### 3. 每次修改後執行 JS 語法驗證
 ```python
 js = html[html.rfind('<script>')+8:html.rfind('</script>')]
 with open('/tmp/check.js','w') as f: f.write(js)
@@ -211,20 +266,41 @@ r = subprocess.run(['node','--check','/tmp/check.js'],capture_output=True,text=T
 assert r.returncode == 0, r.stderr
 ```
 
-### 4. 驗證關鍵函式完整性
+### 3. 關鍵函式完整性驗證（必做）
+
 ```python
-must_have = ['function drawGauge','function buildHBar','function buildDonut',
-             'function mkLine','function drawAllCharts','function drawTabCharts',
-             'function switchTab','function rebuildPortfolioData',
-             'function renderBrokerTable','const TYPE_C=']
+must_have = [
+    'function drawGauge',       # 油表
+    'function buildHBar',       # 橫向 Bar（含 Chart.destroy()）
+    'function buildDonut',      # 圓餅
+    'function mkLine',          # 折線
+    'function drawAllCharts',   # 初始化
+    'function drawTabCharts',   # 分頁渲染
+    'function switchTab',       # 分頁切換
+    'function renderBrokerTable', # 券商明細表
+    'function rebuildPortfolioData', # 動態重算
+    'const TYPE_C=',            # 顏色常數（必須在頂層）
+    'window.FD_DATA=',          # 基金數據（必須在頂層）
+    'window.TW_DATA=\n[',       # 台股靜態初始值
+    'window.US_DATA=\n[',       # 美股靜態初始值
+    'window.JP_DATA=\n[',       # 日股靜態初始值
+    'chart.umd.js"></script>',  # Chart.js 正確閉合
+]
 for fn in must_have:
     assert fn in html, f"❌ 缺少: {fn}"
 ```
 
-### 5. 確認靜態數字與 Google Drive 一致
+### 4. 作用域深度驗證
+
 ```python
-assert f'>{total_w:,}<span' in html, "總資產數字未更新"
-assert f'>{net_w:,}<span'   in html, "淨資產數字未更新"
+# 確認所有數據變數在頂層（深度=0）
+js = html[html.rfind('<script>')+8:html.rfind('</script>')]
+for var in ['window.TW_DATA','window.US_DATA','window.JP_DATA','window.FD_DATA',
+            'window.TW_BROKER','window.US_BROKER','const TYPE_C']:
+    idx = js.find(var)
+    if idx < 0: continue
+    depth = sum(1 if c=='{' else -1 if c=='}' else 0 for c in js[:idx])
+    assert depth == 0, f"❌ {var} 不在頂層！深度={depth}"
 ```
 
 ---
@@ -234,101 +310,115 @@ assert f'>{net_w:,}<span'   in html, "淨資產數字未更新"
 ```
 Will 說：「依照參考股價，更新儀表板」
     ↓
-Claude 讀取 Google Drive（工作表1 + 資產歷史紀錄）
+Claude 讀取 Google Drive（工作表1 + 資產歷史記錄）
     ↓
 從最新一列取得：總資產、各類別、負債
-從持股明細取得：各檔股數＋股價
+從持股明細取得：各檔股數＋Google Finance 股價
     ↓
-計算推算匯率（USD/JPY → TWD）
+計算推算匯率（us_total / Σ(股數×USD股價) = USD/TWD）
+                （jp_total / Σ(股數×JPY股價) = JPY/TWD）
     ↓
-重算 TW_DATA、US_DATA、JP_DATA、TW_BROKER、US_BROKER
+重算 TW_DATA、US_DATA、JP_DATA、FD_DATA
+重算 TW_BROKER、US_BROKER（各券商明細）
     ↓
 替換 HTML 靜態數字（總資產/淨資產/達成率/各類別）
 更新 drawGauge 呼叫參數
-更新 FALLBACK_PRICES（API 失敗時備用）
+更新 FALLBACK_PRICES
+更新基金 HTML bar 的 items 數據
     ↓
-node --check 語法驗證 + 關鍵函式完整性驗證
+node --check 語法驗證
+關鍵函式 + 作用域深度驗證
     ↓
 Push GitHub Pages
 ```
 
 ---
 
-## 關鍵 JS 結構（必須保持完整）
+## 關鍵 JS 結構（完整版）
 
-```javascript
-// [1] Chart.js CDN（獨立 script）
+```html
+<!-- [1] Chart.js CDN（獨立 script，必須正確閉合）-->
 <script src="chart.umd.js"></script>
 
-// [2] 自訂 JS（獨立 script，不能混入 CDN script）
+<!-- [2] 自訂 JS（獨立 script）-->
 <script>
+// ── 顏色與常數（頂層，必須最先定義）──
 const DARK = matchMedia('(prefers-color-scheme:dark)').matches;
 const GC = DARK ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
 const TC = DARK ? '#555' : '#aaa';
+const TYPE_C = {"個股":"#E24B4A","ETF":"#378ADD","槓桿":"#EF9F27",
+                "主動ETF":"#1D9E75","現金替代":"#7F77DD"};
 
-// ← TYPE_C 必須在這裡定義，在 buildHBar 之前
-const TYPE_C = {
-  "個股":"#E24B4A","ETF":"#378ADD","槓桿":"#EF9F27",
-  "主動ETF":"#1D9E75","現金替代":"#7F77DD"
-};
+// ── 基金數據（頂層全域，不能放進函式）──
+window.FD_DATA = [...];
 
-// ← rebuildPortfolioData 必須在此（動態更新數據）
-function rebuildPortfolioData(){ ... }
+// ── 動態重算函式 ──
+function rebuildPortfolioData() {
+  // 根據 LIVE_PRICES 重算所有持股估值
+  window.TW_DATA = [...];
+  window.US_DATA = [...];
+  window.JP_DATA = [...];
+  window.TW_BROKER = {...};
+  window.US_BROKER = {...};
+}
 
-// ← 靜態初始值（rebuildPortfolioData 執行後會被覆蓋）
-window.TW_DATA = [ ... ];
-window.US_DATA = [ ... ];
-window.JP_DATA = [ ... ];
-window.TW_BROKER = { ... };
-window.US_BROKER = { ... };
+// ── 靜態初始值（頁面載入時立即可用，rebuildPortfolioData 執行後覆蓋）──
+window.TW_DATA = [...];  // 必須有
+window.US_DATA = [...];  // 必須有
+window.JP_DATA = [...];  // 必須有
+window.TW_BROKER = {...};
+window.US_BROKER = {...};
 
-// ← 以下函式缺一不可
+// ── 繪圖函式（缺一不可）──
 function drawGauge(id, pct, label, color){ ... }
-function buildHBar(canvasId, data, title){ ... }
+function buildHBar(canvasId, data, title){
+  const ctx = document.getElementById(canvasId); if(!ctx) return;
+  const existing = Chart.getChart(ctx);  // ← 必須先 destroy
+  if(existing) existing.destroy();
+  // ...new Chart(...)
+}
 function renderBrokerTable(brokerData, containerId, currency){ ... }
 function buildDonut(canvasId, data){ ... }
 function mkLine(id, ds, pct){ ... }
 function drawAllCharts(){ ... }
-function drawTabCharts(name){ ... }
-function switchTab(el, name){ ... }
+function drawTabCharts(name){
+  if(window.chartsInit[name]) return;
+  window.chartsInit[name] = 1;
+  // ...各分頁渲染邏輯...
+  // 基金分頁用純 HTML bar：
+  if(name==='fund'){
+    const fw = document.getElementById('fundBarWrap');
+    fw.innerHTML = items.map(it=>`<div>...</div>`).join('');
+    delete window.chartsInit['fund'];  // 允許下次重繪
+  }
+}
+function switchTab(el, name){
+  // ...切換 active class...
+  setTimeout(()=>{
+    drawTabCharts(name);
+    if(name==='calendar') renderCalendar();
+    if(name==='pareto-tw') renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');
+    if(name==='pareto-us') renderBrokerTable(window.US_BROKER,'us-broker-table','USD');
+  }, 60);
+}
 function calcRetire(){ ... }
-// ← 月曆函式群
+// ── 月曆函式群 ──
 function renderCalendar(){ ... }
 function renderWeeklyTable(...){ ... }
 function renderMiniChart(ym){ ... }
 function navMonth(dir){ ... }
 
+// ── 初始化 ──
+window.chartsInit = {};
 document.addEventListener('DOMContentLoaded', () => {
   rebuildPortfolioData();
   drawAllCharts();
   drawTabCharts('overview');
   calcRetire();
-  loadLivePrices();  // 非同步抓取最新股價
+  loadLivePrices();
 });
 </script>
 ```
-
----
-
-## 目前持股 Canvas 對應
-
-| Canvas ID | 分頁 | 函式 | 高度 |
-|-----------|------|------|------|
-| g-tw/us/jp/fd | 油表（常駐） | drawGauge | 65px |
-| overviewDonut | 總覽 | buildDonut | 190px |
-| growthChart | 成長波動 | Chart.js bar | 260px |
-| volChart | 成長波動 | mkLine | 220px |
-| radarChart | 配置分析 | Chart.js radar | 190px |
-| twPareto | 🇹🇼 台股 | buildHBar | 520px |
-| twDonut | 🇹🇼 台股 | buildDonut | 190px |
-| usPareto | 🇺🇸 美股 | buildHBar | 480px |
-| usDonut | 🇺🇸 美股 | buildDonut | 190px |
-| jpPareto | 🇯🇵 日股 | buildHBar | 200px |
-| fundPareto | 📦 基金 | buildHBar | 180px |
-| trendChart | 📉 走勢圖 | mkLine | 260px |
-| allocChart | 📉 走勢圖 | mkLine | 260px |
-| barChart | 📉 走勢圖 | Chart.js bar | 160px |
-| calMiniChart | 📅 月曆 | Chart.js combo | 160px |
 
 ---
 
@@ -336,13 +426,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 | 版本 | 日期 | 主要更新 |
 |------|------|---------|
-| v3.3 | 07/27 | 三版合一（13分頁）、Pareto→橫向Bar、資產月曆 |
-| v3.3.1 | 07/27 | Bar Chart 加入萬元+%標籤、修復 JS script 結構 |
-| v3.3.2 | 07/28 | 修正台股美股錯誤報價（006208/00881/5483等） |
-| v3.3.3 | 07/28 | 補入台股美股各券商明細表（HTML 容器+JS 渲染） |
-| v3.3.4 | 07/28 | 自動股價系統（GOOGLEFINANCE 架構設計完成） |
-| v3.3.5 | 07/28 | 修復 TYPE_C 缺失+renderBrokerTable 遺失 |
-| **v3.4** | **07/28** | **全數據核對（GD驗算零誤差）、完整 SOP 建立** |
+| v3.3 | 07/27 | 13分頁、橫向Bar、資產月曆 |
+| v3.3.1 | 07/27 | Bar Chart 百分比標籤、JS script 結構修正 |
+| v3.3.2 | 07/28 | 修正台股美股錯誤報價 |
+| v3.3.3 | 07/28 | 補入台股美股各券商明細表 |
+| v3.3.4 | 07/28 | GOOGLEFINANCE 股價架構設計完成 |
+| v3.3.5 | 07/28 | 修復 TYPE_C 缺失＋renderBrokerTable 遺失 |
+| v3.4.0 | 07/28 | 全數據核對零誤差，完整 SOP 建立 |
+| **v3.4.1** | **07/28** | **根本修復基金作用域Bug（FD_DATA→window.FD_DATA）；加入 US_DATA/JP_DATA 靜態初始值；buildHBar 加入 Chart.destroy()** |
 
 ---
 
@@ -350,14 +441,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 | 症狀 | 可能原因 | 解法 |
 |------|---------|------|
-| 圖表空白/載入中 | `TYPE_C` 未定義 | 確認 `const TYPE_C={...}` 在 JS 開頭 |
-| 圖表空白/載入中 | `drawGauge` 或 `buildHBar` 遺失 | `grep 'function drawGauge'` 確認存在 |
-| 圖表空白/載入中 | Chart.js script 未閉合 | 確認 `chart.umd.js"></script>` 有 `>` 閉合 |
-| 數字不更新 | 靜態 HTML 未替換 | 搜尋舊數字（如 8392）確認已全部換掉 |
-| 券商明細表空白 | div 容器不存在 | 確認 `id="tw-broker-table"` 在 HTML body 中 |
-| 數據更新後圖表不重繪 | `chartsInit` 快取 | 確認用 `window.chartsInit` 而非 `let chartsInit` |
-| JS 語法錯誤 | 數據替換邊界不精確 | 用 `node --check` 驗證，找殘留程式碼 |
+| 圖表空白 | `TYPE_C` 未定義 | 確認 `const TYPE_C={...}` 在頂層 |
+| 圖表空白 | `drawGauge`/`buildHBar` 遺失 | node --check + 函式清單驗證 |
+| 圖表空白 | Chart.js script 未閉合 | 確認 `chart.umd.js"></script>` |
+| 圖表空白 | 數據變數 undefined | 確認所有 window.XXX 在頂層（深度=0） |
+| **基金頁空白** | **`FD_DATA` 在函式內部** | **改成 `window.FD_DATA` 頂層定義** |
+| 數字不更新 | 靜態 HTML 未替換 | 搜尋舊數字確認全部換掉 |
+| 券商明細表空白 | div 容器不存在 | 確認 `id="tw-broker-table"` 在 HTML body |
+| 數據更新後圖表不重繪 | `chartsInit` 快取 | 統一用 `window.chartsInit` |
+| Canvas is already in use | 未 destroy 舊 Chart | `Chart.getChart(ctx)?.destroy()` |
+| JS 語法錯誤 | 替換邊界不精確造成程式碼殘留 | node --check，清除 JP_DATA 後殘留 |
 
 ---
 
-*RetireFlow Pro v3.4｜僅供個人財務規劃參考，不構成投資建議*
+*RetireFlow Pro v3.4.1｜僅供個人財務規劃參考，不構成投資建議*
