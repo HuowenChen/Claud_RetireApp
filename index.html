@@ -484,8 +484,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- ════ 基金 ════ -->
 <div id="tab-fund" class="tab-content">
   <div class="card">
-    <div class="stitle">基金帳戶 Bar Chart（總計869萬，目標1,000萬達成86.9%）</div>
-    <div style="position:relative;width:100%;height:200px" id="fundChartWrap"><canvas id="fundPareto"></canvas></div>
+    <div class="stitle">基金帳戶配置（總計869萬，目標1,000萬達成86.9%）</div>
+    <div id="fundBarWrap" style="margin-top:8px"></div>
   </div>
   <div class="card" style="margin-top:0">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
@@ -1507,7 +1507,29 @@ function drawTabCharts(name){
   if(name==='pareto-tw'){buildHBar('twPareto',window.TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',window.TW_DATA);renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');}
   if(name==='pareto-us'){buildHBar('usPareto',window.US_DATA,'美股持股（估值1,422萬）');buildDonut('usDonut',window.US_DATA);renderBrokerTable(window.US_BROKER,'us-broker-table','USD');}
   if(name==='pareto-jp'){buildHBar('jpPareto',window.JP_DATA,'日股持股（Google Drive實際值678.7萬｜各股等比例分配）');}
-  if(name==='fund'){buildHBar('fundPareto',FD_DATA,'基金帳戶（869萬）');delete window.chartsInit['fund'];}
+  if(name==='fund'){
+    const fw=document.getElementById('fundBarWrap');
+    if(!fw) return;
+    const items=[
+      {name:'鉅亨網基金',val:411.4,pct:47.3,color:'#378ADD'},
+      {name:'HSBC結構型',val:314.5,pct:36.2,color:'#1D9E75'},
+      {name:'基富通基金',val:142.7,pct:16.5,color:'#EF9F27'},
+    ];
+    const maxVal=411.4;
+    fw.innerHTML=items.map(it=>`
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span style="font-weight:600">${it.name}</span>
+          <span style="color:${it.color};font-weight:700">${it.val}萬 (${it.pct}%)</span>
+        </div>
+        <div style="background:var(--bg);border-radius:6px;height:28px;overflow:hidden;position:relative">
+          <div style="background:${it.color};width:${(it.val/maxVal*100).toFixed(1)}%;height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;transition:width .6s ease">
+            <span style="color:#fff;font-size:11px;font-weight:600;white-space:nowrap">${it.val}萬</span>
+          </div>
+        </div>
+      </div>`).join('');
+    delete window.chartsInit['fund'];
+  }
   if(name==='trend'){
     mkLine('trendChart',[
       {label:'總資產',data:HT,borderColor:'#378ADD',borderWidth:2,pointRadius:0,fill:true,backgroundColor:DARK?'rgba(55,138,221,0.08)':'rgba(55,138,221,0.06)',tension:0.3},
