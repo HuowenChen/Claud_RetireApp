@@ -214,8 +214,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="pills">
     <div class="pill"><span class="dot dot-green"></span>Drive 已同步</div>
-    <div class="pill"><span class="dot dot-amber"></span>達成率 52.5%</div>
-    <div class="pill"><span class="dot dot-red"></span>槓桿 10.6%</div>
+    <div class="pill"><span class="dot dot-amber"></span>達成率 51.2%</div>
+    <div class="pill"><span class="dot dot-red"></span>槓桿 11.9%</div>
   </div>
 </div>
 
@@ -223,12 +223,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="g5">
   <div class="metric">
     <div class="metric-label">總資產</div>
-    <div class="metric-value">8,392<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
-    <div class="metric-sub dn">↓ -45萬 今日</div>
+    <div class="metric-value">8,196<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub dn">↓ -40萬 今日</div>
   </div>
   <div class="metric">
     <div class="metric-label">淨資產</div>
-    <div class="metric-value">4,123<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-value">3,927<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
     <div class="metric-sub">負債比 50.9%</div>
   </div>
   <div class="metric">
@@ -709,7 +709,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="card">
       <div class="stitle">退休目標設定</div>
       <div class="inp-row"><label>退休目標（萬）</label><input type="number" id="s-target" value="16000" step="100"></div>
-      <div class="inp-row"><label>目前總資產（萬）</label><input type="number" id="s-current" value="8392"></div>
+      <div class="inp-row"><label>目前總資產（萬）</label><input type="number" id="s-current" value="8196"></div>
       <div class="inp-row"><label>每月新增（萬）</label><input type="number" id="s-monthly" value="15"></div>
       <div class="inp-row"><label>預期年報酬率（%）</label><input type="number" id="s-return" value="10" step="0.5"></div>
       <div class="inp-row"><label>退休後月支出（萬）</label><input type="number" id="s-expense" value="12"></div>
@@ -1293,6 +1293,80 @@ window.JP_DATA=
   {code:"6971",name:"京瓷（900股）",val:64.8,type:"個股"},
   {code:"6762",name:"TDK（600股）",val:34.2,type:"個股"}
 ];
+
+// ── 油表（半圓 Canvas）──
+function drawGauge(id,pct,label,color){
+  const c=document.getElementById(id);if(!c)return;
+  const W=c.clientWidth||c.width||110,H=c.clientHeight||c.height||65;
+  c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  const cx=W/2,cy=H*0.88,r=Math.min(W,H*2)*0.36;
+  const cl=Math.min(pct,100);
+  const bc=pct<40?'#E24B4A':pct<70?'#EF9F27':pct<90?'#1D9E75':'#378ADD';
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,2*Math.PI);
+  ctx.strokeStyle=DARK?'#333':'#eee';ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();
+  if(cl>0){ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+Math.PI*cl/100);
+  ctx.strokeStyle=bc;ctx.lineWidth=r*0.22;ctx.lineCap='round';ctx.stroke();}
+  ctx.fillStyle=DARK?'#f0efe9':'#1a1a1a';
+  ctx.font='bold '+Math.round(r*0.48)+'px -apple-system,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(pct.toFixed(1)+'%',cx,cy-r*0.12);
+  ctx.fillStyle=DARK?'#888':'#aaa';ctx.font=Math.round(r*0.27)+'px -apple-system,sans-serif';
+  ctx.fillText(label,cx,cy+r*0.3);
+}
+
+// ── 橫向 Bar Chart（含即時百分比標籤）──
+function buildHBar(canvasId,data,title){
+  const ctx=document.getElementById(canvasId);if(!ctx)return;
+  const top=data.slice(0,15);
+  const rest=data.slice(15);
+  if(rest.length){
+    const ov=rest.reduce((s,d)=>s+d.val,0);
+    top.push({code:'其他',name:'其他'+rest.length+'檔',val:parseFloat(ov.toFixed(1)),type:'ETF'});
+  }
+  const total=data.reduce((s,d)=>s+d.val,0);
+  const items=[...top].reverse();
+  const vals=items.map(d=>d.val);
+  const pcts=items.map(d=>parseFloat((d.val/total*100).toFixed(1)));
+  const colors=items.map(d=>TYPE_C[d.type]||'#999');
+  const maxVal=Math.max(...vals);
+  const labelPlugin={
+    id:'hbarLabel',
+    afterDatasetsDraw(chart){
+      const {ctx:c,scales:{x,y}}=chart;
+      chart.data.datasets[0].data.forEach((val,i)=>{
+        const bar=chart.getDatasetMeta(0).data[i];
+        const txt=`${val}萬 (${pcts[i]}%)`;
+        c.save();
+        c.font='600 11px -apple-system,sans-serif';
+        c.textBaseline='middle';
+        const bx=bar.x,by=bar.y;
+        const txtW=c.measureText(txt).width;
+        const barW=bx-x.getPixelForValue(0);
+        if(barW>txtW+16){c.fillStyle='rgba(255,255,255,0.92)';c.textAlign='right';c.fillText(txt,bx-6,by);}
+        else{c.fillStyle=DARK?'#ccc':'#444';c.textAlign='left';c.fillText(txt,bx+6,by);}
+        c.restore();
+      });
+    }
+  };
+  new Chart(ctx,{type:'bar',data:{
+    labels:items.map(d=>d.code+' '+d.name),
+    datasets:[{label:'市值（萬）',data:vals,
+      backgroundColor:colors.map(c=>c+'BB'),
+      borderColor:colors,borderWidth:1,borderRadius:4}]
+  },plugins:[labelPlugin],options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>` ${c.parsed.x}萬（${pcts[c.dataIndex]}%）`}},
+      title:{display:!!title,text:title,color:TC,font:{size:12,weight:'600'},padding:{bottom:6}}},
+    scales:{
+      x:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'},max:maxVal*1.45},
+      y:{grid:{display:false},ticks:{color:TC,font:{size:10}}}
+    }
+  }});
+}
+
 
 // ── Donut ──
 function buildDonut(canvasId,data){
