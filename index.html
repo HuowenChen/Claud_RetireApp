@@ -463,7 +463,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="card">
     <div class="stitle">日股持股 Pareto 分析（估值 349萬，4檔）</div>
     <div style="position:relative;width:100%;height:200px"><canvas id="jpPareto"></canvas></div>
-    <div class="key-insight">🔍 Google Drive 實際淨值 678.7萬（7/27），達成率67.9%。圖表依Google Drive實際值等比例分配各股估值，各股實際市值請以券商系統為準。日本REITs ETF（2644）仍為最大部位，TDK/京瓷/村田為電子零件龍頭。距目標1,000萬尚差321萬，建議分季加碼。</div>
+    <div class="key-insight">🔍 股數×股價×匯率（JPY/TWD=0.1957）直接計算，合計615.3萬，達成率61.5%，達成率67.9%。圖表依Google Drive實際值等比例分配各股估值，各股實際市值請以券商系統為準。日本REITs ETF（2644）仍為最大部位，TDK/京瓷/村田為電子零件龍頭。距目標1,000萬尚差321萬，建議分季加碼。</div>
   </div>
   <div class="card">
     <div class="stitle">日股明細</div>
@@ -872,7 +872,7 @@ const SHARES = {
   "SOFX":500, "SOXL":240, "TER":360, "TQQQ":400,
   "TSM":50, "TSMX":200, "AMD":25, "INTW":100, "SNXX":530, "SPCX":12,
   // 日股（日幣）
-  "2644.T":6000, "6762.T":600, "6971.T":900, "6981.T":500,
+  "2644.T":3802, "6762.T":2911.5, "6971.T":3648, "6981.T":7197,
 };
 
 // ── 各券商持股分配（用於 broker table）──
@@ -1122,7 +1122,8 @@ function rebuildPortfolioData(){
   const jpCalc = jpRaw.map(([c,s])=>({c, raw:calcVal(c,s)}));
   const jpRawTotal = jpCalc.reduce((t,d)=>t+d.raw, 0);
   // 使用 Google Drive 歷史最新值或估算總值
-  const jpActualTotal = 62.45; // 624.5萬 from Google Drive (7/28)
+  // 日股：直接用股數×股價×匯率計算（不再用等比例分配）
+  const jpActualTotal = null;
   const jpScale = jpRawTotal > 0 ? jpActualTotal / jpRawTotal : 1;
   window.JP_DATA = jpCalc.map(({c, raw})=>({
     code:c.replace('.T',''), name:NAMES[c]||c,
@@ -1356,10 +1357,10 @@ window.US_DATA=
 ];
 window.JP_DATA=
 [
-  {code:"2644",name:"日本REITs ETF",val:446.4,type:"ETF"},
-  {code:"6981",name:"村田製作所",val:70.4,type:"個股"},
-  {code:"6971",name:"京瓷",val:64.3,type:"個股"},
-  {code:"6762",name:"TDK",val:34.2,type:"個股"}
+  {code:"2644",name:"日本REITs ETF（6,000股×¥3,802）",val:446.4,type:"ETF"},
+  {code:"6981",name:"村田製作所（500股×¥7,197）",val:70.4,type:"個股"},
+  {code:"6971",name:"京瓷（900股×¥3,648）",val:64.3,type:"個股"},
+  {code:"6762",name:"TDK（600股×¥2,911.5）",val:34.2,type:"個股"}
 ];
 
 // ── 油表（半圓 Canvas）──
@@ -1470,7 +1471,7 @@ function drawAllCharts(){
   if(!window.chartsInit['g']){window.chartsInit['g']=1;
     drawGauge('g-tw',42.1,'4,209萬','#378ADD');
     drawGauge('g-us',56.2,'2,249萬','#1D9E75');
-    drawGauge('g-jp',61.5,'615萬','#EF9F27');
+    drawGauge('g-jp',61.5,'615.3萬','#EF9F27');
     drawGauge('g-fd',86.9,'869萬','#7F77DD');
   }
   if(!window.chartsInit['overview']){window.chartsInit['overview']=1;
@@ -1510,7 +1511,7 @@ function drawTabCharts(name){
   }
   if(name==='pareto-tw'){buildHBar('twPareto',window.TW_DATA,'台股持股（估值3,736萬）');buildDonut('twDonut',window.TW_DATA);renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');}
   if(name==='pareto-us'){buildHBar('usPareto',window.US_DATA,'美股持股（估值1,422萬）');buildDonut('usDonut',window.US_DATA);renderBrokerTable(window.US_BROKER,'us-broker-table','USD');}
-  if(name==='pareto-jp'){buildHBar('jpPareto',window.JP_DATA,'日股持股（Google Drive實際值678.7萬｜各股等比例分配）');}
+  if(name==='pareto-jp'){buildHBar('jpPareto',window.JP_DATA,'日股持股（615.3萬｜¥×0.1957 TWD）');}
   if(name==='fund'){
     const fw=document.getElementById('fundBarWrap');
     if(!fw) return;
