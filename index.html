@@ -788,6 +788,62 @@ const DARK=matchMedia('(prefers-color-scheme:dark)').matches;
 const GC=DARK?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
 const TC=DARK?'#555':'#aaa';
 
+// ── 顏色常數 ──
+const TYPE_C={
+  "個股":"#E24B4A","ETF":"#378ADD","槓桿":"#EF9F27",
+  "主動ETF":"#1D9E75","現金替代":"#7F77DD"
+};
+
+// ── 券商明細表 ──
+function renderBrokerTable(brokerData,containerId,currency){
+  const el=document.getElementById(containerId);
+  if(!el||!brokerData)return;
+  const brokers=Object.keys(brokerData);
+  const grandTotal=brokers.reduce((s,b)=>s+(brokerData[b]?.total||0),0);
+  let h=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead><tr style="border-bottom:1.5px solid var(--border)">
+      <th style="padding:6px 8px;text-align:left;font-size:10px;font-weight:600;color:var(--hint);letter-spacing:.05em">券商</th>
+      <th style="padding:6px 8px;text-align:left;font-size:10px;font-weight:600;color:var(--hint)">代號</th>
+      <th style="padding:6px 8px;text-align:left;font-size:10px;font-weight:600;color:var(--hint)">名稱</th>
+      <th style="padding:6px 8px;text-align:right;font-size:10px;font-weight:600;color:var(--hint)">股數</th>
+      <th style="padding:6px 8px;text-align:right;font-size:10px;font-weight:600;color:var(--hint)">單價</th>
+      <th style="padding:6px 8px;text-align:right;font-size:10px;font-weight:600;color:var(--hint)">估值(萬)</th>
+      <th style="padding:6px 8px;text-align:right;font-size:10px;font-weight:600;color:var(--hint)">佔%</th>
+      <th style="padding:6px 8px;font-size:10px;font-weight:600;color:var(--hint)">類型</th>
+    </tr></thead><tbody>`;
+  brokers.forEach(broker=>{
+    const bd=brokerData[broker];if(!bd)return;
+    const bPct=(bd.total/grandTotal*100).toFixed(1);
+    h+=`<tr style="background:var(--bg)">
+      <td colspan="5" style="padding:7px 8px;font-weight:700;font-size:12px;border-top:1px solid var(--border)">${broker}</td>
+      <td style="padding:7px 8px;font-weight:700;font-size:12px;text-align:right;border-top:1px solid var(--border)">${bd.total}</td>
+      <td style="padding:7px 8px;font-size:11px;color:var(--muted);text-align:right;border-top:1px solid var(--border)">${bPct}%</td>
+      <td style="border-top:1px solid var(--border)"></td></tr>`;
+    (bd.items||[]).forEach(it=>{
+      const col=TYPE_C[it.type]||'#999';
+      const pPct=(it.val/grandTotal*100).toFixed(1);
+      const priceStr=currency==='JPY'?'¥'+it.price.toLocaleString():currency==='USD'?'$'+it.price:it.price+'元';
+      h+=`<tr style="border-bottom:.5px solid var(--border)">
+        <td style="padding:5px 8px;color:var(--hint);font-size:11px"></td>
+        <td style="padding:5px 8px;font-weight:500;font-size:11px">${it.code}</td>
+        <td style="padding:5px 8px;font-size:11px;color:var(--muted)">${it.name}</td>
+        <td style="padding:5px 8px;text-align:right;font-size:11px;color:var(--muted)">${Number(it.shares).toLocaleString()}</td>
+        <td style="padding:5px 8px;text-align:right;font-size:11px;color:var(--muted)">${priceStr}</td>
+        <td style="padding:5px 8px;text-align:right;font-size:12px;font-weight:600">${it.val}</td>
+        <td style="padding:5px 8px;text-align:right;font-size:11px;color:var(--muted)">${pPct}%</td>
+        <td style="padding:5px 8px"><span style="background:${col}22;color:${col};padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">${it.type}</span></td>
+      </tr>`;
+    });
+  });
+  h+=`<tr style="font-weight:700;background:var(--bg);border-top:2px solid var(--border)">
+    <td colspan="5" style="padding:7px 8px;font-size:12px">合計</td>
+    <td style="padding:7px 8px;font-size:13px;text-align:right">${grandTotal.toFixed(1)}萬</td>
+    <td style="padding:7px 8px;text-align:right;font-size:12px">100%</td><td></td>
+  </tr></tbody></table></div>`;
+  el.innerHTML=h;
+}
+
+
 
 // ══ 即時股價自動抓取 ══════════════════════════════════════════
 
