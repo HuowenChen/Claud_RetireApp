@@ -1485,6 +1485,66 @@ function renderBrokerTable(brokerData, containerId, currency){
   el.innerHTML = html;
 }
 
+
+// ── 橫向 Bar Chart（含即時百分比標籤）──
+function buildHBar(canvasId,data,title){
+  const ctx=document.getElementById(canvasId);if(!ctx)return;
+  const top=data.slice(0,15);
+  const rest=data.slice(15);
+  if(rest.length){
+    const ov=rest.reduce((s,d)=>s+d.val,0);
+    top.push({code:'其他',name:'其他'+rest.length+'檔',val:parseFloat(ov.toFixed(1)),type:'ETF'});
+  }
+  const total=data.reduce((s,d)=>s+d.val,0);
+  const items=[...top].reverse();
+  const vals=items.map(d=>d.val);
+  const pcts=items.map(d=>parseFloat((d.val/total*100).toFixed(1)));
+  const colors=items.map(d=>TYPE_C[d.type]||'#999');
+  const maxVal=Math.max(...vals);
+  const labelPlugin={
+    id:'hbarLabel',
+    afterDatasetsDraw(chart){
+      const {ctx:c,scales:{x,y}}=chart;
+      chart.data.datasets[0].data.forEach((val,i)=>{
+        const bar=chart.getDatasetMeta(0).data[i];
+        const txt=`${val}萬 (${pcts[i]}%)`;
+        c.save();
+        c.font='600 11px -apple-system,sans-serif';
+        c.textBaseline='middle';
+        const bx=bar.x,by=bar.y;
+        const txtW=c.measureText(txt).width;
+        const barW=bx-x.getPixelForValue(0);
+        if(barW>txtW+16){
+          c.fillStyle='rgba(255,255,255,0.92)';
+          c.textAlign='right';
+          c.fillText(txt,bx-6,by);
+        }else{
+          c.fillStyle=DARK?'#ccc':'#444';
+          c.textAlign='left';
+          c.fillText(txt,bx+6,by);
+        }
+        c.restore();
+      });
+    }
+  };
+  new Chart(ctx,{type:'bar',data:{
+    labels:items.map(d=>d.code+' '+d.name),
+    datasets:[{label:'市值（萬）',data:vals,
+      backgroundColor:colors.map(c=>c+'BB'),
+      borderColor:colors,borderWidth:1,borderRadius:4}]
+  },plugins:[labelPlugin],options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:110}},
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>` ${c.parsed.x}萬（${pcts[c.dataIndex]}%）`}},
+      title:{display:!!title,text:title,color:TC,font:{size:12,weight:'600'},padding:{bottom:6}}},
+    scales:{
+      x:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'萬'},max:maxVal*1.45},
+      y:{grid:{display:false},ticks:{color:TC,font:{size:10}}}
+    }
+  }});
+}
+
 // ── Donut ──
 function buildDonut(canvasId,data){
   const ctx=document.getElementById(canvasId);if(!ctx)return;
