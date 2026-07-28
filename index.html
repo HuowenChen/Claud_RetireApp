@@ -78,7 +78,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .alert-purple{border-color:#7F77DD;background:#EEEDF9;color:#3B3580}
 
 /* ── Charts ── */
-.chart-wrap{position:relative;width:100%;height:260px}
+.chart-wrap{position:relative;width:49.6%;height:260px}
 .chart-md{position:relative;width:100%;height:220px}
 .chart-sm{position:relative;width:100%;height:190px}
 .chart-pareto{position:relative;width:100%;height:310px}
@@ -214,7 +214,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="pills">
     <div class="pill"><span class="dot dot-green"></span>Drive 已同步</div>
-    <div class="pill"><span class="dot dot-amber"></span>達成率 51.2%</div>
+    <div class="pill"><span class="dot dot-amber"></span>達成率 49.6%</div>
     <div class="pill"><span class="dot dot-red"></span>槓桿 11.9%</div>
   </div>
 </div>
@@ -223,8 +223,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="g5">
   <div class="metric">
     <div class="metric-label">總資產</div>
-    <div class="metric-value">8,196<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
-    <div class="metric-sub dn">↓ -40萬 今日</div>
+    <div class="metric-value">7,942<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub dn">↓ -294萬 今日</div>
   </div>
   <div class="metric">
     <div class="metric-label">淨資產</div>
@@ -257,11 +257,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
     <div>
       <div class="stitle" style="margin-bottom:2px">退休目標達成率（依 Google Drive 絕對金額）</div>
-      <div style="font-size:12px;color:var(--muted)">總資產 8,196萬 ／ 目標 16,000萬</div>
+      <div style="font-size:12px;color:var(--muted)">總資產 7,942萬 ／ 目標 16,000萬</div>
     </div>
     <div style="text-align:right">
       <div style="font-size:26px;font-weight:700;letter-spacing:-1px">51.2%</div>
-      <div style="font-size:11px;color:var(--muted)">還需增加 7,804萬</div>
+      <div style="font-size:11px;color:var(--muted)">還需增加 8,058萬</div>
     </div>
   </div>
   <div class="prog-bg" style="height:11px">
@@ -955,12 +955,12 @@ const FALLBACK_PRICES = {
   "SNXX":11.24,
   "SPCX":113.5,
   // 日股（JPY）
-  "2644.T":3876,
-  "6762.T":2926,
-  "6971.T":3692,
-  "6981.T":7381,
+  "2644.T":3802,
+  "6762.T":2911.5,
+  "6971.T":3648,
+  "6981.T":7197,
   // 匯率
-  "USDTWD":32.3, "JPYTWD":0.195,
+  "USDTWD":32.39, "JPYTWD":0.1957,
 };
 
 // ── 全域股價快取 ──
@@ -1135,45 +1135,45 @@ function rebuildPortfolioData(){
 // 基金數據已移至全域（見 window.FD_DATA）
 
 window.TW_BROKER = {
-  "永豐敦南": {total:212.4, items:[
-    {code:"00675L",name:"富邦加權正2",shares:4000,price:290.05,val:116.0,type:"槓桿"},
-    {code:"00663L",name:"國泰加權正2",shares:9000,price:95.95,val:86.4,type:"槓桿"},
-    {code:"00631L",name:"元大台50正2",shares:3000,price:33.54,val:10.1,type:"槓桿"}
+  "永豐敦南": {total:192.4, items:[
+    {code:"00675L",name:"富邦加權正2",shares:4000,price:262.7,val:105.1,type:"槓桿"},
+    {code:"00663L",name:"國泰加權正2",shares:9000,price:86.85,val:78.2,type:"槓桿"},
+    {code:"00631L",name:"元大台50正2",shares:3000,price:30.6,val:9.2,type:"槓桿"}
   ]},
-  "永豐竹科": {total:4038.3, items:[
-    {code:"2330",name:"台積電",shares:5294,price:2350.0,val:1244.1,type:"個股"},
-    {code:"006208",name:"富邦台50",shares:20000,price:233.0,val:466.0,type:"ETF"},
-    {code:"0050",name:"元大台灣50",shares:45000,price:101.45,val:456.5,type:"ETF"},
-    {code:"0056",name:"元大高股息",shares:62700,price:50.2,val:314.8,type:"ETF"},
-    {code:"00663L",name:"國泰加權正2",shares:23000,price:95.95,val:220.7,type:"槓桿"},
-    {code:"00927",name:"群益半導體收益",shares:50000,price:35.83,val:179.2,type:"ETF"},
-    {code:"00881",name:"國泰科技龍頭",shares:35000,price:51.15,val:179.0,type:"ETF"},
-    {code:"00935",name:"野村新科技50",shares:31000,price:55.15,val:171.0,type:"ETF"},
-    {code:"00894",name:"中信小資高價30",shares:33000,price:45.1,val:148.8,type:"ETF"},
-    {code:"5483",name:"中美晶",shares:7000,price:204.0,val:142.8,type:"個股"},
-    {code:"00685L",name:"群益加權正2",shares:100000,price:10.96,val:109.6,type:"槓桿"},
-    {code:"00631L",name:"元大台50正2",shares:30000,price:33.54,val:100.6,type:"槓桿"},
-    {code:"00981A",name:"統一台股增長",shares:23000,price:27.54,val:63.3,type:"ETF"},
-    {code:"00980A",name:"野村臺灣優選",shares:23000,price:22.28,val:51.2,type:"ETF"},
-    {code:"6147",name:"頎邦",shares:3000,price:155.0,val:46.5,type:"個股"},
-    {code:"00985A",name:"野村台灣50",shares:22000,price:20.63,val:45.4,type:"ETF"},
-    {code:"00992A",name:"群益科技創新",shares:19000,price:15.77,val:30.0,type:"ETF"},
-    {code:"009816",name:"凱基TOP50",shares:17000,price:14.72,val:25.0,type:"ETF"},
-    {code:"00988A",name:"統一全球創新",shares:14000,price:17.22,val:24.1,type:"ETF"},
-    {code:"00991A",name:"復華未來50",shares:12000,price:16.42,val:19.7,type:"ETF"}
+  "永豐竹科": {total:3825.2, items:[
+    {code:"2330",name:"台積電",shares:5294,price:2280.0,val:1207.0,type:"個股"},
+    {code:"006208",name:"富邦台50",shares:20000,price:222.1,val:444.2,type:"ETF"},
+    {code:"0050",name:"元大台灣50",shares:45000,price:97.15,val:437.2,type:"ETF"},
+    {code:"0056",name:"元大高股息",shares:62700,price:48.19,val:302.1,type:"ETF"},
+    {code:"00663L",name:"國泰加權正2",shares:23000,price:86.85,val:199.8,type:"槓桿"},
+    {code:"00881",name:"國泰科技龍頭",shares:35000,price:48.14,val:168.5,type:"ETF"},
+    {code:"00927",name:"群益半導體收益",shares:50000,price:33.41,val:167.1,type:"ETF"},
+    {code:"00935",name:"野村新科技50",shares:31000,price:50.7,val:157.2,type:"ETF"},
+    {code:"00894",name:"中信小資高價30",shares:33000,price:42.19,val:139.2,type:"ETF"},
+    {code:"5483",name:"中美晶",shares:7000,price:185.0,val:129.5,type:"個股"},
+    {code:"00685L",name:"群益加權正2",shares:100000,price:9.93,val:99.3,type:"槓桿"},
+    {code:"00631L",name:"元大台50正2",shares:30000,price:30.6,val:91.8,type:"槓桿"},
+    {code:"00981A",name:"統一台股增長",shares:23000,price:25.45,val:58.5,type:"主動ETF"},
+    {code:"00980A",name:"野村臺灣優選",shares:23000,price:20.78,val:47.8,type:"主動ETF"},
+    {code:"00985A",name:"野村台灣50",shares:22000,price:19.6,val:43.1,type:"主動ETF"},
+    {code:"6147",name:"頎邦",shares:3000,price:139.5,val:41.9,type:"個股"},
+    {code:"00992A",name:"群益科技創新",shares:19000,price:14.58,val:27.7,type:"主動ETF"},
+    {code:"009816",name:"凱基TOP50",shares:17000,price:13.94,val:23.7,type:"ETF"},
+    {code:"00988A",name:"統一全球創新",shares:14000,price:15.39,val:21.6,type:"主動ETF"},
+    {code:"00991A",name:"復華未來50",shares:12000,price:15.11,val:18.1,type:"主動ETF"}
   ]},
-  "玉山": {total:50.3, items:[
-    {code:"00631L",name:"元大台50正2",shares:15000,price:33.54,val:50.3,type:"槓桿"}
+  "玉山": {total:45.9, items:[
+    {code:"00631L",name:"元大台50正2",shares:15000,price:30.6,val:45.9,type:"槓桿"}
   ]},
-  "台銀": {total:133.1, items:[
-    {code:"00675L",name:"富邦加權正2",shares:2000,price:290.05,val:58.0,type:"槓桿"},
-    {code:"00631L",name:"元大台50正2",shares:11000,price:33.54,val:36.9,type:"槓桿"},
-    {code:"006208",name:"富邦台50",shares:1000,price:233.0,val:23.3,type:"ETF"},
-    {code:"00663L",name:"國泰加權正2",shares:1000,price:95.95,val:9.6,type:"槓桿"},
+  "台銀": {total:122.4, items:[
+    {code:"00675L",name:"富邦加權正2",shares:2000,price:262.7,val:52.5,type:"槓桿"},
+    {code:"00631L",name:"元大台50正2",shares:11000,price:30.6,val:33.7,type:"槓桿"},
+    {code:"006208",name:"富邦台50",shares:1000,price:222.1,val:22.2,type:"ETF"},
+    {code:"00663L",name:"國泰加權正2",shares:1000,price:86.85,val:8.7,type:"槓桿"},
     {code:"2812",name:"台中銀",shares:2559,price:20.75,val:5.3,type:"個股"}
   ]},
-  "凱基": {total:25.8, items:[
-    {code:"00988A",name:"統一全球創新",shares:15000,price:17.22,val:25.8,type:"ETF"}
+  "凱基": {total:23.1, items:[
+    {code:"00988A",name:"統一全球創新",shares:15000,price:15.39,val:23.1,type:"主動ETF"}
   ]},
 };
   Object.entries(BROKER_SHARES.TW).forEach(([broker, stocks])=>{
@@ -1190,45 +1190,45 @@ window.TW_BROKER = {
 
   // US_BROKER（動態）
   window.US_BROKER = {
-  "永豐豐存股": {total:690.7, items:[
-    {code:"SMH",name:"SMH半導體",shares:73,price:548.55,val:129.3,type:"ETF"},
-    {code:"GOOG",name:"Alphabet",shares:118,price:326.57,val:124.5,type:"個股"},
-    {code:"QQQ",name:"QQQ",shares:43,price:682.12,val:94.7,type:"ETF"},
-    {code:"VT",name:"VT全球",shares:166,price:154.45,val:82.8,type:"ETF"},
-    {code:"NVDA",name:"NVIDIA",shares:107,price:196.51,val:67.9,type:"個股"},
-    {code:"VOO",name:"VOO",shares:19.3,price:679.31,val:42.4,type:"ETF"},
-    {code:"VTI",name:"VTI全美",shares:34.5,price:365.18,val:40.7,type:"ETF"},
-    {code:"PLTR",name:"Palantir",shares:87,price:131.53,val:37.0,type:"個股"},
-    {code:"TSLA",name:"Tesla",shares:37,price:309.22,val:37.0,type:"個股"},
+  "永豐豐存股": {total:692.6, items:[
+    {code:"SMH",name:"SMH半導體",shares:73,price:548.55,val:129.7,type:"ETF"},
+    {code:"GOOG",name:"Alphabet",shares:118,price:326.57,val:124.8,type:"個股"},
+    {code:"QQQ",name:"QQQ",shares:43,price:682.12,val:95.0,type:"ETF"},
+    {code:"VT",name:"VT全球",shares:166,price:154.45,val:83.0,type:"ETF"},
+    {code:"NVDA",name:"NVIDIA",shares:107,price:196.51,val:68.1,type:"個股"},
+    {code:"VOO",name:"VOO",shares:19.3,price:679.31,val:42.5,type:"ETF"},
+    {code:"VTI",name:"VTI全美",shares:34.5,price:365.18,val:40.8,type:"ETF"},
+    {code:"PLTR",name:"Palantir",shares:87,price:131.53,val:37.1,type:"個股"},
+    {code:"TSLA",name:"Tesla",shares:37,price:309.22,val:37.1,type:"個股"},
     {code:"BRK.B",name:"Berkshire B",shares:12,price:497.18,val:19.3,type:"個股"},
     {code:"SOXX",name:"SOXX",shares:9.1,price:516.23,val:15.2,type:"ETF"}
   ]},
-  "永豐複委託": {total:1064.5, items:[
-    {code:"TER",name:"Teradyne",shares:270,price:334.77,val:291.9,type:"個股"},
-    {code:"SGOV",name:"SGOV超短債",shares:500,price:100.65,val:162.6,type:"現金替代"},
-    {code:"DRAM",name:"DRAM ETF",shares:500,price:52.43,val:84.7,type:"ETF"},
-    {code:"SOFI",name:"SoFi",shares:1400,price:16.88,val:76.3,type:"個股"},
-    {code:"SMH",name:"SMH半導體",shares:40,price:548.55,val:70.9,type:"ETF"},
-    {code:"TSM",name:"台積電ADR",shares:50,price:399.09,val:64.5,type:"個股"},
-    {code:"SOXL",name:"SOXL 3x",shares:120,price:128.15,val:49.7,type:"槓桿"},
-    {code:"MUU",name:"MUU",shares:500,price:29.92,val:48.3,type:"ETF"},
-    {code:"TSMX",name:"TSMX",shares:200,price:71.65,val:46.3,type:"ETF"},
-    {code:"MU",name:"Micron",shares:15,price:900.2,val:43.6,type:"個股"},
-    {code:"TQQQ",name:"TQQQ 3x",shares:200,price:63.4,val:41.0,type:"槓桿"},
-    {code:"RZLV",name:"RZLV",shares:5000,price:2.3,val:37.1,type:"ETF"},
+  "永豐複委託": {total:1067.5, items:[
+    {code:"TER",name:"Teradyne",shares:270,price:334.77,val:292.8,type:"個股"},
+    {code:"SGOV",name:"SGOV超短債",shares:500,price:100.65,val:163.0,type:"現金替代"},
+    {code:"DRAM",name:"DRAM ETF",shares:500,price:52.43,val:84.9,type:"ETF"},
+    {code:"SOFI",name:"SoFi",shares:1400,price:16.88,val:76.5,type:"個股"},
+    {code:"SMH",name:"SMH半導體",shares:40,price:548.55,val:71.1,type:"ETF"},
+    {code:"TSM",name:"台積電ADR",shares:50,price:399.09,val:64.6,type:"個股"},
+    {code:"SOXL",name:"SOXL 3x",shares:120,price:128.15,val:49.8,type:"槓桿"},
+    {code:"MUU",name:"MUU",shares:500,price:29.92,val:48.5,type:"ETF"},
+    {code:"TSMX",name:"TSMX",shares:200,price:71.65,val:46.4,type:"ETF"},
+    {code:"MU",name:"Micron",shares:15,price:900.2,val:43.7,type:"個股"},
+    {code:"TQQQ",name:"TQQQ 3x",shares:200,price:63.4,val:41.1,type:"槓桿"},
+    {code:"RZLV",name:"RZLV",shares:5000,price:2.3,val:37.2,type:"ETF"},
     {code:"MNST",name:"Monster",shares:60,price:95.33,val:18.5,type:"個股"},
     {code:"NOK",name:"Nokia",shares:500,price:9.28,val:15.0,type:"ETF"},
-    {code:"SOFX",name:"SOFX",shares:500,price:8.81,val:14.2,type:"ETF"}
+    {code:"SOFX",name:"SOFX",shares:500,price:8.81,val:14.3,type:"ETF"}
   ]},
-  "FirstTrade": {total:487.5, items:[
-    {code:"SGOV",name:"SGOV超短債",shares:400,price:100.65,val:130.0,type:"現金替代"},
-    {code:"TER",name:"Teradyne",shares:90,price:334.77,val:97.3,type:"個股"},
-    {code:"SMH",name:"SMH半導體",shares:35,price:548.55,val:62.0,type:"ETF"},
-    {code:"SOXL",name:"SOXL 3x",shares:120,price:128.15,val:49.7,type:"槓桿"},
-    {code:"TQQQ",name:"TQQQ 3x",shares:200,price:63.4,val:41.0,type:"槓桿"},
-    {code:"AMD",name:"AMD",shares:25,price:494.95,val:40.0,type:"個股"},
-    {code:"DRAM",name:"DRAM ETF",shares:220,price:52.43,val:37.3,type:"ETF"},
-    {code:"SNXX",name:"SNXX",shares:530,price:11.24,val:19.2,type:"現金替代"},
+  "FirstTrade": {total:488.8, items:[
+    {code:"SGOV",name:"SGOV超短債",shares:400,price:100.65,val:130.4,type:"現金替代"},
+    {code:"TER",name:"Teradyne",shares:90,price:334.77,val:97.6,type:"個股"},
+    {code:"SMH",name:"SMH半導體",shares:35,price:548.55,val:62.2,type:"ETF"},
+    {code:"SOXL",name:"SOXL 3x",shares:120,price:128.15,val:49.8,type:"槓桿"},
+    {code:"TQQQ",name:"TQQQ 3x",shares:200,price:63.4,val:41.1,type:"槓桿"},
+    {code:"AMD",name:"AMD",shares:25,price:494.95,val:40.1,type:"個股"},
+    {code:"DRAM",name:"DRAM ETF",shares:220,price:52.43,val:37.4,type:"ETF"},
+    {code:"SNXX",name:"SNXX",shares:530,price:11.24,val:19.3,type:"現金替代"},
     {code:"INTW",name:"INTW",shares:100,price:20.42,val:6.6,type:"ETF"},
     {code:"SPCX",name:"SPCX",shares:12,price:113.5,val:4.4,type:"ETF"}
   ]},
@@ -1299,66 +1299,66 @@ const rvol=[null,null,null,null,null,45,42,38,35,31,28,36,34,32,30,29,33,48,44,4
 // ── 持股數據 ──
 window.TW_DATA=
 [
-  {code:"2330",name:"台積電",val:1244.1,type:"個股"},
-  {code:"006208",name:"富邦台50",val:489.3,type:"ETF"},
-  {code:"0050",name:"元大台灣50",val:456.5,type:"ETF"},
-  {code:"00663L",name:"國泰加權正2",val:316.7,type:"槓桿"},
-  {code:"0056",name:"元大高股息",val:314.8,type:"ETF"},
-  {code:"00631L",name:"元大台50正2",val:197.9,type:"槓桿"},
-  {code:"00927",name:"群益半導體收益",val:179.2,type:"ETF"},
-  {code:"00881",name:"國泰科技龍頭",val:179.0,type:"ETF"},
-  {code:"00675L",name:"富邦加權正2",val:174.0,type:"槓桿"},
-  {code:"00935",name:"野村新科技50",val:171.0,type:"ETF"},
-  {code:"00894",name:"中信小資高價30",val:148.8,type:"ETF"},
-  {code:"5483",name:"中美晶",val:142.8,type:"個股"},
-  {code:"00685L",name:"群益加權正2",val:109.6,type:"槓桿"},
-  {code:"00981A",name:"統一台股增長",val:63.3,type:"主動ETF"},
-  {code:"00980A",name:"野村臺灣優選",val:51.2,type:"主動ETF"},
-  {code:"00988A",name:"統一全球創新",val:49.9,type:"主動ETF"},
-  {code:"6147",name:"頎邦",val:46.5,type:"個股"},
-  {code:"00985A",name:"野村台灣50",val:45.4,type:"主動ETF"},
-  {code:"00992A",name:"群益科技創新",val:30.0,type:"主動ETF"},
-  {code:"009816",name:"凱基TOP50",val:25.0,type:"ETF"},
-  {code:"00991A",name:"復華未來50",val:19.7,type:"主動ETF"},
+  {code:"2330",name:"台積電",val:1207.0,type:"個股"},
+  {code:"006208",name:"富邦台50",val:466.4,type:"ETF"},
+  {code:"0050",name:"元大台灣50",val:437.2,type:"ETF"},
+  {code:"0056",name:"元大高股息",val:302.1,type:"ETF"},
+  {code:"00663L",name:"國泰加權正2",val:286.6,type:"槓桿"},
+  {code:"00631L",name:"元大台50正2",val:180.5,type:"槓桿"},
+  {code:"00881",name:"國泰科技龍頭",val:168.5,type:"ETF"},
+  {code:"00927",name:"群益半導體收益",val:167.1,type:"ETF"},
+  {code:"00675L",name:"富邦加權正2",val:157.6,type:"槓桿"},
+  {code:"00935",name:"野村新科技50",val:157.2,type:"ETF"},
+  {code:"00894",name:"中信小資高價30",val:139.2,type:"ETF"},
+  {code:"5483",name:"中美晶",val:129.5,type:"個股"},
+  {code:"00685L",name:"群益加權正2",val:99.3,type:"槓桿"},
+  {code:"00981A",name:"統一台股增長",val:58.5,type:"主動ETF"},
+  {code:"00980A",name:"野村臺灣優選",val:47.8,type:"主動ETF"},
+  {code:"00988A",name:"統一全球創新",val:44.6,type:"主動ETF"},
+  {code:"00985A",name:"野村台灣50",val:43.1,type:"主動ETF"},
+  {code:"6147",name:"頎邦",val:41.9,type:"個股"},
+  {code:"00992A",name:"群益科技創新",val:27.7,type:"主動ETF"},
+  {code:"009816",name:"凱基TOP50",val:23.7,type:"ETF"},
+  {code:"00991A",name:"復華未來50",val:18.1,type:"主動ETF"},
   {code:"2812",name:"台中銀",val:5.3,type:"個股"}
 ];
 window.US_DATA=
 [
-  {code:"TER",name:"Teradyne",val:389.3,type:"個股"},
-  {code:"SGOV",name:"SGOV超短債",val:292.6,type:"現金替代"},
-  {code:"SMH",name:"SMH半導體",val:262.2,type:"ETF"},
-  {code:"GOOG",name:"Alphabet",val:124.5,type:"個股"},
-  {code:"DRAM",name:"DRAM ETF",val:121.9,type:"ETF"},
-  {code:"SOXL",name:"SOXL 3x",val:99.3,type:"槓桿"},
-  {code:"QQQ",name:"QQQ",val:94.7,type:"ETF"},
-  {code:"VT",name:"VT全球",val:82.8,type:"ETF"},
-  {code:"TQQQ",name:"TQQQ 3x",val:81.9,type:"槓桿"},
-  {code:"SOFI",name:"SoFi",val:76.3,type:"個股"},
-  {code:"NVDA",name:"NVIDIA",val:67.9,type:"個股"},
-  {code:"TSM",name:"台積電ADR",val:64.5,type:"個股"},
-  {code:"MUU",name:"MUU",val:48.3,type:"ETF"},
-  {code:"TSMX",name:"TSMX",val:46.3,type:"ETF"},
-  {code:"MU",name:"Micron",val:43.6,type:"個股"},
-  {code:"VOO",name:"VOO",val:42.3,type:"ETF"},
-  {code:"VTI",name:"VTI全美",val:40.7,type:"ETF"},
-  {code:"AMD",name:"AMD",val:40.0,type:"個股"},
-  {code:"RZLV",name:"RZLV",val:37.1,type:"ETF"},
-  {code:"PLTR",name:"Palantir",val:37.0,type:"個股"},
-  {code:"TSLA",name:"Tesla",val:37.0,type:"個股"},
+  {code:"TER",name:"Teradyne",val:390.4,type:"個股"},
+  {code:"SGOV",name:"SGOV超短債",val:293.4,type:"現金替代"},
+  {code:"SMH",name:"SMH半導體",val:263.0,type:"ETF"},
+  {code:"GOOG",name:"Alphabet",val:124.8,type:"個股"},
+  {code:"DRAM",name:"DRAM ETF",val:122.3,type:"ETF"},
+  {code:"SOXL",name:"SOXL 3x",val:99.6,type:"槓桿"},
+  {code:"QQQ",name:"QQQ",val:95.0,type:"ETF"},
+  {code:"VT",name:"VT全球",val:83.0,type:"ETF"},
+  {code:"TQQQ",name:"TQQQ 3x",val:82.1,type:"槓桿"},
+  {code:"SOFI",name:"SoFi",val:76.5,type:"個股"},
+  {code:"NVDA",name:"NVIDIA",val:68.1,type:"個股"},
+  {code:"TSM",name:"台積電ADR",val:64.6,type:"個股"},
+  {code:"MUU",name:"MUU",val:48.5,type:"ETF"},
+  {code:"TSMX",name:"TSMX",val:46.4,type:"ETF"},
+  {code:"MU",name:"Micron",val:43.7,type:"個股"},
+  {code:"VOO",name:"VOO",val:42.5,type:"ETF"},
+  {code:"VTI",name:"VTI全美",val:40.8,type:"ETF"},
+  {code:"AMD",name:"AMD",val:40.1,type:"個股"},
+  {code:"RZLV",name:"RZLV",val:37.2,type:"ETF"},
+  {code:"PLTR",name:"Palantir",val:37.1,type:"個股"},
+  {code:"TSLA",name:"Tesla",val:37.1,type:"個股"},
   {code:"BRK.B",name:"Berkshire B",val:19.3,type:"個股"},
-  {code:"SNXX",name:"SNXX",val:19.2,type:"現金替代"},
+  {code:"SNXX",name:"SNXX",val:19.3,type:"現金替代"},
   {code:"MNST",name:"Monster",val:18.5,type:"個股"},
   {code:"SOXX",name:"SOXX",val:15.2,type:"ETF"},
   {code:"NOK",name:"Nokia",val:15.0,type:"ETF"},
-  {code:"SOFX",name:"SOFX",val:14.2,type:"ETF"},
+  {code:"SOFX",name:"SOFX",val:14.3,type:"ETF"},
   {code:"INTW",name:"INTW",val:6.6,type:"ETF"},
   {code:"SPCX",name:"SPCX",val:4.4,type:"ETF"}
 ];
 window.JP_DATA=
 [
-  {code:"2644",name:"日本REITs ETF",val:453.5,type:"ETF"},
-  {code:"6981",name:"村田製作所",val:72.0,type:"個股"},
-  {code:"6971",name:"京瓷",val:64.8,type:"個股"},
+  {code:"2644",name:"日本REITs ETF",val:446.4,type:"ETF"},
+  {code:"6981",name:"村田製作所",val:70.4,type:"個股"},
+  {code:"6971",name:"京瓷",val:64.3,type:"個股"},
   {code:"6762",name:"TDK",val:34.2,type:"個股"}
 ];
 
@@ -1468,9 +1468,9 @@ window.chartsInit={};
 
 function drawAllCharts(){
   if(!window.chartsInit['g']){window.chartsInit['g']=1;
-    drawGauge('g-tw',44.6,'4,460萬','#378ADD');
-    drawGauge('g-us',56.1,'2,242萬','#1D9E75');
-    drawGauge('g-jp',62.4,'624萬','#EF9F27');
+    drawGauge('g-tw',42.1,'4,209萬','#378ADD');
+    drawGauge('g-us',56.2,'2,249萬','#1D9E75');
+    drawGauge('g-jp',61.5,'615萬','#EF9F27');
     drawGauge('g-fd',86.9,'869萬','#7F77DD');
   }
   if(!window.chartsInit['overview']){window.chartsInit['overview']=1;
