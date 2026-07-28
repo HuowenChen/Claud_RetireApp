@@ -1,6 +1,7 @@
-# RetireFlow 儀表板更新 SOP
+# RetireFlow 儀表板更新 SOP v2
 
-> 每次執行「更新儀表板」時，Claude 必須確認以下所有欄位都已正確更新。
+> 最後更新：2026/07/28
+> 每次執行「更新儀表板」時，Claude 必須確認以下 **25 個欄位**全部正確。
 
 ---
 
@@ -8,179 +9,291 @@
 
 | 來源 | 用途 |
 |------|------|
-| Google Drive 工作表1（持股+股價欄） | 各持股股數、最新股價 |
-| Google Drive 資產歷史記錄（最新一列） | 總資產、各類別、負債、股息 |
-| 前一日歷史記錄 | 計算今日變化（萬元、%） |
+| GD 工作表1（持股+股價欄） | 各持股股數、最新股價（GOOGLEFINANCE 公式） |
+| GD 資產歷史記錄（最新一列） | 總資產、各類別、負債、股息 |
+| GD 資產歷史記錄（前一列） | 計算今日變化 |
+| GD 基金帳戶工作表 | 三個基金帳戶金額 |
+| GD 負債工作表 | 房貸、質借餘額 |
 
 ---
 
-## 二、每次必須更新的欄位（完整清單）
-
-### A. Header 區域
-
-| 欄位 | 位置 | 計算方式 |
-|------|------|---------|
-| 資料日期 | `Google Drive 即時同步｜YYYY/MM/DD｜` | Google Drive 最新記錄日期 |
-
----
-
-### B. Pills（頂部摘要標籤）
-
-| 欄位 | HTML 位置 | 計算方式 |
-|------|-----------|---------|
-| 達成率 % | `達成率 XX.X%` | `total / 1,600,000,000 × 100` |
-| 槓桿比率 % | `槓桿 XX.X%` | `槓桿ETF總值 / total × 100` |
-
----
-
-### C. 核心 Metric 卡片（共 5 張）
-
-| 卡片 | 主數字 | 副文字 | 計算方式 |
-|------|------|------|---------|
-| 總資產 | `X,XXX萬` | `↑/↓ ±XXX萬 今日` | GD total；今日變化 = today - prev |
-| 淨資產 | `X,XXX萬` | `負債比 XX.X%` | `total - debt`；負債比 = `debt/total×100` |
-| 年化波動度 | `33.5%` | `最大回撤 -14.7%` | **靜態，不需更新** |
-| 槓桿ETF現值 | `XXX萬` | `佔總資產 XX.X%` | 各槓桿ETF市值加總；佔比 = `槓桿/total×100` |
-| 距退休 | `X年 X月` | `年股息 XXX萬｜月均 XX萬` | 2028/12 距今；GD 年股息欄位 |
-
-> ⚠️ **最常出錯**：淨資產數字與總資產混淆、負債比未隨總資產更新
-
----
-
-### D. 退休目標達成率區塊
-
-| 欄位 | 計算方式 |
-|------|---------|
-| 總資產 X,XXX萬 ／ 目標 16,000萬 | GD total |
-| 達成率大字 XX.X% | `total / 160,000,000 × 100` |
-| 還需增加 X,XXX萬 | `16,000 - total_w`（萬） |
-| 進度條寬度 width:XX.X% | 同達成率 % |
-
-> ⚠️ **最常出錯**：達成率大字和進度條寬度用兩個獨立字串替換，其中一個容易遺漏
-
----
-
-### E. 退休試算 input 預設值
-
-| input id | 欄位 | 更新方式 |
-|----------|------|---------|
-| `s-current` | 目前總資產（萬） | GD total_w |
-| `s-target` | 退休目標（萬） | 固定 16000，**不更新** |
-| `s-monthly` | 每月新增（萬） | 固定 15，**不更新** |
-| `s-return` | 預期年報酬率 | 固定 10，**不更新** |
-| `s-expense` | 退休每月支出 | 固定 12，**不更新** |
-| `s-age` | 目前年齡 | 固定 52，**不更新** |
-
----
-
-### F. 油表（4 個 drawGauge 呼叫）
-
-| 函式呼叫 | 參數 | 計算方式 |
-|---------|------|---------|
-| `drawGauge('g-tw', ach%, 'X,XXX萬', '#378ADD')` | 台股達成率、台股市值 | `tw/100,000,000×100`；GD tw |
-| `drawGauge('g-us', ach%, 'X,XXX萬', '#1D9E75')` | 美股達成率、美股市值 | `us/40,000,000×100`；GD us |
-| `drawGauge('g-jp', ach%, 'XXX萬', '#EF9F27')` | 日股達成率、日股市值 | `jp/10,000,000×100`；GD jp |
-| `drawGauge('g-fd', ach%, 'XXX萬', '#7F77DD')` | 基金達成率、基金市值 | `fund/10,000,000×100`；GD fund |
-
----
-
-### G. JS 數據陣列（影響所有 Bar Chart）
-
-| 變數 | 頂層定義 | 更新方式 |
-|------|---------|---------|
-| `window.TW_DATA` | ✅ 必須頂層 | 重算台股各持股估值，排序 |
-| `window.US_DATA` | ✅ 必須頂層 | 重算美股各持股估值×USD/TWD，排序 |
-| `window.JP_DATA` | ✅ 必須頂層 | 重算日股各持股估值×JPY/TWD，排序 |
-| `window.FD_DATA` | ✅ 必須頂層 | 基金三帳戶（鉅亨/HSBC/基富通），排序 |
-| `window.TW_BROKER` | ✅ 必須頂層 | 依券商分組台股持股 |
-| `window.US_BROKER` | ✅ 必須頂層 | 依券商分組美股持股 |
-
----
-
-### H. 基金頁面 HTML bar items
-
-```javascript
-const items = [
-  {name:'鉅亨網基金', val:411.4, pct:47.3, color:'#378ADD'},
-  {name:'HSBC結構型', val:314.5, pct:36.2, color:'#1D9E75'},
-  {name:'基富通基金', val:142.7, pct:16.5, color:'#EF9F27'},
-];
-```
-
-> 基金金額固定（GD 基金帳戶表），僅在基金帳戶有變動時更新
-
----
-
-### I. FALLBACK_PRICES（API 失效時備用）
-
-| 類別 | 更新時機 |
-|------|---------|
-| 台股股價（22檔） | 每次更新都從 GD 取最新值 |
-| 美股股價（29檔） | 每次更新都從 GD 取最新值 |
-| 日股股價（4檔） | 每次更新都從 GD 取最新值 |
-| `USDTWD` | 從 GD 推算（us_total / Σ(股數×USD股價)） |
-| `JPYTWD` | 從 GD 推算（jp_total / Σ(股數×JPY股價)） |
-
----
-
-### J. 資產月曆 CAL_DATA
+## 二、匯率推算方式
 
 ```python
-new_entry = {
-    "date": "YYYY-MM-DD",
-    "v": round(today_total / 10000),
-    "c": round((today_total - prev_total) / 10000, 1),
-    "p": round((today_total - prev_total) / prev_total * 100, 2),
-}
+# 從 GD 數值反推（不用固定匯率）
+usd_twd = gd_us_total / sum(shares × usd_price for all US stocks)
+jpy_twd = gd_jp_total / sum(shares × jpy_price for all JP stocks)
 ```
-
-> ⚠️ **容易遺漏**：每次更新儀表板必須同步追加當日月曆條目
 
 ---
 
-## 三、更新完成後驗證清單
+## 三、各類別估值計算
 
-### 1. HTML 數字核對
+| 類別 | 計算方式 |
+|------|---------|
+| 台股 | 股數 × 台幣股價（直接）|
+| 美股 | 股數 × USD股價 × usd_twd |
+| 日股 | 股數 × JPY股價 × jpy_twd（**不用等比例分配**）|
+| 基金 | 直接從 GD 基金帳戶工作表讀取 |
+
+> ⚠️ 日股過去曾用「等比例分配」是錯誤設計，**現在改為直接計算**
+
+---
+
+## 四、25 個必須更新的欄位（完整清單）
+
+### A. Header（1個）
+
+| # | 欄位 | HTML 位置 | 計算方式 |
+|---|------|-----------|---------|
+| 1 | 資料日期 | `Google Drive 即時同步｜YYYY/MM/DD｜` | GD 最新記錄日期 |
+
+---
+
+### B. Pills 標籤（2個）
+
+| # | 欄位 | HTML | 計算方式 |
+|---|------|------|---------|
+| 2 | 達成率 % | `達成率 XX.X%` | `total / 1.6億 × 100` |
+| 3 | 槓桿比率 % | `槓桿 XX.X%` | `槓桿ETF總值 / total × 100` |
+
+> 槓桿ETF包含：00631L/00663L/00675L/00685L（台股）+ TQQQ/SOXL（美股×usd_twd）
+
+---
+
+### C. 核心 Metric 卡片（7個）
+
+| # | 欄位 | HTML 位置 | 計算方式 |
+|---|------|-----------|---------|
+| 4 | 總資產 | `>X,XXX<span...>萬` | GD total_w |
+| 5 | 今日變化 | `↑/↓ ±XXX萬 今日` | today_total - prev_total |
+| 6 | 淨資產 | `>X,XXX<span...>萬` | total - debt |
+| 7 | 負債比 | `負債比 XX.X%` | `debt / total × 100` |
+| 8 | 槓桿ETF現值 | `>XXX.X<span...>萬` | 各槓桿ETF市值加總 |
+| 9 | 槓桿ETF佔比 | `佔總資產 XX.X%` | `槓桿總值 / total × 100` |
+| 10 | 年股息 | `年股息 XXX.X萬` | GD 預估年領股息 ÷ 10000 |
+| 11 | 月均 | `月均 XX.X萬` | 年股息 ÷ 12 |
+
+---
+
+### D. 距退休倒數（2個）
+
+| # | 欄位 | HTML | 計算方式 |
+|---|------|------|---------|
+| 12 | 距退休年 | `>X</span><span class="cd-u">年` | (2028/12 - 今日) 整年數 |
+| 13 | 距退休月 | `>X</span><span class="cd-u">月` | (2028/12 - 今日) 剩餘月數 |
+
+---
+
+### E. 退休目標達成率區塊（4個）
+
+| # | 欄位 | HTML | 計算方式 |
+|---|------|------|---------|
+| 14 | 達成率大字 | `>XX.X%</div>` | `total / 1.6億 × 100` |
+| 15 | 進度條寬度 | `width:XX.X%` | 同上 |
+| 16 | 副標題資產 | `總資產 X,XXX萬 ／ 目標 16,000萬` | GD total_w |
+| 17 | 還需增加 | `還需增加 X,XXX萬` | `16000 - total_w` |
+
+---
+
+### F. 退休試算預設值（1個）
+
+| # | 欄位 | HTML | 計算方式 |
+|---|------|------|---------|
+| 18 | s-current | `id="s-current" value="XXXX"` | GD total_w（萬） |
+
+---
+
+### G. 油表 drawGauge（4個）
+
+| # | 欄位 | 正確格式 |
+|---|------|---------|
+| 19 | 台股 | `drawGauge('g-tw', XX.X, 'X,XXX萬', '#378ADD')` |
+| 20 | 美股 | `drawGauge('g-us', XX.X, 'X,XXX萬', '#1D9E75')` |
+| 21 | 日股 | `drawGauge('g-jp', XX.X, 'XXX萬', '#EF9F27')` |
+| 22 | 基金 | `drawGauge('g-fd', XX.X, 'XXX萬', '#7F77DD')` |
+
+---
+
+### H. 負債明細（2個）
+
+| # | 欄位 | HTML | 來源 |
+|---|------|------|------|
+| 23 | 房貸 | `X,XXX萬` | GD 負債工作表（星展銀行） |
+| 24 | 質借 | `XXX萬` | GD 負債工作表（永豐台股） |
+
+---
+
+### I. 資產月曆（1個）
+
+| # | 欄位 | 格式 | 計算方式 |
+|---|------|------|---------|
+| 25 | 當日條目 | `"YYYY-MM-DD":{"v":XXXX,"c":±XXX.X,"p":±X.XX}` | v=萬元；c=今日變化萬；p=今日報酬% |
+
+---
+
+## 五、完整更新流程
+
+```
+① 讀取 Google Drive
+   ├── 工作表1：各持股股數 + 最新股價
+   ├── 資產歷史：最新列（today）+ 前一列（prev）
+   ├── 基金帳戶：三帳戶金額
+   └── 負債：房貸、質借餘額
+
+② 計算核心數值
+   usd_twd = gd_us / Σ(股數×USD股價)
+   jpy_twd = gd_jp / Σ(股數×JPY股價)
+   total_w, net_w, debt_w = GD 直接取值
+   tw_w, us_w, jp_w, fd_w = GD 各類別
+   div_w = GD 年股息 ÷ 10000
+   day_chg = today_total - prev_total（÷10000取萬）
+   lev_total = Σ(各槓桿ETF市值)（台股直接，美股×usd_twd）
+   退休倒數 = (2028/12/31 - today).months 分解年/月
+
+③ 重建 JS 數據（確認全部在頂層，深度=0）
+   window.TW_DATA / window.US_DATA / window.JP_DATA
+   window.FD_DATA / window.TW_BROKER / window.US_BROKER
+   FALLBACK_PRICES（含 USDTWD/JPYTWD）
+
+④ 替換 HTML 靜態欄位（共 25 個，按序）
+   ── Header ──────────────────────────────────
+    1. 日期
+   ── Pills ────────────────────────────────────
+    2. 達成率 %
+    3. 槓桿比率 %
+   ── Metric 卡片 ──────────────────────────────
+    4. 總資產數字
+    5. 今日變化（↑/↓ ±XXX萬）
+    6. 淨資產數字              ← 最常出錯（混入舊總資產）
+    7. 負債比 %
+    8. 槓桿ETF現值（萬）
+    9. 槓桿ETF佔比 %
+   10. 年股息（萬）
+   11. 月均（萬）
+   ── 距退休 ───────────────────────────────────
+   12. 年數
+   13. 月數
+   ── 達成率區塊 ───────────────────────────────
+   14. 達成率大字 %            ← 最常出錯（獨立替換）
+   15. 進度條 width:%          ← 最常出錯（獨立替換）
+   16. 副標題總資產
+   17. 還需增加
+   ── 試算 ─────────────────────────────────────
+   18. s-current value
+   ── 油表 ─────────────────────────────────────
+   19-22. drawGauge 4個呼叫
+   ── 負債 ─────────────────────────────────────
+   23. 房貸金額
+   24. 質借金額
+   ── 月曆 ─────────────────────────────────────
+   25. CAL_DATA 當日條目       ← 最常遺漏
+
+⑤ JS 語法驗證（node --check）
+
+⑥ 25欄位全驗證（見下方程式碼）
+
+⑦ Push GitHub Pages
+```
+
+---
+
+## 六、驗證程式碼（每次必跑）
 
 ```python
-checks = [
-    (f'>{total_w:,}<span',          '總資產數字'),
-    (f'>{net_w:,}<span',            '淨資產數字'),   # ← 最常出錯
-    (f'負債比 {debt_ratio}%',        '負債比'),
-    (f'{chg_arrow} {day_chg:+}萬 今日', '今日變化'),
-    (f'達成率 {tot_ach}%',           'pill 達成率'),
-    (f'>{tot_ach}%</div>',           '達成率大字'),   # ← 最常出錯
-    (f'width:{tot_ach}%',            '進度條寬度'),   # ← 最常出錯
-    (f'還需增加 {16000-total_w:,}萬', '還需增加'),
-    (f'總資產 {total_w:,}萬 ／ 目標 16,000萬', '達成率副標'),
-    (f'value="{total_w}"',           '試算預設值'),
-    (f'年股息 {div_w}萬',            '年股息'),
-    (f'window.FD_DATA=',             'FD_DATA 頂層定義'),
-    (f'window.TW_DATA=\n[',          'TW_DATA 靜態初始值'),
-    (f'window.US_DATA=\n[',          'US_DATA 靜態初始值'),
-    (f'window.JP_DATA=\n[',          'JP_DATA 靜態初始值'),
-    (f'"date":"{today_date}"',        'CAL_DATA 當日條目'),
+def verify_all(html, v):
+    checks = [
+        # (描述, 要找的字串)
+        ("總資產",     f">{v['total_w']:,}<span"),
+        ("淨資產",     f">{v['net_w']:,}<span"),
+        ("今日變化",   f"{v['day_chg']:+}萬 今日"),
+        ("負債比",     f"負債比 {v['debt_ratio']}%"),
+        ("達成率pill", f"達成率 {v['tot_ach']}%"),
+        ("達成率大字", f">{v['tot_ach']}%</div>"),
+        ("進度條",     f"width:{v['tot_ach']}%"),
+        ("還需增加",   f"還需增加 {16000-v['total_w']:,}萬"),
+        ("達成率副標", f"總資產 {v['total_w']:,}萬 ／ 目標 16,000萬"),
+        ("年股息",     f"年股息 {v['div_w']}萬"),
+        ("月均",       f"月均 {v['div_mo']}萬"),
+        ("槓桿現值",   f">{v['lev_total']}<span"),
+        ("槓桿佔比",   f"佔總資產 {v['lev_pct']}%"),
+        ("槓桿pill",   f"槓桿 {v['lev_pct']}%"),
+        ("試算預設值", f'value="{v["total_w"]}"'),
+        ("距退休年",   f">{v['retire_yr']}</span>"),
+        ("距退休月",   f">{v['retire_mo']}</span>"),
+        ("油表台股",   f"drawGauge('g-tw',{v['tw_ach']},"),
+        ("油表美股",   f"drawGauge('g-us',{v['us_ach']},"),
+        ("油表日股",   f"drawGauge('g-jp',{v['jp_ach']},"),
+        ("油表基金",   f"drawGauge('g-fd',{v['fd_ach']},"),
+        ("月曆當日",   f'"{v["today_date"]}"'),
+        ("房貸",       f"{v['mortgage_w']:,}萬"),
+        ("USD匯率",    f'"USDTWD":{v["usd_twd"]}'),
+        ("JPY匯率",    f'"JPYTWD":{v["jpy_twd"]}'),
+    ]
+    failed = []
+    for desc, pat in checks:
+        if pat not in html:
+            failed.append(f"❌ {desc}：找不到 '{pat}'")
+    if failed:
+        for f in failed: print(f)
+        raise AssertionError(f"{len(failed)} 個欄位未通過")
+    print(f"✅ 全部 {len(checks)} 個欄位驗證通過")
+```
+
+---
+
+## 七、常見錯誤速查
+
+| 症狀 | 根本原因 | 解法 |
+|------|---------|------|
+| 淨資產顯示舊總資產數字 | 替換 pattern 未精確匹配 | 用 `>X,XXX<span...>萬` 精確比對 |
+| 達成率大字未更新 | `>XX.X%</div>` 與 `width:XX.X%` 是獨立字串 | 兩處都要替換，加入 assert |
+| 年股息/月均顯示舊值 | 更新流程未包含這兩個欄位 | 從 GD div 欄位重新計算 |
+| 槓桿ETF現值/佔比錯誤 | 槓桿ETF估值未重算（美股需 ×usd_twd）| 重算後同步更新顯示與 pill |
+| 試算預設值未更新 | s-current value 字串格式不同 | 精確比對 `value="XXXX"` |
+| 日股用舊等比例值 | 早期錯誤設計殘留 | 改用股數×JPY股價×jpy_twd 直接計算 |
+| 月曆未追加 | CAL_DATA 步驟遺漏 | 明確在流程第⑤步執行 |
+| 基金 Bar Chart 空白 | `FD_DATA` 不在頂層 | 確認 `window.FD_DATA` 深度=0 |
+| 所有圖表空白 | `TYPE_C`/`buildHBar` 遺失 | 執行關鍵函式完整性驗證 |
+
+---
+
+## 八、關鍵函式完整性驗證
+
+```python
+must_have = [
+    'function drawGauge',          # 油表
+    'function buildHBar',          # Bar Chart（含 Chart.destroy()）
+    'function buildDonut',         # 圓餅
+    'function mkLine',             # 折線
+    'function drawAllCharts',      # 初始化
+    'function drawTabCharts',      # 分頁渲染
+    'function switchTab',          # 分頁切換
+    'function renderBrokerTable',  # 券商明細表
+    'function rebuildPortfolioData', # 動態重算
+    'const TYPE_C=',              # 顏色常數
+    'window.FD_DATA=',            # 基金數據（頂層）
+    'window.TW_DATA=\n[',         # 台股靜態初始值
+    'window.US_DATA=\n[',         # 美股靜態初始值
+    'window.JP_DATA=\n[',         # 日股靜態初始值
+    'Chart.getChart(ctx)',         # destroy 舊實例
+    'chart.umd.js"></script>',    # Chart.js 正確閉合
 ]
-for pattern, desc in checks:
-    assert pattern in html, f"❌ {desc} 未更新：找不到 '{pattern}'"
-print("✅ 所有欄位驗證通過")
+for fn in must_have:
+    assert fn in html, f"❌ 缺少: {fn}"
+print("✅ 關鍵函式驗證通過")
 ```
 
-### 2. JS 語法驗證
+---
+
+## 九、作用域深度驗證
 
 ```python
+# 確認所有數據變數在頂層（depth=0）
 js = html[html.rfind('<script>')+8:html.rfind('</script>')]
-with open('/tmp/check.js','w') as f: f.write(js)
-r = subprocess.run(['node','--check','/tmp/check.js'],capture_output=True,text=True)
-assert r.returncode == 0, f"❌ JS 語法錯誤：{r.stderr}"
-print("✅ JS 語法正確")
-```
-
-### 3. 作用域深度驗證
-
-```python
 for var in ['window.TW_DATA','window.US_DATA','window.JP_DATA',
-            'window.FD_DATA','window.TW_BROKER','window.US_BROKER','const TYPE_C']:
+            'window.FD_DATA','window.TW_BROKER','window.US_BROKER',
+            'window.chartsInit','const TYPE_C']:
     idx = js.find(var)
     if idx < 0: continue
     depth = sum(1 if c=='{' else -1 if c=='}' else 0 for c in js[:idx])
@@ -190,59 +303,4 @@ print("✅ 作用域驗證通過")
 
 ---
 
-## 四、完整更新流程（標準版）
-
-```
-① 讀取 Google Drive
-   - 工作表1：各持股股數 + 最新股價（GOOGLEFINANCE 公式）
-   - 資產歷史：最新一列（today）+ 前一列（prev）
-
-② 計算核心指標
-   - usd_twd = us_total / Σ(股數 × USD股價)
-   - jpy_twd = jp_total / Σ(股數 × JPY股價)
-   - total_w, net_w, debt_w, tw_w, us_w, jp_w, fd_w（萬元）
-   - 各達成率、負債比、今日變化
-
-③ 重建 JS 數據
-   - TW_DATA / US_DATA / JP_DATA / FD_DATA（排序後陣列）
-   - TW_BROKER / US_BROKER（券商分組）
-   - FALLBACK_PRICES（各股最新價）
-
-④ 替換 HTML 靜態欄位（按順序）
-   A. 日期
-   B. Pills（達成率%、槓桿%）
-   C. 總資產數字 + 今日變化
-   D. 淨資產數字 + 負債比          ← 容易出錯
-   E. 年股息 + 月均
-   F. 槓桿ETF現值 + 佔比
-   G. 退休目標達成率大字 + 進度條   ← 容易出錯
-   H. 還需增加 X,XXX 萬
-   I. 達成率副標題（總資產 X,XXX萬 ／ 目標 16,000萬）
-   J. 退休試算 s-current 預設值
-   K. 油表 drawGauge 4 個呼叫
-   L. 基金 HTML bar items
-
-⑤ 追加月曆條目 CAL_DATA           ← 容易遺漏
-
-⑥ 三重驗證
-   - node --check JS 語法
-   - HTML 數字核對 checklist
-   - 作用域深度驗證
-
-⑦ Push GitHub Pages
-```
-
----
-
-## 五、常見錯誤速查
-
-| 症狀 | 根本原因 | 解法 |
-|------|---------|------|
-| 淨資產顯示舊總資產數字 | regex pattern 未精確匹配 | 用精確字串 `>X,XXX<span` 替換 |
-| 達成率大字未更新 | `>XX.X%</div>` 與進度條 `width:XX.X%` 是兩個獨立替換 | 兩處都要替換，加入 assert 驗證 |
-| 進度條寬度錯誤 | 同上 | 同上 |
-| 月曆未更新 | CAL_DATA 追加步驟遺漏 | 在步驟⑤明確執行 |
-| 基金 Bar Chart 空白 | `FD_DATA` 不在頂層（被困在函式內） | 確認 `window.FD_DATA` 深度 = 0 |
-| 所有圖表空白 | `TYPE_C` 未定義或 `buildHBar` 遺失 | 執行關鍵函式完整性驗證 |
-| 油表空白 | `drawGauge` 函式遺失 | 同上 |
-| 數字更新但圖表不重繪 | `window.chartsInit` 與 `let chartsInit` 混用 | 統一用 `window.chartsInit` |
+*RetireFlow Pro v3.4.2 Update SOP ｜ 2026/07/28*
