@@ -304,3 +304,58 @@ print("✅ 作用域驗證通過")
 ---
 
 *RetireFlow Pro v3.4.2 Update SOP ｜ 2026/07/28*
+
+---
+
+## 十、走勢圖歷史數據（第 26～33 個欄位）
+
+走勢圖共 8 個陣列，每次更新都需**追加當日數值**：
+
+| 陣列 | 說明 | 來源 |
+|------|------|------|
+| `HD` | 日期標籤 | `"MM/DD"` 格式 |
+| `HT` | 總資產（萬） | GD 當日 total_w |
+| `HN` | 淨資產（萬） | GD 當日 net_w |
+| `HDbt` | 總負債（萬） | GD 當日 debt_w |
+| `HTW` | 台股（萬） | GD 當日 tw_w |
+| `HUS` | 美股（萬） | GD 當日 us_w |
+| `HJP` | 日股（萬） | GD 當日 jp_w |
+| `HFD` | 基金（萬） | GD 當日 fd_w |
+
+```python
+# 在各陣列最後 ]; 前插入新值
+for arr_name, new_val in [
+    ('HD',   f'"07/28"'),
+    ('HT',   total_w),
+    ('HN',   net_w),
+    ('HDbt', debt_w),
+    ('HTW',  tw_w),
+    ('HUS',  us_w),
+    ('HJP',  jp_w),
+    ('HFD',  fd_w),
+]:
+    idx = html.find(f'const {arr_name}=[')
+    end = html.find('];', idx)
+    html = html[:end] + f',{new_val}' + html[end:]
+```
+
+---
+
+## 十一、完整更新欄位總覽（33個）
+
+```
+Header（1）：日期
+Pills（2）：達成率%、槓桿%
+Metric 卡片（8）：總資產、今日變化、淨資產、負債比、
+                   槓桿ETF現值、槓桿ETF佔比、年股息、月均
+距退休（2）：年、月
+達成率區塊（4）：大字%、進度條width%、副標題、還需增加
+試算預設值（1）：s-current
+油表（4）：台股、美股、日股、基金 drawGauge
+負債明細（2）：房貸、質借
+資產月曆（1）：CAL_DATA 當日條目
+走勢圖（8）：HD + HT + HN + HDbt + HTW + HUS + HJP + HFD
+```
+
+> ⚠️ **走勢圖最容易被遺漏**：每次更新完靜態數字後，必須同步追加走勢圖歷史陣列。
+
