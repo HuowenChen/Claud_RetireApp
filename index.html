@@ -209,13 +209,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="header">
   <div>
     <h1>RetireFlow Pro｜退休財務儀表板</h1>
-    <p>Google Drive 即時同步｜2026/07/28｜目標：2028/12 退休・總資產 ≥ NT$16,000萬</p>
+    <p>Google Drive 即時同步｜2026/07/29｜目標：2028/12 退休・總資產 ≥ NT$16,000萬</p>
     <p style="font-size:11px;margin-top:2px" id="price-status">📡 載入中...</p>
   </div>
   <div class="pills">
     <div class="pill"><span class="dot dot-green"></span>Drive 已同步</div>
-    <div class="pill"><span class="dot dot-amber"></span>達成率 49.6%</div>
-    <div class="pill"><span class="dot dot-red"></span>槓桿 11.4%</div>
+    <div class="pill"><span class="dot dot-amber"></span>達成率 48.1%</div>
+    <div class="pill"><span class="dot dot-red"></span>槓桿 11.1%</div>
   </div>
 </div>
 
@@ -223,13 +223,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="g5">
   <div class="metric">
     <div class="metric-label">總資產</div>
-    <div class="metric-value">7,797<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
-    <div class="metric-sub dn">↓ -144萬 今日</div>
+    <div class="metric-value">7,694<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
+    <div class="metric-sub dn">↓ -103萬 今日</div>
   </div>
   <div class="metric">
     <div class="metric-label">淨資產</div>
-    <div class="metric-value">3,529<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
-  <div class="metric-sub">負債比 53.7%</div>
+    <div class="metric-value">3,425<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
+  <div class="metric-sub">負債比 55.5%</div>
   </div>
   <div class="metric">
     <div class="metric-label">年化波動度</div>
@@ -239,7 +239,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="metric">
     <div class="metric-label">槓桿ETF現值</div>
     <div class="metric-value warn">905.8<span style="font-size:12px;font-weight:400;color:var(--muted)">萬</span></div>
-    <div class="metric-sub">佔總資產 11.4%</div>
+    <div class="metric-sub">佔總資產 11.1%</div>
   </div>
   <div class="metric">
     <div class="metric-label">距退休</div>
@@ -248,7 +248,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <span class="cd-sep">·</span>
       <span class="cd-n">5</span><span class="cd-u">月</span>
     </div>
-    <div class="metric-sub">年股息 129.4萬｜月均 10.8萬</div>
+    <div class="metric-sub">年股息 125.2萬｜月均 10.4萬</div>
   </div>
 </div>
 
@@ -257,15 +257,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
     <div>
       <div class="stitle" style="margin-bottom:2px">退休目標達成率（依 Google Drive 絕對金額）</div>
-      <div style="font-size:12px;color:var(--muted)">總資產 7,942萬 ／ 目標 16,000萬</div>
+      <div style="font-size:12px;color:var(--muted)">總資產 7,694萬 ／ 目標 16,000萬</div>
     </div>
     <div style="text-align:right">
-      <div style="font-size:26px;font-weight:700;letter-spacing:-1px">48.7%</div>
-      <div style="font-size:11px;color:var(--muted)">還需增加 8,203萬</div>
+      <div style="font-size:26px;font-weight:700;letter-spacing:-1px">48.1%</div>
+      <div style="font-size:11px;color:var(--muted)">還需增加 8,306萬</div>
     </div>
   </div>
   <div class="prog-bg" style="height:11px">
-    <div class="prog-fill" style="width:48.7%;background:linear-gradient(to right,#378ADD,#1D9E75)"></div>
+    <div class="prog-fill" style="width:48.1%;background:linear-gradient(to right,#378ADD,#1D9E75)"></div>
   </div>
   <div class="gauge-row">
     <div class="gauge-box"><div class="gauge-label">台股目標1億</div><canvas id="g-tw" width="110" height="65"></canvas></div>
@@ -748,7 +748,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="card">
       <div class="stitle">退休目標設定</div>
       <div class="inp-row"><label>退休目標（萬）</label><input type="number" id="s-target" value="16000" step="100"></div>
-      <div class="inp-row"><label>目前總資產（萬）</label><input type="number" id="s-current" value="7942"></div>
+      <div class="inp-row"><label>目前總資產（萬）</label><input type="number" id="s-current" value="7694"></div>
       <div class="inp-row"><label>每月新增（萬）</label><input type="number" id="s-monthly" value="15"></div>
       <div class="inp-row"><label>預期年報酬率（%）</label><input type="number" id="s-return" value="10" step="0.5"></div>
       <div class="inp-row"><label>退休後月支出（萬）</label><input type="number" id="s-expense" value="12"></div>
@@ -1508,9 +1508,9 @@ window.chartsInit={};
 
 function drawAllCharts(){
   if(!window.chartsInit['g']){window.chartsInit['g']=1;
-    drawGauge('g-tw',42.1,'4,209萬','#378ADD');
-    drawGauge('g-us',56.2,'2,249萬','#1D9E75');
-    drawGauge('g-jp',61.5,'615.3萬','#EF9F27');
+    drawGauge('g-tw',40.1,'4,009萬','#378ADD');
+    drawGauge('g-us',56.3,'2,251萬','#1D9E75');
+    drawGauge('g-jp',56.5,'565萬','#EF9F27');
     drawGauge('g-fd',86.9,'869萬','#7F77DD');
   }
   if(!window.chartsInit['overview']){window.chartsInit['overview']=1;
