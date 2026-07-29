@@ -359,3 +359,98 @@ Metric 卡片（8）：總資產、今日變化、淨資產、負債比、
 
 > ⚠️ **走勢圖最容易被遺漏**：每次更新完靜態數字後，必須同步追加走勢圖歷史陣列。
 
+
+---
+
+## 十二、【重大修正】驗證方法論改版（2026/07/29）
+
+### 為什麼舊方法會反覆出錯
+
+舊驗證只檢查「字串是否存在」：
+
+```python
+assert f'>{total_w:,}<' in html   # ❌ 只證明字串在，不證明數字對
+```
+
+這種檢查無法發現：券商表格用舊股價、JS 陣列沒被替換、加總與 Google Drive 對不上。
+
+### 新方法：反向解析對帳
+
+**從 HTML 把資料解析回來，加總後跟 Google Drive 比對，差異超過門檻就中止 push。**
+
+```python
+# 1. 各市場陣列加總 vs Google Drive
+for var, gd_val in [('TW_DATA', GD['tw']), ('US_DATA', GD['us']), ('JP_DATA', GD['jp'])]:
+    m = re.search(rf'window\.{var}=\s*(\[[\s\S]*?\]);', html)
+    vals = [float(v) for v in re.findall(r'val:([\d.]+)', m.group(1))]
+    diff = abs(round(sum(vals),1) - round(gd_val/10000,1))
+    assert diff <= max(2.0, gd_val/10000*0.005), f"{var} 對帳差 {diff}萬"
+
+# 2. 券商小計加總 vs Google Drive
+m = re.search(rf'window\.TW_BROKER = (\{{[\s\S]*?\n\}});', html)
+totals = [float(v) for _,v in re.findall(r'"([^"]+)": \{total:([\d.]+)', m.group(1))]
+assert abs(sum(totals) - GD['tw']/10000) <= 2.0
+
+# 3. 逐筆抽驗（股數 × 股價 = 估值）
+m = re.search(r'\{code:"2330",name:"[^"]+",shares:(\d+),price:([\d.]+),val:([\d.]+)', html)
+expected = round(int(m.group(1)) * float(m.group(2)) / 10000, 1)
+assert abs(expected - float(m.group(3))) < 0.15, "台積電估值錯誤"
+assert float(m.group(2)) == 今日股價, "股價未更新"   # ← 抓出用舊股價的問題
+```
+
+---
+
+### 已修正的三個結構性 bug
+
+**Bug A — 分多次 push 導致覆蓋**
+
+主腳本 push 後，補救腳本重新讀磁碟舊檔、只改部分欄位再 push，把前次的 JS 陣列更新蓋掉。
+
+> **規則：一次執行完成所有替換，通過驗證才 push，禁止分次補救 push。**
+
+**Bug B — `find()` + 切片替換不可靠**
+
+```python
+# ❌ 舊做法：邊界計算受換行格式影響，會靜默失敗
+idx = html.find('window.TW_DATA=\n[')
+end = html.find('];\n', idx) + 3
+html = html[:idx] + new + html[end:]
+
+# ✅ 新做法：正則整塊替換
+html = re.sub(r'window\.TW_DATA=\s*\[[\s\S]*?\];', f'window.TW_DATA=\n{new};', html, count=1)
+```
+
+**Bug C — 替換函式破壞反向參照**
+
+```python
+# ❌ 這行把 \g<1> 變成 \\g<1>，所有帶 backreference 的替換全部失效
+new, n = re.subn(pat, rep.replace('\\','\\\\'), html, count=1)
+
+# ✅ 直接傳入
+new, n = re.subn(pat, rep, html, count=1)
+```
+
+---
+
+### 正則錨點陷阱
+
+`const items=` 在 `buildHBar()` 內也有一個（`const items=[...top].reverse();`），非貪婪匹配會從那裡一路吃到基金陣列，刪掉中間 1000+ 行程式碼。
+
+```python
+# ❌ 誤匹配 buildHBar 內的 const items
+re.sub(r'const items=\[[\s\S]*?\];', ...)
+
+# ✅ 用內容特徵錨定
+re.sub(r"const items=\[\{name:'[\s\S]*?\];", ...)
+```
+
+> **規則：替換前先用 `re.findall()` 確認匹配數量，多於 1 個就要加錨點。**
+
+---
+
+### 標準腳本
+
+`/tmp/rf_update.py` — 單一檔案完成：讀 GD 資料 → 計算 → 全部替換 → 反向對帳驗證 → 通過才 push。
+
+每次更新只改頂部 `GD`、`TW`、`US`、`JP`、`FUND` 五個資料區塊，其餘不動。
+
