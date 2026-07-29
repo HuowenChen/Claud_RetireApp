@@ -454,3 +454,76 @@ re.sub(r"const items=\[\{name:'[\s\S]*?\];", ...)
 
 每次更新只改頂部 `GD`、`TW`、`US`、`JP`、`FUND` 五個資料區塊，其餘不動。
 
+
+---
+
+## 十三、CSS 完整性檢查（2026/07/29 新增）
+
+### 事件
+
+走勢圖在手機上只顯示約一半寬度。原因是 `.chart-wrap` 的 CSS 被改壞：
+
+```css
+.chart-wrap{position:relative;width:49.6%;height:260px}   /* ← 應為 100% */
+```
+
+`49.6%` 正是某次更新時的「退休達成率」數值。
+
+### 肇因
+
+某次更新使用了**沒有錨點的正則**：
+
+```python
+(r'width:\d+\.?\d*%', f'width:{tot_ach}%')   # ❌ 會命中 CSS 裡的 width:100%
+```
+
+`re.sub` 預設從文件開頭找，CSS 在 `<body>` 之前，所以第一個命中的是 `.chart-wrap{width:100%}`，而不是進度條。
+
+### 正確寫法
+
+```python
+# ✅ 用後綴錨定，只命中進度條
+(r'width:[\d.]+%;background:linear-gradient', f'width:{tot_ach}%;background:linear-gradient')
+```
+
+### 新增自動檢查
+
+每次更新後掃描 CSS，任何非標準值就中止：
+
+```python
+css = html[html.find('<style>'):html.find('</style>')]
+bad = [(m.group(1), m.group(2))
+       for m in re.finditer(r'([.\w-]+)\{[^}]*?width:([\d.]+)%', css)
+       if m.group(2) not in ('100','50','33','25')]
+assert not bad, f"CSS width 被改壞: {bad}"
+```
+
+### 手機滿版設定（iPhone 15 = 393pt）
+
+```css
+@media(max-width:500px){
+  .wrap{padding:12px 8px}      /* 原 16px，左右各省 8px */
+  .card{padding:12px 10px}     /* 原 14/16px */
+  .chart-wrap{height:340px}    /* 手機加高，看得更清楚 */
+  .stitle{font-size:12px}
+  .legend-row{gap:10px;font-size:11px}
+}
+```
+
+有效繪圖寬度：393 − 16(wrap) − 20(card) = **357pt**（原本約 329pt）
+
+---
+
+## 十四、正則替換的三條鐵律
+
+1. **一律加錨點** — 替換前用 `re.findall()` 確認匹配數量，>1 就要加前後綴錨定
+2. **CSS 與 HTML 分開處理** — 數值類替換只作用在 `</style>` 之後的區段
+3. **替換後驗證版面** — CSS 完整性檢查納入必跑項目
+
+```python
+# 安全做法：先確認匹配數
+hits = re.findall(pattern, html)
+assert len(hits) == 1, f"匹配 {len(hits)} 處，需加錨點：{hits[:3]}"
+html = re.sub(pattern, replacement, html, count=1)
+```
+
