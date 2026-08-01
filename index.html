@@ -294,6 +294,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tab" onclick="switchTab(this,'pareto-jp')">🇯🇵 日股</button>
   <button class="tab" onclick="switchTab(this,'fund')">📦 基金</button>
   <button class="tab" onclick="switchTab(this,'leverage')">🔧 槓桿管理</button>
+  <button class="tab" onclick="switchTab(this,'margin')">🏦 融資維持率</button>
   <button class="tab" onclick="switchTab(this,'cash')">💰 現金管理</button>
   <button class="tab" onclick="switchTab(this,'trend')">📉 走勢圖</button>
   <button class="tab" onclick="switchTab(this,'advice')">💡 專家建議</button>
@@ -599,6 +600,92 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="alert alert-info">💡 VIX原則：&lt;15 維持；15~25 不加碼；&gt;25 分批減碼至10%；&gt;35 快速降至5%。</div>
+</div>
+
+
+<!-- ════ 融資維持率 ════ -->
+<div id="tab-margin" class="tab-content">
+  <div class="g3">
+    <div class="metric"><div class="metric-label">融資維持率</div><div class="metric-value" style="color:#1D9E75">552.9<span style="font-size:12px;color:var(--muted)">%</span></div><div class="metric-sub">安全水位（追繳 166%）</div></div>
+    <div class="metric"><div class="metric-label">質借餘額</div><div class="metric-value">763<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">永豐台股 @2.5%</div></div>
+    <div class="metric"><div class="metric-label">年利息支出</div><div class="metric-value warn">19.1<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">月均 1.6萬</div></div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">維持率安全刻度</div>
+    <div style="position:relative;height:34px;background:linear-gradient(to right,#E24B4A 0%,#E24B4A 8%,#EF9F27 8%,#EF9F27 16%,#1D9E75 16%,#1D9E75 100%);border-radius:8px;margin:14px 0 8px">
+      <div style="position:absolute;left:90.0%;top:-6px;transform:translateX(-50%);text-align:center">
+        <div style="width:3px;height:46px;background:var(--text);margin:0 auto;border-radius:2px"></div>
+        <div style="font-size:11px;font-weight:700;margin-top:3px;white-space:nowrap">552.9%</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--hint);margin-top:26px">
+      <span>130% 斷頭</span><span>166% 追繳</span><span>250%</span><span>400%</span><span>600%+</span>
+    </div>
+    <div class="alert alert-good" style="margin-top:14px">✅ 維持率 552.9%，遠高於追繳線 166%，目前無追繳風險。擔保品需跌 <b>70.0%</b> 才觸及追繳。</div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">壓力測試 — 台股下跌情境</div>
+    <table class="tbl">
+      <thead><tr><th>跌幅情境</th><th style="text-align:right">擔保品市值</th><th style="text-align:right">維持率</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">-10%</td>
+          <td style="padding:7px 8px;text-align:right">3,797萬</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">498%</td>
+          <td style="padding:7px 8px;color:var(--muted)">安全</td>
+        </tr><tr>
+          <td style="padding:7px 8px;font-weight:500">-20%</td>
+          <td style="padding:7px 8px;text-align:right">3,375萬</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">442%</td>
+          <td style="padding:7px 8px;color:var(--muted)">安全</td>
+        </tr><tr>
+          <td style="padding:7px 8px;font-weight:500">-30%</td>
+          <td style="padding:7px 8px;text-align:right">2,953萬</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">387%</td>
+          <td style="padding:7px 8px;color:var(--muted)">安全</td>
+        </tr><tr>
+          <td style="padding:7px 8px;font-weight:500">-40%</td>
+          <td style="padding:7px 8px;text-align:right">2,531萬</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">332%</td>
+          <td style="padding:7px 8px;color:var(--muted)">安全</td>
+        </tr><tr>
+          <td style="padding:7px 8px;font-weight:500">-50%</td>
+          <td style="padding:7px 8px;text-align:right">2,110萬</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">276%</td>
+          <td style="padding:7px 8px;color:var(--muted)">安全</td>
+        </tr><tr>
+          <td style="padding:7px 8px;font-weight:500">-60%</td>
+          <td style="padding:7px 8px;text-align:right">1,688萬</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#EF9F27">221%</td>
+          <td style="padding:7px 8px;color:var(--muted)">注意</td>
+        </tr><tr>
+          <td style="padding:7px 8px;font-weight:500">-70%</td>
+          <td style="padding:7px 8px;text-align:right">1,266萬</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#E24B4A">166%</td>
+          <td style="padding:7px 8px;color:var(--muted)">追繳</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-good" style="margin-top:10px">✅ 即使台股腰斬（-50%），維持率仍有 276%，安全邊際充足。</div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">質借部位明細</div>
+    <table class="tbl">
+      <thead><tr><th>項目</th><th style="text-align:right">金額</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:7px 8px">擔保品市值（永豐台股）</td><td style="padding:7px 8px;text-align:right;font-weight:600">4,219萬</td><td style="padding:7px 8px;color:var(--muted)">敦南 + 竹科帳戶</td></tr>
+        <tr><td style="padding:7px 8px">質借餘額</td><td style="padding:7px 8px;text-align:right;font-weight:600;color:#E24B4A">763萬</td><td style="padding:7px 8px;color:var(--muted)">年利率 2.5%</td></tr>
+        <tr><td style="padding:7px 8px">可再質借額度（估）</td><td style="padding:7px 8px;text-align:right;font-weight:600">1,768萬</td><td style="padding:7px 8px;color:var(--muted)">以六成成數估算</td></tr>
+        <tr><td style="padding:7px 8px">追繳觸發擔保品</td><td style="padding:7px 8px;text-align:right;font-weight:600">1,267萬</td><td style="padding:7px 8px;color:var(--muted)">維持率 166%</td></tr>
+        <tr><td style="padding:7px 8px">斷頭觸發擔保品</td><td style="padding:7px 8px;text-align:right;font-weight:600">992萬</td><td style="padding:7px 8px;color:var(--muted)">維持率 130%</td></tr>
+      </tbody>
+    </table>
+    <div class="alert alert-warn" style="margin-top:10px">⚠️ 質借年息 19.1萬，需靠股息覆蓋。目前年股息 134.1萬，覆蓋後淨收 115.0萬。</div>
+    <div class="alert alert-info">💡 台股含槓桿ETF約 838萬（00631L/00663L/00675L/00685L），槓桿ETF本身已內含 2 倍曝險，與質借疊加後實質槓桿更高，建議控制總質借不超過擔保品 25%。</div>
+  </div>
 </div>
 
 <!-- ════ 現金管理 ════ -->
