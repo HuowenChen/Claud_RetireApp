@@ -295,6 +295,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tab" onclick="switchTab(this,'fund')">📦 基金</button>
   <button class="tab" onclick="switchTab(this,'leverage')">🔧 槓桿管理</button>
   <button class="tab" onclick="switchTab(this,'margin')">🏦 融資維持率</button>
+  <button class="tab" onclick="switchTab(this,'dividend')">💵 配息月曆</button>
   <button class="tab" onclick="switchTab(this,'cash')">💰 現金管理</button>
   <button class="tab" onclick="switchTab(this,'trend')">📉 走勢圖</button>
   <button class="tab" onclick="switchTab(this,'advice')">💡 專家建議</button>
@@ -685,6 +686,241 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </table>
     <div class="alert alert-warn" style="margin-top:10px">⚠️ 質借年息 19.1萬，需靠股息覆蓋。目前年股息 134.1萬，覆蓋後淨收 115.0萬。</div>
     <div class="alert alert-info">💡 台股含槓桿ETF約 792萬（00631L/00663L/00675L/00685L），槓桿ETF本身已內含 2 倍曝險，與質借疊加後實質槓桿更高，建議控制總質借不超過擔保品 25%。</div>
+  </div>
+</div>
+
+
+<!-- ════ 配息月曆 ════ -->
+<div id="tab-dividend" class="tab-content">
+  <div class="g3">
+    <div class="metric"><div class="metric-label">台股年配息（估）</div><div class="metric-value" style="color:#1D9E75">109.7<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">月均 9.1萬</div></div>
+    <div class="metric"><div class="metric-label">1-7月已配</div><div class="metric-value">70.9<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">佔全年 65%</div></div>
+    <div class="metric"><div class="metric-label">8-12月待配</div><div class="metric-value">38.8<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">佔全年 35%</div></div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">每月配息分布（依殖利率×除息月推估）</div>
+    <div style="margin-top:10px">
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600">1月（已配）</span>
+          <span style="font-weight:700;color:#1D9E75">18.2萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#1D9E75;width:78.6%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600">2月（已配）</span>
+          <span style="font-weight:700;color:#1D9E75">1.8萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#1D9E75;width:7.8%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600">3月（已配）</span>
+          <span style="font-weight:700;color:#1D9E75">10.5萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#1D9E75;width:45.4%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600">4月（已配）</span>
+          <span style="font-weight:700;color:#1D9E75">9.1萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#1D9E75;width:39.4%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600">5月（已配）</span>
+          <span style="font-weight:700;color:#1D9E75">1.8萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#1D9E75;width:7.8%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600">6月（已配）</span>
+          <span style="font-weight:700;color:#1D9E75">6.4萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#1D9E75;width:27.8%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600">7月（已配）</span>
+          <span style="font-weight:700;color:#1D9E75">23.1萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#1D9E75;width:100.0%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600;color:var(--hint)">8月</span>
+          <span style="font-weight:700;color:var(--hint)">2.1萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#C8CDD4;width:8.9%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600;color:var(--hint)">9月</span>
+          <span style="font-weight:700;color:var(--hint)">10.5萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#C8CDD4;width:45.4%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600;color:var(--hint)">10月</span>
+          <span style="font-weight:700;color:var(--hint)">9.1萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#C8CDD4;width:39.4%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600;color:var(--hint)">11月</span>
+          <span style="font-weight:700;color:var(--hint)">10.7萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#C8CDD4;width:46.4%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="font-weight:600;color:var(--hint)">12月</span>
+          <span style="font-weight:700;color:var(--hint)">6.4萬</span>
+        </div>
+        <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
+          <div style="background:#C8CDD4;width:27.8%;height:100%;border-radius:5px;min-width:2px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-info" style="margin-top:12px">💡 配息高峰在 <b>7月（23.1萬）</b>與 <b>1月（18.2萬）</b>，因 0050／006208／00881 半年配與 0056／00927 季配集中在此。</div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">各檔配息明細</div>
+    <table class="tbl">
+      <thead><tr><th>代號</th><th>名稱</th><th style="text-align:right">市值</th><th style="text-align:right">殖利率</th><th style="text-align:right">年配息</th><th>頻率</th><th>除息月</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">2330</td>
+          <td style="padding:7px 8px">台積電</td>
+          <td style="padding:7px 8px;text-align:right">1284萬</td>
+          <td style="padding:7px 8px;text-align:right">2%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">25.7萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">季配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">3、6、9、12月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">0056</td>
+          <td style="padding:7px 8px">元大高股息</td>
+          <td style="padding:7px 8px;text-align:right">310萬</td>
+          <td style="padding:7px 8px;text-align:right">8%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">24.8萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">季配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">1、4、7、10月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">006208</td>
+          <td style="padding:7px 8px">富邦台50</td>
+          <td style="padding:7px 8px;text-align:right">494萬</td>
+          <td style="padding:7px 8px;text-align:right">2%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">9.9萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">半年配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">7、11月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">0050</td>
+          <td style="padding:7px 8px">元大台灣50</td>
+          <td style="padding:7px 8px;text-align:right">463萬</td>
+          <td style="padding:7px 8px;text-align:right">2%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">9.3萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">半年配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">1、7月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">00881</td>
+          <td style="padding:7px 8px">國泰台灣科技龍頭</td>
+          <td style="padding:7px 8px;text-align:right">177萬</td>
+          <td style="padding:7px 8px;text-align:right">5%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">8.9萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">半年配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">1、7月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">00927</td>
+          <td style="padding:7px 8px">群益半導體收益</td>
+          <td style="padding:7px 8px;text-align:right">172萬</td>
+          <td style="padding:7px 8px;text-align:right">5%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">8.6萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">季配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">1、4、7、10月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">00935</td>
+          <td style="padding:7px 8px">野村臺灣新科技50</td>
+          <td style="padding:7px 8px;text-align:right">163萬</td>
+          <td style="padding:7px 8px;text-align:right">5%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">8.2萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">半年配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">3、9月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">00894</td>
+          <td style="padding:7px 8px">中信小資高價30</td>
+          <td style="padding:7px 8px;text-align:right">144萬</td>
+          <td style="padding:7px 8px;text-align:right">5%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">7.2萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">季配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">2、5、8、11月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">00631L</td>
+          <td style="padding:7px 8px">元大台灣50正2</td>
+          <td style="padding:7px 8px;text-align:right">199萬</td>
+          <td style="padding:7px 8px;text-align:right">2%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">4.0萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">年配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">11月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">00981A</td>
+          <td style="padding:7px 8px">主動統一台股增長</td>
+          <td style="padding:7px 8px;text-align:right">60萬</td>
+          <td style="padding:7px 8px;text-align:right">5%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">3.0萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">季配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">1、4、7、10月</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:500">2812</td>
+          <td style="padding:7px 8px">台中銀</td>
+          <td style="padding:7px 8px;text-align:right">5萬</td>
+          <td style="padding:7px 8px;text-align:right">5%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">0.3萬</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">年配</td>
+          <td style="padding:7px 8px;color:var(--muted);font-size:11px">8月</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-warn" style="margin-top:10px">⚠️ 本頁配息為<b>推估值</b>：以 Google Drive 殖利率欄位 × 現時市值計算年配息，再依各檔公開除息月份平均分攤。實際配息金額依投信公告為準，且高股息 ETF 配息常含資本利得，年度間波動較大。</div>
+    <div class="alert alert-good">✅ 台股年配息 109.7萬 已覆蓋質借年息 19.1萬，淨收 90.6萬。若加計美股／日股／基金，全帳戶年股息約 134.1萬。</div>
   </div>
 </div>
 
