@@ -755,12 +755,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- ════ 配息月曆 ════ -->
 <div id="tab-dividend" class="tab-content">
   <div class="g3">
-    <div class="metric"><div class="metric-label">已入帳</div><div class="metric-value" style="color:#1D9E75">63.1<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">1-8月實收</div></div>
-    <div class="metric"><div class="metric-label">已公告待發放</div><div class="metric-value warn">13.1<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">10月發放</div></div>
-    <div class="metric"><div class="metric-label">累計已知</div><div class="metric-value">76.2<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">月均 8.5萬</div></div>
+    <div class="metric"><div class="metric-label">已入帳</div><div class="metric-value" style="color:#1D9E75">68.2<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">1-8月實收</div></div>
+    <div class="metric"><div class="metric-label">已公告待發放</div><div class="metric-value warn">29.7<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">9-10月發放</div></div>
+    <div class="metric"><div class="metric-label">累計已知</div><div class="metric-value">97.9<span style="font-size:12px;color:var(--muted)">萬</span></div><div class="metric-sub">月均 9.8萬</div></div>
   </div>
   <div class="card">
-    <div class="stitle">每月配息（依實際配息紀錄）</div>
+    <div class="stitle">每月配息（依實際入帳日）</div>
     <div style="margin-top:10px">
       <div style="margin-bottom:9px">
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
@@ -774,10 +774,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div style="margin-bottom:9px">
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
           <span style="font-weight:600">2月<span style="font-weight:400;color:var(--hint);margin-left:5px">已入帳</span></span>
-          <span style="font-weight:700;color:#1D9E75">13.3萬</span>
+          <span style="font-weight:700;color:#1D9E75">18.3萬</span>
         </div>
         <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
-          <div style="background:#1D9E75;width:56.6%;height:100%;border-radius:5px"></div>
+          <div style="background:#1D9E75;width:78.2%;height:100%;border-radius:5px"></div>
         </div>
       </div>
       <div style="margin-bottom:9px">
@@ -836,11 +836,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
       <div style="margin-bottom:9px">
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
-          <span style="font-weight:600">9月</span>
-          <span style="font-weight:700;color:var(--border)">0.0萬</span>
+          <span style="font-weight:600">9月<span style="font-weight:400;color:var(--hint);margin-left:5px">已公告</span></span>
+          <span style="font-weight:700;color:#EF9F27">16.6萬</span>
         </div>
         <div style="background:var(--bg);border-radius:5px;height:22px;overflow:hidden">
-          <div style="background:var(--border);width:0.0%;height:100%;border-radius:5px"></div>
+          <div style="background:#EF9F27;width:70.6%;height:100%;border-radius:5px"></div>
         </div>
       </div>
       <div style="margin-bottom:9px">
@@ -876,229 +876,170 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <span><span style="display:inline-block;width:9px;height:9px;background:#EF9F27;border-radius:2px;margin-right:4px"></span>已公告待發放</span>
       <span><span style="display:inline-block;width:9px;height:9px;background:var(--border);border-radius:2px;margin-right:4px"></span>尚未公告</span>
     </div>
-    <div class="alert alert-info" style="margin-top:10px">💡 <b>9月無配息入帳</b>：台積電（7元）與 00935（1.83元）皆於 9/16 除息，但分別於 10/8、10/15 才發放，故列於 10 月。</div>
+    <div class="alert alert-info" style="margin-top:10px">💡 <b>本表以「入帳日」歸月，非除息日</b>。例：00881 於 8/18 除息但 9/11 發放，故列 9 月；台積電與 00935 於 9/16 除息，分別 10/8、10/15 發放，列 10 月。</div>
   </div>
   <div class="card">
-    <div class="stitle">配息明細（21 筆紀錄）</div>
-    <div style="overflow-x:auto">
-    <table class="tbl">
+    <div class="stitle">配息明細（22 筆）</div>
+    <div style="overflow-x:auto"><table class="tbl">
       <thead><tr><th>入帳日</th><th>代號</th><th>名稱</th><th>券商</th><th style="text-align:right">股數</th><th style="text-align:right">每股</th><th style="text-align:right">金額</th><th>備註</th></tr></thead>
       <tbody>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-01-15</td>
-          <td style="padding:7px 8px;font-weight:500">0050</td>
-          <td style="padding:7px 8px">元大台灣50</td>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-01-15</td>
+          <td style="padding:7px 8px;font-weight:500">0050</td><td style="padding:7px 8px">元大台灣50</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">45,000</td>
           <td style="padding:7px 8px;text-align:right">1.0 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">4.5萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月半年配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-01-20</td>
-          <td style="padding:7px 8px;font-weight:500">2330</td>
-          <td style="padding:7px 8px">台積電</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月半年配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-01-20</td>
+          <td style="padding:7px 8px;font-weight:500">2330</td><td style="padding:7px 8px">台積電</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">5,294</td>
           <td style="padding:7px 8px;text-align:right">5.0 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">2.6萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2025Q3季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-02-10</td>
-          <td style="padding:7px 8px;font-weight:500">0056</td>
-          <td style="padding:7px 8px">元大高股息</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2025Q3季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-02-12</td>
+          <td style="padding:7px 8px;font-weight:500">00881</td><td style="padding:7px 8px">國泰台灣科技龍頭</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
+          <td style="padding:7px 8px;text-align:right">35,000</td>
+          <td style="padding:7px 8px;text-align:right">2.65 元</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">9.3萬</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2025H2,1/20除息</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-02-10</td>
+          <td style="padding:7px 8px;font-weight:500">0056</td><td style="padding:7px 8px">元大高股息</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">62,700</td>
           <td style="padding:7px 8px;text-align:right">1.0 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">6.3萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月季配(1/21除息)</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-02-12</td>
-          <td style="padding:7px 8px;font-weight:500">00881</td>
-          <td style="padding:7px 8px">國泰台灣科技龍頭</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
-          <td style="padding:7px 8px;text-align:right">35,000</td>
-          <td style="padding:7px 8px;text-align:right">1.2 元</td>
-          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">4.2萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月半年配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-02-14</td>
-          <td style="padding:7px 8px;font-weight:500">00927</td>
-          <td style="padding:7px 8px">群益半導體收益</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月季配(1/21除息)</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-02-14</td>
+          <td style="padding:7px 8px;font-weight:500">00927</td><td style="padding:7px 8px">群益半導體收益</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">50,000</td>
           <td style="padding:7px 8px;text-align:right">0.42 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">2.1萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-02-14</td>
-          <td style="padding:7px 8px;font-weight:500">00981A</td>
-          <td style="padding:7px 8px">主動統一台股增長</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-02-14</td>
+          <td style="padding:7px 8px;font-weight:500">00981A</td><td style="padding:7px 8px">主動統一台股增長</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">23,000</td>
           <td style="padding:7px 8px;text-align:right">0.3 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">0.7萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-03-12</td>
-          <td style="padding:7px 8px;font-weight:500">00894</td>
-          <td style="padding:7px 8px">中信小資高價30</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">1月季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-03-12</td>
+          <td style="padding:7px 8px;font-weight:500">00894</td><td style="padding:7px 8px">中信小資高價30</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">33,000</td>
           <td style="padding:7px 8px;text-align:right">0.55 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">1.8萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2月季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-04-09</td>
-          <td style="padding:7px 8px;font-weight:500">2330</td>
-          <td style="padding:7px 8px">台積電</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2月季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-04-09</td>
+          <td style="padding:7px 8px;font-weight:500">2330</td><td style="padding:7px 8px">台積電</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">5,294</td>
           <td style="padding:7px 8px;text-align:right">6.0 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">3.2萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2025Q4季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-04-15</td>
-          <td style="padding:7px 8px;font-weight:500">00935</td>
-          <td style="padding:7px 8px">野村臺灣新科技50</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2025Q4季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-04-15</td>
+          <td style="padding:7px 8px;font-weight:500">00935</td><td style="padding:7px 8px">野村臺灣新科技50</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">31,000</td>
           <td style="padding:7px 8px;text-align:right">0.85 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">2.6萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">3月半年配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-05-10</td>
-          <td style="padding:7px 8px;font-weight:500">0056</td>
-          <td style="padding:7px 8px">元大高股息</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">3月半年配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-05-10</td>
+          <td style="padding:7px 8px;font-weight:500">0056</td><td style="padding:7px 8px">元大高股息</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">62,700</td>
           <td style="padding:7px 8px;text-align:right">1.0 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">6.3萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">4月季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-05-14</td>
-          <td style="padding:7px 8px;font-weight:500">00927</td>
-          <td style="padding:7px 8px">群益半導體收益</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">4月季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-05-14</td>
+          <td style="padding:7px 8px;font-weight:500">00927</td><td style="padding:7px 8px">群益半導體收益</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">50,000</td>
           <td style="padding:7px 8px;text-align:right">0.45 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">2.2萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">4月季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-05-14</td>
-          <td style="padding:7px 8px;font-weight:500">00981A</td>
-          <td style="padding:7px 8px">主動統一台股增長</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">4月季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-05-14</td>
+          <td style="padding:7px 8px;font-weight:500">00981A</td><td style="padding:7px 8px">主動統一台股增長</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">23,000</td>
           <td style="padding:7px 8px;text-align:right">0.32 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">0.7萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">4月季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-06-12</td>
-          <td style="padding:7px 8px;font-weight:500">00894</td>
-          <td style="padding:7px 8px">中信小資高價30</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">4月季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-06-12</td>
+          <td style="padding:7px 8px;font-weight:500">00894</td><td style="padding:7px 8px">中信小資高價30</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">33,000</td>
           <td style="padding:7px 8px;text-align:right">0.58 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">1.9萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">5月季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-07-09</td>
-          <td style="padding:7px 8px;font-weight:500">2330</td>
-          <td style="padding:7px 8px">台積電</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">5月季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-07-09</td>
+          <td style="padding:7px 8px;font-weight:500">2330</td><td style="padding:7px 8px">台積電</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">5,294</td>
           <td style="padding:7px 8px;text-align:right">6.0 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">3.2萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026Q1季配(6/11除息)</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-10</td>
-          <td style="padding:7px 8px;font-weight:500">006208</td>
-          <td style="padding:7px 8px">富邦台50</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026Q1季配(6/11除息)</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-10</td>
+          <td style="padding:7px 8px;font-weight:500">006208</td><td style="padding:7px 8px">富邦台50</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">20,000</td>
           <td style="padding:7px 8px;text-align:right">4.75 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">9.5萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7/16除息,歷史新高</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-10</td>
-          <td style="padding:7px 8px;font-weight:500">0056</td>
-          <td style="padding:7px 8px">元大高股息</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7/16除息,歷史新高</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-10</td>
+          <td style="padding:7px 8px;font-weight:500">0056</td><td style="padding:7px 8px">元大高股息</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">62,700</td>
           <td style="padding:7px 8px;text-align:right">1.35 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">8.5萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7/21除息,單季新高</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-10</td>
-          <td style="padding:7px 8px;font-weight:500">0050</td>
-          <td style="padding:7px 8px">元大台灣50</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7/21除息,單季新高</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-10</td>
+          <td style="padding:7px 8px;font-weight:500">0050</td><td style="padding:7px 8px">元大台灣50</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">45,000</td>
           <td style="padding:7px 8px;text-align:right">0.6 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#EF9F27">2.7萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7/21除息</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-14</td>
-          <td style="padding:7px 8px;font-weight:500">00927</td>
-          <td style="padding:7px 8px">群益半導體收益</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7/21除息</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-14</td>
+          <td style="padding:7px 8px;font-weight:500">00927</td><td style="padding:7px 8px">群益半導體收益</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">50,000</td>
           <td style="padding:7px 8px;text-align:right">0.46 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">2.3萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7月季配</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-10</td>
-          <td style="padding:7px 8px;font-weight:500">006208</td>
-          <td style="padding:7px 8px">富邦台50</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7月季配</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-08-10</td>
+          <td style="padding:7px 8px;font-weight:500">006208</td><td style="padding:7px 8px">富邦台50</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">台銀</td>
           <td style="padding:7px 8px;text-align:right">1,000</td>
           <td style="padding:7px 8px;text-align:right">4.75 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#1D9E75">0.5萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7/16除息</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-10-15</td>
-          <td style="padding:7px 8px;font-weight:500">00935</td>
-          <td style="padding:7px 8px">野村臺灣新科技50</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">7/16除息</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-09-11</td>
+          <td style="padding:7px 8px;font-weight:500">00881</td><td style="padding:7px 8px">國泰台灣科技龍頭</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
+          <td style="padding:7px 8px;text-align:right">36,000</td>
+          <td style="padding:7px 8px;text-align:right">4.6 元</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:#EF9F27">16.6萬</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026H1,8/18除息,配息新高</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-10-15</td>
+          <td style="padding:7px 8px;font-weight:500">00935</td><td style="padding:7px 8px">野村臺灣新科技50</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">30,000</td>
           <td style="padding:7px 8px;text-align:right">1.83 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#EF9F27">5.5萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">9/16除息,掛牌新高</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-10-08</td>
-          <td style="padding:7px 8px;font-weight:500">2330</td>
-          <td style="padding:7px 8px">台積電</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">9/16除息,掛牌新高</td></tr>
+        <tr><td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026-10-08</td>
+          <td style="padding:7px 8px;font-weight:500">2330</td><td style="padding:7px 8px">台積電</td>
           <td style="padding:7px 8px;font-size:11px;color:var(--muted)">永豐竹科</td>
           <td style="padding:7px 8px;text-align:right">7,042</td>
           <td style="padding:7px 8px;text-align:right">7.0 元</td>
           <td style="padding:7px 8px;text-align:right;font-weight:600;color:#EF9F27">4.9萬</td>
-          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026Q1,9/16除息,調升至7元</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-    <div class="alert alert-good" style="margin-top:10px">✅ 已入帳 63.1萬 + 已公告 13.1萬 = 累計 76.2萬。10月為大月（10.4萬）：台積電調升至 7 元（10/8），00935 配 1.83 元創掛牌新高（10/15）。</div>
-    <div class="alert alert-warn">⚠️ 11、12月尚未公告：0056（10月除息）、006208（11月）、00894（11月）、00631L（11月）、台積電Q2（12/10除息，2027/1/7發放）。</div>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026Q1,9/16除息,調升至7元</td></tr>
+      </tbody></table></div>
+    <div class="alert alert-good" style="margin-top:10px">✅ 已入帳 68.2萬 + 已公告 29.7萬 = 累計 97.9萬。9月 16.6萬（00881 配 4.60 元創新高）、10月 10.4萬（台積電 7 元、00935 1.83 元）。</div>
+    <div class="alert alert-warn">⚠️ 11、12月尚未公告：0056（10月除息）、006208（11月）、00894（11月）、00631L（11月）。台積電 Q2 於 12/10 除息、2027/1/7 發放。</div>
   </div>
 </div>
 
