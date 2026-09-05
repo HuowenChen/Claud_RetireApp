@@ -293,6 +293,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tab active" onclick="switchTab(this,'overview')">📊 總覽</button>
   <button class="tab" onclick="switchTab(this,'growth')">📈 成長波動</button>
   <button class="tab" onclick="switchTab(this,'alloc')">⚖️ 配置分析</button>
+  <button class="tab" onclick="switchTab(this,'pe')">📐 本益比</button>
   <button class="tab" onclick="switchTab(this,'pareto-tw')">🇹🇼 台股</button>
   <button class="tab" onclick="switchTab(this,'pareto-us')">🇺🇸 美股</button>
   <button class="tab" onclick="switchTab(this,'pareto-jp')">🇯🇵 日股</button>
@@ -382,6 +383,101 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="alert alert-good">🟢 基金86.9%最接近目標，再追加131萬即可達成！</div>
   <div class="alert alert-info">💡 台股目標1億（62.5%）為絕對金額目標，需靠股息再投入+資本利得自然成長，預計2028年達標。</div>
+</div>
+
+<!-- ════ 本益比 ════ -->
+<div id="tab-pe" class="tab-content">
+  <div class="g4">
+    <div class="metric">
+      <div class="metric-label">🇹🇼 台股 TAIEX</div>
+      <div class="metric-value" style="color:var(--blue)">—</div>
+      <div class="metric-sub">P/B 4.38｜2026/09/03</div>
+      <div style="font-size:10px;color:var(--hint);margin-top:2px">財報狗（P/E 未公開）</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">🇺🇸 美股 S&P 500</div>
+      <div class="metric-value" style="color:var(--green)">26.82<span style="font-size:12px;color:var(--muted)">倍</span></div>
+      <div class="metric-sub">trailing｜2026/02/12</div>
+      <div style="font-size:10px;color:var(--hint);margin-top:2px">Zacks</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">🇯🇵 日股 TSE Prime</div>
+      <div class="metric-value" style="color:var(--amber)">22.80<span style="font-size:12px;color:var(--muted)">倍</span></div>
+      <div class="metric-sub">月均｜2026/07</div>
+      <div style="font-size:10px;color:var(--hint);margin-top:2px">JPX / CEIC</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">🇰🇷 韓股 KOSPI</div>
+      <div class="metric-value" style="color:var(--purple)">17.11<span style="font-size:12px;color:var(--muted)">倍</span></div>
+      <div class="metric-sub">韓交所口徑｜2026/08/09</div>
+      <div style="font-size:10px;color:var(--hint);margin-top:2px">Korea Exchange</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">各市場本益比走勢（近12個月）</div>
+    <div class="legend-row" style="margin-top:6px">
+      <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>台股</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>美股</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>日股</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#7F77DD"></span>韓股</span>
+    </div>
+    <div class="chart-wrap"><canvas id="peChart"></canvas></div>
+    <div class="alert alert-warn" style="margin-top:10px">⚠️ <b>資料仍在累積中</b>。目前僅 5 個已查證數據點（圖上為斷點）。歷史月度序列需付費資料庫（Siblis、CEIC）才能完整取得，故未以推估值填補——寧可留白，也不放不可靠的數字。每週更新時會逐步累積。</div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">已查證數據</div>
+    <table class="tbl">
+      <thead><tr><th>市場</th><th>指數</th><th style="text-align:right">本益比</th><th>口徑</th><th>資料日期</th><th>來源</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="padding:7px 8px;font-weight:600">🇹🇼 台股</td>
+          <td style="padding:7px 8px">TAIEX</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:700;color:var(--blue)">—</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">P/B 4.38</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026/09/03</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--hint)">財報狗（P/E 未公開）</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:600">🇺🇸 美股</td>
+          <td style="padding:7px 8px">S&P 500</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:700;color:var(--green)">26.82</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">trailing</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026/02/12</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--hint)">Zacks</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:600">🇯🇵 日股</td>
+          <td style="padding:7px 8px">TSE Prime</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:700;color:var(--amber)">22.80</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">月均</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026/07</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--hint)">JPX / CEIC</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;font-weight:600">🇰🇷 韓股</td>
+          <td style="padding:7px 8px">KOSPI</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:700;color:var(--purple)">17.11</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">韓交所口徑</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026/08/09</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--hint)">Korea Exchange</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-danger" style="margin-top:10px">🔴 <b>不同來源數字差異極大，不可直接橫向比較</b>。例：韓股 KOSPI 同期有 17.11（韓交所口徑）與 22.95（Siblis trailing）兩種，差距逾 30%。原因是計算口徑不同——trailing／forward、是否排除虧損公司、加權方式皆不一致。</div>
+    <div class="alert alert-info">💡 <b>台股本益比未列出</b>：證交所僅逐檔公布個股本益比，未公布大盤加權本益比。目前可取得的替代指標為 <b>股價淨值比 4.38 倍</b>（2026/09/03）——歷史經驗上，台股 P/B 超過 1.8 屬偏貴區間，目前數值已明顯偏高。</div>
+  </div>
+
+  <div class="card">
+    <div class="stitle">更新方式</div>
+    <div style="font-size:12px;line-height:1.9;color:var(--muted)">
+      <div>📅 <b>每週更新一次</b>：對 Claude 說「<b>更新本益比</b>」，會搜尋各市場最新數值、寫入 <code>pe_records.csv</code> 並更新本頁。</div>
+      <div>⚠️ Claude 無法自動排程，需由你開啟對話觸發。</div>
+      <div>📈 資料會逐週累積，約 3 個月後圖表即具參考價值。</div>
+      <div>🔗 若你有 Siblis 或 CEIC 訂閱，可直接提供月度序列，我一次補齊 12 個月。</div>
+    </div>
+  </div>
 </div>
 
 <!-- ════ 台股 Pareto ════ -->
@@ -1732,6 +1828,28 @@ window.JP_DATA=
 ];
 
 // ── 油表（半圓 Canvas）──
+window.PE_DATA={
+  labels:["2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"],
+  tw:[null,null,null,null,null,null,null,null,null,null,null,null],
+  us:[null,null,null,null,26.82,null,null,null,null,null,null,null],
+  jp:[null,null,null,null,null,null,null,null,25.40,22.80,null,null],
+  kr:[null,null,null,null,null,null,null,null,null,22.95,17.11,null]
+};
+function drawPE(){
+  const ctx=document.getElementById('peChart'); if(!ctx) return;
+  const ex=Chart.getChart(ctx); if(ex) ex.destroy();
+  const D=window.PE_DATA;
+  new Chart(ctx,{type:'line',data:{labels:D.labels,datasets:[
+    {label:'台股',data:D.tw,borderColor:'#378ADD',backgroundColor:'#378ADD',borderWidth:2,pointRadius:4,spanGaps:true,tension:0.2},
+    {label:'美股',data:D.us,borderColor:'#1D9E75',backgroundColor:'#1D9E75',borderWidth:2,pointRadius:4,spanGaps:true,tension:0.2},
+    {label:'日股',data:D.jp,borderColor:'#EF9F27',backgroundColor:'#EF9F27',borderWidth:2,pointRadius:4,spanGaps:true,tension:0.2},
+    {label:'韓股',data:D.kr,borderColor:'#7F77DD',backgroundColor:'#7F77DD',borderWidth:2,pointRadius:4,spanGaps:true,tension:0.2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} 倍`}}},
+      scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10},maxTicksLimit:12}},
+              y:{grid:{color:GC},ticks:{color:TC,font:{size:10},callback:v=>v+'倍'},suggestedMin:10,suggestedMax:30}}}});
+}
+
 function drawGauge(id,pct,label,color){
   const c=document.getElementById(id);if(!c)return;
   const W=c.clientWidth||c.width||110,H=c.clientHeight||c.height||65;
@@ -1877,6 +1995,7 @@ function drawTabCharts(name){
       scales:{r:{grid:{color:GC},ticks:{color:TC,font:{size:9},backdropColor:'transparent'},
                  pointLabels:{color:TC,font:{size:11}},suggestedMin:0,suggestedMax:110}}}});
   }
+  if(name==='pe') drawPE();
   if(name==='pareto-tw'){buildHBar('twPareto',window.TW_DATA,'台股持股（5,046萬｜前15大＋其他）');buildDonut('twDonut',window.TW_DATA);renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');}
   if(name==='pareto-us'){buildHBar('usPareto',window.US_DATA,'美股持股（2,346萬｜USD/TWD 31.64）');buildDonut('usDonut',window.US_DATA);renderBrokerTable(window.US_BROKER,'us-broker-table','USD');}
   if(name==='pareto-jp'){
