@@ -212,6 +212,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .stitle{font-size:12px}
   .legend-row{gap:10px;font-size:11px}
 }
+
+/* ══ 開銷分析 ══ */
+.kpi{text-align:left}
+.kpi-l{font-size:11px;color:var(--hint);letter-spacing:.5px}
+.kpi-v{font-size:30px;font-weight:800;line-height:1.15;margin-top:2px}
+.kpi-v.warn{color:#EF9F27}
+.kpi-v .u{font-size:14px;font-weight:600;margin-left:2px}
+.kpi-s{font-size:11px;color:var(--hint);margin-top:4px}
+.xbar-wrap{display:flex;flex-direction:column;gap:9px}
+.xbar-row{display:grid;grid-template-columns:76px 1fr 62px 46px;align-items:center;gap:8px}
+.xbar-name{font-size:12px;font-weight:600}
+.xbar-track{height:16px;background:var(--border);border-radius:8px;overflow:hidden}
+.xbar-fill{height:100%;border-radius:8px}
+.xbar-val{font-size:12px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.xbar-pct{font-size:11px;color:var(--hint);text-align:right;font-variant-numeric:tabular-nums}
+.tbl-card{padding:4px 0;overflow-x:auto}
+.dtbl{width:100%;border-collapse:collapse;font-size:12px}
+.dtbl th{text-align:left;padding:8px 10px;color:var(--hint);font-size:11px;font-weight:600;
+  border-bottom:1px solid var(--border);white-space:nowrap}
+.dtbl td{padding:7px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+.dtbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.dtbl .rk{color:var(--hint);width:26px}
+.dtbl tr.ttl td{font-weight:800;border-top:1.5px solid var(--border);border-bottom:none}
+.dtbl .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+@media(max-width:480px){
+  .xbar-row{grid-template-columns:62px 1fr 56px 40px;gap:6px}
+  .kpi-v{font-size:25px}
+}
 </style>
 <!-- build:0901-0856 -->
 </head>
@@ -307,6 +335,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tab" onclick="switchTab(this,'calc')">🧮 退休試算</button>
   <button class="tab" onclick="switchTab(this,'calendar')">📅 資產月曆</button>
   <button class="tab" onclick="switchTab(this,'netcal')">💚 淨資產月曆</button>
+  <button class="tab" onclick="switchTab(this,'expense')">🧾 每月開銷</button>
 </div>
 
 <!-- ════ 總覽 ════ -->
@@ -1965,6 +1994,141 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="alert alert-info" style="margin-top:12px">💡 <b>淨資產 = 總資產 − 總負債</b>。因負債（房貸＋質借）變動，淨資產的波動幅度會大於總資產——質借增加時總資產上升但淨資產不變，這裡看得最清楚。</div>
 </div>
 
+<div id="tab-expense" class="tab-content">
+  <div class="sdiv"><span>每月開銷總覽（近12完整月 2025-09 ~ 2026-08）</span></div>
+  <div class="g3">
+    <div class="card kpi"><div class="kpi-l">經常性月開銷</div>
+      <div class="kpi-v">33.3<span class="u">萬</span></div>
+      <div class="kpi-s">中位 30.1萬 ｜ 區間 19.3–64.2萬</div></div>
+    <div class="card kpi"><div class="kpi-l">＋房貸後月開銷</div>
+      <div class="kpi-v warn">49.3<span class="u">萬</span></div>
+      <div class="kpi-s">星展房貸 16萬/月（未含於帳本）</div></div>
+    <div class="card kpi"><div class="kpi-l">一次性大額（月均攤）</div>
+      <div class="kpi-v">19.0<span class="u">萬</span></div>
+      <div class="kpi-s">綜所稅・房地產・年繳保費</div></div>
+  </div>
+  <div class="g3">
+    <div class="card kpi"><div class="kpi-l">近12月總支出</div>
+      <div class="kpi-v">628<span class="u">萬</span></div>
+      <div class="kpi-s">經常 400萬 ＋ 一次性 228萬</div></div>
+    <div class="card kpi"><div class="kpi-l">含房貸年支出</div>
+      <div class="kpi-v warn">820<span class="u">萬</span></div>
+      <div class="kpi-s">＋房貸 192萬/年</div></div>
+    <div class="card kpi"><div class="kpi-l">帳本筆數</div>
+      <div class="kpi-v">1,573<span class="u">筆</span></div>
+      <div class="kpi-s">2021-09 ~ 2026-09</div></div>
+  </div>
+
+  <div class="alert alert-info">💡 <b>為何要分「經常性」與「一次性」？</b>
+  退休現金流要用<b>經常性</b>推估（每月都會發生），一次性大額（綜所稅、買房車位、年繳保費）
+  應另備預備金，不能混在月開銷裡平均，否則會高估退休所需資產。</div>
+
+  <div class="sdiv"><span>月度支出走勢（近36個月）</span></div>
+  <div class="card">
+    <div class="legend-row">
+      <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>經常性</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>一次性大額</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#E24B4A;height:3px;border-radius:2px;width:14px"></span>經常性12月移動平均</span>
+    </div>
+    <div class="chart-wrap"><canvas id="expMonthlyChart"></canvas></div>
+  </div>
+
+  <div class="sdiv"><span>分類佔比（經常性・近12月）</span></div>
+  <div class="card">
+    <div class="xbar-wrap">
+      <div class="xbar-row"><div class="xbar-name">餐飲食品</div><div class="xbar-track"><div class="xbar-fill" style="width:100.0%;background:#E24B4A"></div></div><div class="xbar-val">210.7萬</div><div class="xbar-pct">52.7%</div></div>
+      <div class="xbar-row"><div class="xbar-name">休閒娛樂</div><div class="xbar-track"><div class="xbar-fill" style="width:42.2%;background:#1D9E75"></div></div><div class="xbar-val">88.9萬</div><div class="xbar-pct">22.2%</div></div>
+      <div class="xbar-row"><div class="xbar-name">居家生活</div><div class="xbar-track"><div class="xbar-fill" style="width:14.9%;background:#378ADD"></div></div><div class="xbar-val">31.3萬</div><div class="xbar-pct">7.8%</div></div>
+      <div class="xbar-row"><div class="xbar-name">稅務捐款</div><div class="xbar-track"><div class="xbar-fill" style="width:9.0%;background:#EF9F27"></div></div><div class="xbar-val">19.0萬</div><div class="xbar-pct">4.7%</div></div>
+      <div class="xbar-row"><div class="xbar-name">醫療保健</div><div class="xbar-track"><div class="xbar-fill" style="width:8.5%;background:#7F77DD"></div></div><div class="xbar-val">17.8萬</div><div class="xbar-pct">4.5%</div></div>
+      <div class="xbar-row"><div class="xbar-name">教育學習</div><div class="xbar-track"><div class="xbar-fill" style="width:7.0%;background:#D95FA3"></div></div><div class="xbar-val">14.7萬</div><div class="xbar-pct">3.7%</div></div>
+      <div class="xbar-row"><div class="xbar-name">服飾美容</div><div class="xbar-track"><div class="xbar-fill" style="width:4.2%;background:#C99A3E"></div></div><div class="xbar-val">8.8萬</div><div class="xbar-pct">2.2%</div></div>
+      <div class="xbar-row"><div class="xbar-name">汽機車</div><div class="xbar-track"><div class="xbar-fill" style="width:2.8%;background:#5BA8C4"></div></div><div class="xbar-val">6.0萬</div><div class="xbar-pct">1.5%</div></div>
+      <div class="xbar-row"><div class="xbar-name">圖書刊物</div><div class="xbar-track"><div class="xbar-fill" style="width:0.9%;background:#8C8C8C"></div></div><div class="xbar-val">1.8萬</div><div class="xbar-pct">0.5%</div></div>
+      <div class="xbar-row"><div class="xbar-name">3C通訊</div><div class="xbar-track"><div class="xbar-fill" style="width:0.5%;background:#6B8E23"></div></div><div class="xbar-val">1.0萬</div><div class="xbar-pct">0.2%</div></div>
+    </div>
+  </div>
+
+  <div class="sdiv"><span>分類 Pareto 明細</span></div>
+  <div class="card tbl-card">
+    <table class="dtbl">
+      <thead><tr><th>#</th><th>分類</th><th class="num">近12月</th><th class="num">月均</th>
+      <th class="num">佔比</th><th class="num">累計</th></tr></thead>
+      <tbody>
+        <tr><td class="rk">1</td><td><span class="dot" style="background:#E24B4A"></span>餐飲食品</td><td class="num">210.7萬</td><td class="num">17.6萬</td><td class="num">52.7%</td><td class="num">52.7%</td></tr>
+        <tr><td class="rk">2</td><td><span class="dot" style="background:#1D9E75"></span>休閒娛樂</td><td class="num">88.9萬</td><td class="num">7.4萬</td><td class="num">22.2%</td><td class="num">74.9%</td></tr>
+        <tr><td class="rk">3</td><td><span class="dot" style="background:#378ADD"></span>居家生活</td><td class="num">31.3萬</td><td class="num">2.6萬</td><td class="num">7.8%</td><td class="num">82.7%</td></tr>
+        <tr><td class="rk">4</td><td><span class="dot" style="background:#EF9F27"></span>稅務捐款</td><td class="num">19.0萬</td><td class="num">1.6萬</td><td class="num">4.7%</td><td class="num">87.5%</td></tr>
+        <tr><td class="rk">5</td><td><span class="dot" style="background:#7F77DD"></span>醫療保健</td><td class="num">17.8萬</td><td class="num">1.5萬</td><td class="num">4.5%</td><td class="num">91.9%</td></tr>
+        <tr><td class="rk">6</td><td><span class="dot" style="background:#D95FA3"></span>教育學習</td><td class="num">14.7萬</td><td class="num">1.2萬</td><td class="num">3.7%</td><td class="num">95.6%</td></tr>
+        <tr><td class="rk">7</td><td><span class="dot" style="background:#C99A3E"></span>服飾美容</td><td class="num">8.8萬</td><td class="num">0.7萬</td><td class="num">2.2%</td><td class="num">97.8%</td></tr>
+        <tr><td class="rk">8</td><td><span class="dot" style="background:#5BA8C4"></span>汽機車</td><td class="num">6.0萬</td><td class="num">0.5萬</td><td class="num">1.5%</td><td class="num">99.3%</td></tr>
+        <tr><td class="rk">9</td><td><span class="dot" style="background:#8C8C8C"></span>圖書刊物</td><td class="num">1.8萬</td><td class="num">0.2萬</td><td class="num">0.5%</td><td class="num">99.8%</td></tr>
+        <tr><td class="rk">10</td><td><span class="dot" style="background:#6B8E23"></span>3C通訊</td><td class="num">1.0萬</td><td class="num">0.1萬</td><td class="num">0.2%</td><td class="num">100.0%</td></tr>
+        <tr class="ttl"><td></td><td>合計</td><td class="num">400.0萬</td><td class="num">33.3萬</td><td class="num">100.0%</td><td class="num">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sdiv"><span>子分類 Top 15（經常性・近12月）</span></div>
+  <div class="card tbl-card">
+    <table class="dtbl">
+      <thead><tr><th>#</th><th>分類 / 子分類</th><th class="num">近12月</th><th class="num">月均</th></tr></thead>
+      <tbody>
+        <tr><td class="rk">1</td><td><span class="dot" style="background:#E24B4A"></span>餐飲食品 / Wife</td><td class="num">132.0萬</td><td class="num">11.0萬</td></tr>
+        <tr><td class="rk">2</td><td><span class="dot" style="background:#1D9E75"></span>休閒娛樂 / 旅行遊玩</td><td class="num">88.9萬</td><td class="num">7.4萬</td></tr>
+        <tr><td class="rk">3</td><td><span class="dot" style="background:#E24B4A"></span>餐飲食品 / cash</td><td class="num">34.9萬</td><td class="num">2.9萬</td></tr>
+        <tr><td class="rk">4</td><td><span class="dot" style="background:#E24B4A"></span>餐飲食品 / 食材</td><td class="num">30.3萬</td><td class="num">2.5萬</td></tr>
+        <tr><td class="rk">5</td><td><span class="dot" style="background:#EF9F27"></span>稅務捐款 / 慈善捐款</td><td class="num">19.0萬</td><td class="num">1.6萬</td></tr>
+        <tr><td class="rk">6</td><td><span class="dot" style="background:#378ADD"></span>居家生活 / 家電用品</td><td class="num">18.4萬</td><td class="num">1.5萬</td></tr>
+        <tr><td class="rk">7</td><td><span class="dot" style="background:#E24B4A"></span>餐飲食品 / 晚餐</td><td class="num">11.9萬</td><td class="num">1.0萬</td></tr>
+        <tr><td class="rk">8</td><td><span class="dot" style="background:#7F77DD"></span>醫療保健 / 保險</td><td class="num">11.6萬</td><td class="num">1.0萬</td></tr>
+        <tr><td class="rk">9</td><td><span class="dot" style="background:#D95FA3"></span>教育學習 / 補習費</td><td class="num">10.0萬</td><td class="num">0.8萬</td></tr>
+        <tr><td class="rk">10</td><td><span class="dot" style="background:#C99A3E"></span>服飾美容 / 上衣</td><td class="num">8.8萬</td><td class="num">0.7萬</td></tr>
+        <tr><td class="rk">11</td><td><span class="dot" style="background:#7F77DD"></span>醫療保健 / 健身</td><td class="num">5.6萬</td><td class="num">0.5萬</td></tr>
+        <tr><td class="rk">12</td><td><span class="dot" style="background:#378ADD"></span>居家生活 / 管理費</td><td class="num">4.9萬</td><td class="num">0.4萬</td></tr>
+        <tr><td class="rk">13</td><td><span class="dot" style="background:#D95FA3"></span>教育學習 / 學雜費</td><td class="num">4.7萬</td><td class="num">0.4萬</td></tr>
+        <tr><td class="rk">14</td><td><span class="dot" style="background:#378ADD"></span>居家生活 / 電費</td><td class="num">3.9萬</td><td class="num">0.3萬</td></tr>
+        <tr><td class="rk">15</td><td><span class="dot" style="background:#378ADD"></span>居家生活 / 房屋稅</td><td class="num">3.6萬</td><td class="num">0.3萬</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sdiv"><span>🔥 FIRE 提領試算：支出需要多少資產支撐</span></div>
+  <div class="card tbl-card">
+    <table class="dtbl">
+      <thead><tr><th>情境</th><th class="num">月支出</th><th class="num">年支出</th>
+      <th class="num">4% 法則</th><th class="num">3.5% 法則</th></tr></thead>
+      <tbody>
+        <tr><td>經常性（不含房貸）</td><td class="num">33.3萬</td><td class="num">400.0萬</td><td class="num">10,000萬</td><td class="num">11,429萬</td></tr>
+        <tr><td>經常性＋房貸</td><td class="num">49.3萬</td><td class="num">592.0萬</td><td class="num">14,800萬</td><td class="num">16,915萬</td></tr>
+        <tr><td>全部支出（含一次性）</td><td class="num">52.4萬</td><td class="num">628.3萬</td><td class="num">15,707萬</td><td class="num">17,951萬</td></tr>
+        <tr><td>全部支出＋房貸</td><td class="num">68.4萬</td><td class="num">820.3萬</td><td class="num">20,507萬</td><td class="num">23,436萬</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="alert alert-warn" id="exp-fire-note">—</div>
+
+  <div class="sdiv"><span>年度支出</span></div>
+  <div class="card tbl-card">
+    <table class="dtbl">
+      <thead><tr><th>年度</th><th class="num">總支出</th><th class="num">經常性</th>
+      <th class="num">月均</th><th class="num">月數</th></tr></thead>
+      <tbody>
+        <tr><td>2021</td><td class="num">115.4萬</td><td class="num">65.4萬</td><td class="num">28.9萬</td><td class="num">4</td></tr>
+        <tr><td>2022</td><td class="num">451.0萬</td><td class="num">280.6萬</td><td class="num">37.6萬</td><td class="num">12</td></tr>
+        <tr><td>2023</td><td class="num">527.4萬</td><td class="num">274.2萬</td><td class="num">43.9萬</td><td class="num">12</td></tr>
+        <tr><td>2024</td><td class="num">995.5萬</td><td class="num">373.3萬</td><td class="num">83.0萬</td><td class="num">12</td></tr>
+        <tr><td>2025</td><td class="num">586.8萬</td><td class="num">340.0萬</td><td class="num">48.9萬</td><td class="num">12</td></tr>
+        <tr><td>2026</td><td class="num">497.0萬</td><td class="num">318.8萬</td><td class="num">55.2萬</td><td class="num">9</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert alert-info">📄 資料源：Google Drive「AndroMoney」帳本（1,573 筆，2021-09 ~ 2026-09）｜
+  房貸每月 16 萬由系統外加｜更新帳本 Excel 後重跑更新即可同步。</div>
+</div>
+
 <div style="text-align:center;font-size:11px;color:var(--hint);margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
   RetireFlow Pro v3.3 完整版 ｜ Google Drive 即時同步 ｜ 2026/07/27 ｜ 僅供個人財務規劃參考，不構成投資建議
 </div>
@@ -1972,6 +2136,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 
 <script>
+
+// ══ 開銷分析數據 ══
+window.EXP_MONTHLY=[{"m": "2023-10", "t": 73.9, "r": 23.9, "l": 50.0, "n": 22}, {"m": "2023-11", "t": 19.3, "r": 19.3, "l": 0.0, "n": 21}, {"m": "2023-12", "t": 22.6, "r": 22.6, "l": 0.0, "n": 26}, {"m": "2024-01", "t": 35.1, "r": 35.1, "l": 0.0, "n": 18}, {"m": "2024-02", "t": 31.4, "r": 31.4, "l": 0.0, "n": 29}, {"m": "2024-03", "t": 57.3, "r": 39.9, "l": 17.4, "n": 31}, {"m": "2024-04", "t": 20.0, "r": 20.0, "l": 0.0, "n": 20}, {"m": "2024-05", "t": 188.5, "r": 29.7, "l": 158.8, "n": 24}, {"m": "2024-06", "t": 44.6, "r": 44.6, "l": 0.0, "n": 24}, {"m": "2024-07", "t": 257.6, "r": 28.6, "l": 229.0, "n": 38}, {"m": "2024-08", "t": 68.2, "r": 16.2, "l": 52.0, "n": 20}, {"m": "2024-09", "t": 26.5, "r": 26.5, "l": 0.0, "n": 24}, {"m": "2024-10", "t": 83.0, "r": 33.0, "l": 50.0, "n": 26}, {"m": "2024-11", "t": 141.1, "r": 26.1, "l": 115.0, "n": 21}, {"m": "2024-12", "t": 42.1, "r": 42.1, "l": 0.0, "n": 27}, {"m": "2025-01", "t": 38.4, "r": 38.4, "l": 0.0, "n": 43}, {"m": "2025-02", "t": 69.4, "r": 15.5, "l": 53.9, "n": 21}, {"m": "2025-03", "t": 30.2, "r": 30.2, "l": 0.0, "n": 21}, {"m": "2025-04", "t": 24.6, "r": 24.6, "l": 0.0, "n": 30}, {"m": "2025-05", "t": 45.3, "r": 45.3, "l": 0.0, "n": 26}, {"m": "2025-06", "t": 176.0, "r": 33.2, "l": 142.9, "n": 33}, {"m": "2025-07", "t": 20.8, "r": 20.8, "l": 0.0, "n": 30}, {"m": "2025-08", "t": 26.3, "r": 26.3, "l": 0.0, "n": 30}, {"m": "2025-09", "t": 21.1, "r": 21.1, "l": 0.0, "n": 25}, {"m": "2025-10", "t": 73.0, "r": 23.0, "l": 50.0, "n": 24}, {"m": "2025-11", "t": 28.3, "r": 28.3, "l": 0.0, "n": 37}, {"m": "2025-12", "t": 33.3, "r": 33.3, "l": 0.0, "n": 26}, {"m": "2026-01", "t": 23.7, "r": 23.7, "l": 0.0, "n": 27}, {"m": "2026-02", "t": 52.2, "r": 52.2, "l": 0.0, "n": 27}, {"m": "2026-03", "t": 24.9, "r": 24.9, "l": 0.0, "n": 20}, {"m": "2026-04", "t": 46.3, "r": 19.3, "l": 27.0, "n": 25}, {"m": "2026-05", "t": 36.1, "r": 36.1, "l": 0.0, "n": 28}, {"m": "2026-06", "t": 141.9, "r": 41.9, "l": 100.0, "n": 32}, {"m": "2026-07", "t": 65.5, "r": 64.2, "l": 1.2, "n": 32}, {"m": "2026-08", "t": 81.8, "r": 31.8, "l": 50.0, "n": 45}, {"m": "2026-09", "t": 24.6, "r": 24.6, "l": 0.0, "n": 13}];
+window.EXP_CAT=[{"name": "餐飲食品", "val": 210.7, "pct": 52.7, "mo": 17.6, "color": "#E24B4A"}, {"name": "休閒娛樂", "val": 88.9, "pct": 22.2, "mo": 7.4, "color": "#1D9E75"}, {"name": "居家生活", "val": 31.3, "pct": 7.8, "mo": 2.6, "color": "#378ADD"}, {"name": "稅務捐款", "val": 19.0, "pct": 4.7, "mo": 1.6, "color": "#EF9F27"}, {"name": "醫療保健", "val": 17.8, "pct": 4.5, "mo": 1.5, "color": "#7F77DD"}, {"name": "教育學習", "val": 14.7, "pct": 3.7, "mo": 1.2, "color": "#D95FA3"}, {"name": "服飾美容", "val": 8.8, "pct": 2.2, "mo": 0.7, "color": "#C99A3E"}, {"name": "汽機車", "val": 6.0, "pct": 1.5, "mo": 0.5, "color": "#5BA8C4"}, {"name": "圖書刊物", "val": 1.8, "pct": 0.5, "mo": 0.2, "color": "#8C8C8C"}, {"name": "3C通訊", "val": 1.0, "pct": 0.2, "mo": 0.1, "color": "#6B8E23"}];
+window.EXP_SUB=[{"name": "餐飲食品 / Wife", "val": 132.0, "mo": 11.0, "color": "#E24B4A"}, {"name": "休閒娛樂 / 旅行遊玩", "val": 88.9, "mo": 7.4, "color": "#1D9E75"}, {"name": "餐飲食品 / cash", "val": 34.9, "mo": 2.9, "color": "#E24B4A"}, {"name": "餐飲食品 / 食材", "val": 30.3, "mo": 2.5, "color": "#E24B4A"}, {"name": "稅務捐款 / 慈善捐款", "val": 19.0, "mo": 1.6, "color": "#EF9F27"}, {"name": "居家生活 / 家電用品", "val": 18.4, "mo": 1.5, "color": "#378ADD"}, {"name": "餐飲食品 / 晚餐", "val": 11.9, "mo": 1.0, "color": "#E24B4A"}, {"name": "醫療保健 / 保險", "val": 11.6, "mo": 1.0, "color": "#7F77DD"}, {"name": "教育學習 / 補習費", "val": 10.0, "mo": 0.8, "color": "#D95FA3"}, {"name": "服飾美容 / 上衣", "val": 8.8, "mo": 0.7, "color": "#C99A3E"}, {"name": "醫療保健 / 健身", "val": 5.6, "mo": 0.5, "color": "#7F77DD"}, {"name": "居家生活 / 管理費", "val": 4.9, "mo": 0.4, "color": "#378ADD"}, {"name": "教育學習 / 學雜費", "val": 4.7, "mo": 0.4, "color": "#D95FA3"}, {"name": "居家生活 / 電費", "val": 3.9, "mo": 0.3, "color": "#378ADD"}, {"name": "居家生活 / 房屋稅", "val": 3.6, "mo": 0.3, "color": "#378ADD"}];
+window.EXP_YEAR=[{"y": "2021", "tot": 115.4, "rec": 65.4}, {"y": "2022", "tot": 451.0, "rec": 280.6}, {"y": "2023", "tot": 527.4, "rec": 274.2}, {"y": "2024", "tot": 995.5, "rec": 373.3}, {"y": "2025", "tot": 586.8, "rec": 340.0}, {"y": "2026", "tot": 497.0, "rec": 318.8}];
+window.EXP_META={"recMo": 33.3, "recMoM": 49.3, "tot12": 628.3, "tot12M": 820.3, "mortMo": 16.0, "fire40": 14800.5, "fire35": 16914.9, "lastFull": "2026-08", "span": "2021-09 ~ 2026-09", "n": 1573};
 
 const DARK=matchMedia('(prefers-color-scheme:dark)').matches;
 const GC=DARK?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
@@ -2678,6 +2849,7 @@ function switchTab(el,name){
   setTimeout(()=>{
     drawTabCharts(name);
     if(name==='calendar') renderCalendar();
+    if(name==='expense'){renderExpenseNote();try{drawExpenseChart();}catch(e){console.warn('expChart',e);}}
     if(name==='pareto-tw') renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');
     if(name==='pareto-us') renderBrokerTable(window.US_BROKER,'us-broker-table','USD');
   },60);
@@ -3015,6 +3187,48 @@ switchTab=function(el,name){
   if(name==='netcal'){ setTimeout(renderNetCalendar,60); }
 };
 
+
+
+// ══ 開銷分析圖表 ══
+let expChart=null;
+function drawExpenseChart(){
+  const el=document.getElementById('expMonthlyChart');
+  if(!el||!window.EXP_MONTHLY) return;
+  if(expChart){expChart.destroy();expChart=null;}
+  const D=window.EXP_MONTHLY;
+  const labels=D.map(x=>x.m.slice(2).replace('-','/'));
+  // 12 月移動平均（經常性）
+  const ma=D.map((_,i)=>{
+    const s=Math.max(0,i-11), seg=D.slice(s,i+1);
+    return +(seg.reduce((a,b)=>a+b.r,0)/seg.length).toFixed(1);
+  });
+  expChart=new Chart(el,{type:'bar',data:{labels,datasets:[
+    {label:'經常性',data:D.map(x=>x.r),backgroundColor:'#378ADD',stack:'s',order:2},
+    {label:'一次性',data:D.map(x=>x.l),backgroundColor:'#EF9F27',stack:'s',order:2},
+    {label:'12月移動平均',data:ma,type:'line',borderColor:'#E24B4A',borderWidth:2,
+     pointRadius:0,tension:.3,order:1,fill:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{
+      label:c=>c.dataset.label+'：'+c.parsed.y.toLocaleString()+'萬'}}},
+    scales:{x:{stacked:true,grid:{color:GC},ticks:{color:TC,font:{size:9},
+               maxRotation:0,autoSkip:true,maxTicksLimit:12}},
+            y:{stacked:true,grid:{color:GC},ticks:{color:TC,font:{size:10},
+               callback:v=>v+'萬'}}}}});
+}
+function renderExpenseNote(){
+  const n=document.getElementById('exp-fire-note');
+  if(!n||!window.EXP_META) return;
+  const M=window.EXP_META;
+  const net=(typeof NET_NOW==='number')?NET_NOW:null;
+  let s='🎯 <b>以「經常性＋房貸」計算</b>：年支出 '+(M.recMoM*12).toFixed(0)+'萬，'+
+        '4% 法則需 <b>'+M.fire40.toLocaleString()+'萬</b>，3.5% 法則需 <b>'+
+        M.fire35.toLocaleString()+'萬</b>。';
+  s+=' 退休目標 16,000萬 '+(16000>=M.fire40?'已覆蓋':'尚未覆蓋')+'此需求。';
+  s+=' 房貸為期限負債，繳清後年支出可降 '+(M.mortMo*12).toFixed(0)+'萬，'+
+     '對應所需資產減少約 '+(M.mortMo*12/0.04).toFixed(0)+'萬。';
+  n.innerHTML=s;
+}
 
 </script>
 </body>
