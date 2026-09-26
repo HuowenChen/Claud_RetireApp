@@ -11,6 +11,15 @@ GD = dict(date='2026/09/25', ymd='2026-09-25',
     tw=55300675.91, us=25145343.29, jp=6805942.361, fund=9624407.00,
     div=1801422.478, mortgage=34959749, pledge=13901065)
 
+NET_HIST={"2026-09-01":43891056.24,"2026-09-02":42093460.87,"2026-09-03":42567097.32,
+ "2026-09-04":43645793.23,"2026-09-05":43145207.03,"2026-09-07":45219175.64,
+ "2026-09-08":45558043.97,"2026-09-09":45043503.41,"2026-09-10":44790793.20,
+ "2026-09-11":43229840.57,"2026-09-12":44126683.88,"2026-09-14":42944668.89,
+ "2026-09-15":41494759.09,"2026-09-16":41752680.89,"2026-09-17":42638370.96,
+ "2026-09-18":44723081.58,"2026-09-19":44610965.02,"2026-09-21":46061720.56,
+ "2026-09-22":47093243.89,"2026-09-23":47341799.99,"2026-09-24":47472745.22,
+ "2026-09-25":48015554.57}
+
 GD_HIST={"2026-09-01":89938261.24,"2026-09-02":88140665.87,"2026-09-03":88614302.32,
  "2026-09-04":89692998.23,"2026-09-05":89192412.03,"2026-09-07":91266380.64,
  "2026-09-08":94418857.97,"2026-09-09":93904317.41,"2026-09-10":93651607.20,
@@ -410,6 +419,15 @@ if _nm_:
     _nv=V['net_w']; _ncg=round(_nv-_pn,1); _npc=round(_ncg/_pn*100,2) if _pn else 0
     _nc[GD['ymd']]=str(_nv)
     _all=dict(re.findall(r'"(\d{4}-\d{2}-\d{2})":(\{"v":[\d.]+,"c":[-\d.]+,"p":[-\d.]+\})',_nm_.group(1)))
+    # 回填 NET_HIST 缺漏日期（漏更新那天不會消失）──與 CAL_DATA 同步
+    _nh=sorted(NET_HIST)
+    for _i,_d in enumerate(_nh):
+        _prev=NET_HIST[_nh[_i-1]] if _i>0 else NET_HIST[_d]
+        _cur=NET_HIST[_d]
+        _v=round(_cur/10000); _c=round((_cur-_prev)/10000,1)
+        _p=round((_cur-_prev)/_prev*100,2) if _prev else 0
+        if _d not in _all: print(f"  ✅ 淨資產月曆回填 {_d}: {_v}萬")
+        _all[_d]=f'{{"v":{_v},"c":{_c},"p":{_p}}}'
     _all[GD['ymd']]=f'{{"v":{_nv},"c":{_ncg},"p":{_npc}}}'
     html=re.sub(r'const NET_CAL_DATA = \{[\s\S]*?\};',
         'const NET_CAL_DATA = {'+','.join(f'"{k}":{v}' for k,v in sorted(_all.items()))+'};',html,count=1)
@@ -584,6 +602,15 @@ else:
     _miss=[d for d in GD_HIST if f'"{d}"' not in html]
     if _miss: errs.append(f"月曆缺漏日期: {_miss}")
     else: print(f"  ✅ 月曆 {len(_e)}筆，末筆 {_e[-1][0]}={_e[-1][1]}萬（GD_HIST 全數在列）")
+
+# 兩個月曆日期必須一致（抓出「淨資產月曆沒更新」這類漏洞）
+_c1=set(re.findall(r'"(\d{4}-\d{2}-\d{2})"',re.search(r'const CAL_DATA\s*=\s*(\{[\s\S]*?\});',html).group(1)))
+_n1_=re.search(r'const NET_CAL_DATA = (\{[\s\S]*?\});',html)
+_c2=set(re.findall(r'"(\d{4}-\d{2}-\d{2})"',_n1_.group(1))) if _n1_ else set()
+_lo=min(_c2) if _c2 else None
+_gap=sorted(d for d in _c1 if _lo and d>=_lo and d not in _c2)
+if _gap: errs.append(f"淨資產月曆缺漏 {len(_gap)} 天: {_gap[:8]}")
+else: print(f"  ✅ 兩月曆日期一致（資產{len(_c1)}筆 / 淨資產{len(_c2)}筆）")
 _mm=re.search(r'const CAL_MONTHS\s*=\s*(\[[^\]]+\])',html)
 _ms=json.loads(_mm.group(1))
 _nm2=json.loads(re.search(r'const MONTH_NAMES\s*=\s*(\{[^}]*\})',html).group(1))
