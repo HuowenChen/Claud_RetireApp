@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """RetireFlow 更新腳本 v2 — 含反向驗證，對不上帳就中止"""
 import os, re, json, base64, subprocess, shutil, urllib.request, urllib.error, datetime
+from rf_dividend import rebuild_dividend_tab, verify as div_verify
 from collections import defaultdict
 
 # ══ ① Google Drive 來源資料 ══
@@ -479,6 +480,13 @@ for a,v in _TA:
 print(f"  ✅ 月曆 + 走勢圖（{'新增' if _isnew else '更新'} {md}，{_mx}筆）")
 
 # ══ ④ 反向驗證：從 HTML 解析回來對帳 ══
+# ══ 配息月曆分頁：由 dividend_records.csv 重建（唯一真實來源）══
+try:
+    html, _DIVINFO = rebuild_dividend_tab(html, 'dividend_records.csv')
+    print(f"  ✅ 配息月曆由 CSV 重建（{_DIVINFO['n']}筆，已入帳{_DIVINFO['paid']/1e4:.1f}萬/已公告{_DIVINFO['ann']/1e4:.1f}萬/累計{_DIVINFO['tot']/1e4:.1f}萬）")
+except Exception as _e:
+    _DIVINFO=None; errs.append(f"配息月曆重建失敗: {_e}")
+
 print("\n── 反向驗證（解析 HTML 對帳 Google Drive）──")
 errs=[]
 # HTML 結構完整性（div 不平衡會導致分頁全部疊在一起）
@@ -637,6 +645,12 @@ _known_old=[v for v in ['869萬','357萬','4,460萬','2,242萬','3,505萬'] if v
 _stale=[v for v in _known_old if v in _bd2]
 if _stale: errs.append(f"殘留舊數字: {_stale}")
 else: print("  ✅ 無殘留舊數字")
+
+# 配息月曆對帳（頁面數字 vs CSV）
+if _DIVINFO:
+    _de=div_verify(html,_DIVINFO)
+    if _de: errs.extend(_de)
+    else: print(f"  ✅ 配息月曆與 CSV 對帳一致（累計 {_DIVINFO['tot']/1e4:.1f}萬）")
 
 # JS 語法
 open('/home/claude/rf/c.js','w').write(html[html.rfind('<script>')+8:html.rfind('</script>')])
