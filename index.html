@@ -250,7 +250,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="header">
   <div>
     <h1>RetireFlow Pro｜退休財務儀表板</h1>
-    <p>Google Drive 即時同步｜2026/10/01｜目標：2028/12 退休・總資產 ≥ NT$16,000萬</p>
+    <p>Google Drive 即時同步｜2026/10/01｜目標：2029/03/31 退休・總資產 ≥ NT$16,000萬</p>
     <p style="font-size:11px;margin-top:2px" id="price-status">📡 載入中...</p>
   </div>
   <div class="pills">
@@ -336,6 +336,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tab" onclick="switchTab(this,'calendar')">📅 資產月曆</button>
   <button class="tab" onclick="switchTab(this,'netcal')">💚 淨資產月曆</button>
   <button class="tab" onclick="switchTab(this,'expense')">🧾 每月開銷</button>
+  <button class="tab" onclick="switchTab(this,'retire')">⏳ 退休倒數</button>
 </div>
 
 <!-- ════ 總覽 ════ -->
@@ -2112,6 +2113,210 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   房貸每月 16 萬由系統外加｜更新帳本 Excel 後重跑更新即可同步。</div>
 </div>
 
+<div id="tab-retire" class="tab-content">
+  <div class="g3">
+    <div class="metric"><div class="metric-label">距離退休</div>
+      <div class="metric-value" id="rc-days" style="color:#378ADD">907<span style="font-size:12px;color:var(--muted)">天</span></div>
+      <div class="metric-sub" id="rc-ym">2 年 5 個月 ｜ 2029/03/31</div></div>
+    <div class="metric"><div class="metric-label">目標缺口</div>
+      <div class="metric-value warn">6,149<span style="font-size:12px;color:var(--muted)">萬</span></div>
+      <div class="metric-sub">目前 9,851萬 / 目標 16,000萬</div></div>
+    <div class="metric"><div class="metric-label">所需年化報酬</div>
+      <div class="metric-value" style="color:#E24B4A">21.6<span style="font-size:12px;color:var(--muted)">%</span></div>
+      <div class="metric-sub">追蹤以來實際 123%</div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+      <div class="stitle" style="margin-bottom:0">退休倒數進度</div>
+      <div style="font-size:12px;color:var(--muted)">2026/03/24 → 2029/03/31</div>
+    </div>
+    <div style="background:var(--bg);border-radius:7px;height:26px;overflow:hidden;position:relative">
+      <div id="rc-bar" style="background:linear-gradient(90deg,#378ADD,#1D9E75);width:17.8%;height:100%;border-radius:7px"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700" id="rc-bar-t">已過 17.8%</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--hint);margin-top:5px">
+      <span>已追蹤 196 天</span><span>剩餘 907 天</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="stitle">資產軌道里程碑（依所需年化 21.6% 推算）</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>季度</th><th>日期</th><th style="text-align:right">應達總資產</th><th style="text-align:right">達成率</th><th style="width:34%">進度</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:7px 8px;font-weight:600">2026Q4 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2026/12/31</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">10,315萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">64%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:64.5%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2027Q1 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2027/03/31</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">10,823萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">68%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:67.6%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2027Q2 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2027/06/30</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">11,363萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">71%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:71.0%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2027Q3 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2027/09/30</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">11,936萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">75%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:74.6%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2027Q4 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2027/12/31</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">12,538萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">78%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:78.4%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2028Q1 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2028/03/31</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">13,163萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">82%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:82.3%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2028Q2 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2028/06/30</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">13,819萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">86%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:86.4%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2028Q3 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2028/09/30</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">14,516萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">91%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:90.7%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2028Q4 </td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2028/12/31</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">15,248萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">95%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:95.3%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2029Q1 <span style="background:#E24B4A;color:#fff;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700">退休</span></td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2029/03/31</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">16,000萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">100%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:100.0%;height:100%"></div></div></td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">2029Q1 <span style="background:#E24B4A;color:#fff;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700">退休</span></td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">2029/03/31</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">16,000萬</td>
+          <td style="padding:7px 8px;text-align:right;color:var(--muted)">100%</td>
+          <td style="padding:7px 8px"><div style="background:var(--bg);border-radius:4px;height:14px;overflow:hidden"><div style="background:#378ADD;width:100.0%;height:100%"></div></div></td></tr>
+      </tbody>
+    </table></div>
+    <div class="alert alert-warn" style="margin-top:10px">⚠️ 所需年化 <b>21.6%</b> 遠高於長期股市合理預期（7–10%）。
+    追蹤以來實際年化 123% 來自 2026 年的多頭與槓桿部位，<b>不應假設能延續</b>。
+    若年化僅 10%，2029/3/31 約可達 12,482萬；若 15% 約 13,939萬。</div>
+  </div>
+  <div class="card">
+    <div class="stitle">退休日資產情境（2029/03/31，2.48 年後）</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>年化報酬</th><th style="text-align:right">屆時總資產</th><th style="text-align:right">達成率</th><th style="text-align:right">vs 目標</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:7px 8px;font-weight:600">5.0%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--text)">11,120萬</td>
+          <td style="padding:7px 8px;text-align:right;color:#EF9F27">70%</td>
+          <td style="padding:7px 8px;text-align:right;color:#E24B4A">差 4,880萬</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">8.0%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--text)">11,926萬</td>
+          <td style="padding:7px 8px;text-align:right;color:#EF9F27">75%</td>
+          <td style="padding:7px 8px;text-align:right;color:#E24B4A">差 4,074萬</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">10.0%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--text)">12,482萬</td>
+          <td style="padding:7px 8px;text-align:right;color:#EF9F27">78%</td>
+          <td style="padding:7px 8px;text-align:right;color:#E24B4A">差 3,518萬</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">15.0%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--text)">13,939萬</td>
+          <td style="padding:7px 8px;text-align:right;color:#EF9F27">87%</td>
+          <td style="padding:7px 8px;text-align:right;color:#E24B4A">差 2,061萬</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">20.0%</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--text)">15,492萬</td>
+          <td style="padding:7px 8px;text-align:right;color:#EF9F27">97%</td>
+          <td style="padding:7px 8px;text-align:right;color:#E24B4A">差 508萬</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">21.6%（所需）</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--text)">16,000萬</td>
+          <td style="padding:7px 8px;text-align:right;color:#EF9F27">100%</td>
+          <td style="padding:7px 8px;text-align:right;color:#E24B4A">差 0萬</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="stitle">退休後現金流檢核</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>項目</th><th style="text-align:right">年</th><th style="text-align:right">月</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:7px 8px;font-weight:600">經常性開銷</td>
+          <td style="padding:7px 8px;text-align:right">399.6萬</td>
+          <td style="padding:7px 8px;text-align:right">33.3萬</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">取自開銷分析頁近12月</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">＋房貸本息</td>
+          <td style="padding:7px 8px;text-align:right">192.0萬</td>
+          <td style="padding:7px 8px;text-align:right">16.0萬</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">期限負債，繳清後消失</td></tr>
+        <tr style="border-top:1.5px solid var(--border)"><td style="padding:7px 8px;font-weight:800">退休後年支出</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:800;color:#EF9F27">591.6萬</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:800">49.3萬</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">含房貸</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">目前年配息</td>
+          <td style="padding:7px 8px;text-align:right;color:#1D9E75">181.6萬</td>
+          <td style="padding:7px 8px;text-align:right">15.1萬</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">覆蓋 31% 的年支出</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">4% 法則所需資產</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">14,790萬</td>
+          <td style="padding:7px 8px;text-align:right">—</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">目標 16,000萬 已覆蓋</td></tr>
+        <tr><td style="padding:7px 8px;font-weight:600">3.5% 法則所需資產</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:600">16,903萬</td>
+          <td style="padding:7px 8px;text-align:right">—</td>
+          <td style="padding:7px 8px;font-size:11px;color:var(--muted)">目標差 903萬</td></tr>
+      </tbody>
+    </table></div>
+    <div class="alert alert-info" style="margin-top:10px">💡 退休後還有 30+ 年要支應（三個小孩仍在教育期），<b>3.5% 法則比 4% 保守合理</b>。
+    房貸繳清後年支出降 192.0萬，對應所需資產減少約 4,800萬。</div>
+  </div>
+  <div class="card">
+    <div class="stitle">行動時間軸</div>
+    <div style="margin-top:10px">
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">
+        <div style="flex:0 0 78px;font-size:11px;font-weight:700;color:#378ADD;padding-top:2px">2026 Q4</div>
+        <div style="flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:#378ADD;margin-top:6px"></div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;margin-bottom:2px">現在</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">持續累積；配息年化 181.6萬，距 360 萬目標仍有缺口</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">
+        <div style="flex:0 0 78px;font-size:11px;font-weight:700;color:#378ADD;padding-top:2px">2027</div>
+        <div style="flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:#378ADD;margin-top:6px"></div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;margin-bottom:2px">資產衝刺期</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">最後完整兩年；維持成長部位，槓桿比重控制在 20% 以內</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">
+        <div style="flex:0 0 78px;font-size:11px;font-weight:700;color:#EF9F27;padding-top:2px">2028</div>
+        <div style="flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:#EF9F27;margin-top:6px"></div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;margin-bottom:2px">開始降風險</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">逐步清除 3 倍槓桿（TQQQ/SOXL），台股正二部分轉高股息</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">
+        <div style="flex:0 0 78px;font-size:11px;font-weight:700;color:#E24B4A;padding-top:2px">2029 Q1</div>
+        <div style="flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:#E24B4A;margin-top:6px"></div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;margin-bottom:2px">退休前最後一季</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">完成配息結構轉換；確保年配息覆蓋退休年支出 591.6萬</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">
+        <div style="flex:0 0 78px;font-size:11px;font-weight:700;color:#E24B4A;padding-top:2px">2029/03/31</div>
+        <div style="flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:#E24B4A;margin-top:6px"></div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;margin-bottom:2px">退休日</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">目標總資產 16,000 萬；之後靠配息＋提領支應</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div style="text-align:center;font-size:11px;color:var(--hint);margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
   RetireFlow Pro v3.3 完整版 ｜ Google Drive 即時同步 ｜ 2026/07/27 ｜ 僅供個人財務規劃參考，不構成投資建議
 </div>
@@ -2834,6 +3039,7 @@ function switchTab(el,name){
   setTimeout(()=>{
     drawTabCharts(name);
     if(name==='calendar') renderCalendar();
+    if(name==='retire') tickRetire();
     if(name==='expense'){renderExpenseNote();try{drawExpenseChart();}catch(e){console.warn('expChart',e);}}
     if(name==='pareto-tw') renderBrokerTable(window.TW_BROKER,'tw-broker-table','TWD');
     if(name==='pareto-us') renderBrokerTable(window.US_BROKER,'us-broker-table','USD');
@@ -3215,6 +3421,24 @@ function renderExpenseNote(){
   n.innerHTML=s;
 }
 
+
+// ══ 退休倒數（瀏覽器端即時計算，每天自動正確）══
+const RETIRE_TS = new Date(2029,2,31).getTime();   // 月份 0-based：2=3月
+const TRACK_TS  = new Date(2026,2,24).getTime();
+function tickRetire(){
+  const el=document.getElementById('rc-days'); if(!el) return;
+  const now=Date.now();
+  const d=Math.max(0,Math.ceil((RETIRE_TS-now)/86400000));
+  el.innerHTML=d.toLocaleString()+'<span style="font-size:12px;color:var(--muted)">天</span>';
+  const ym=document.getElementById('rc-ym');
+  if(ym) ym.textContent=Math.floor(d/365)+' 年 '+Math.floor((d%365)/30)+' 個月 ｜ 2029/03/31';
+  const p=Math.max(0,Math.min(100,(now-TRACK_TS)/(RETIRE_TS-TRACK_TS)*100));
+  const bar=document.getElementById('rc-bar'); if(bar) bar.style.width=p.toFixed(1)+'%';
+  const bt=document.getElementById('rc-bar-t'); if(bt) bt.textContent='已過 '+p.toFixed(1)+'%';
+}
+
+
+try{tickRetire();}catch(e){}
 </script>
 </body>
 </html>

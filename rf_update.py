@@ -2,6 +2,7 @@
 """RetireFlow 更新腳本 v2 — 含反向驗證，對不上帳就中止"""
 import os, re, json, base64, subprocess, shutil, urllib.request, urllib.error, datetime
 from rf_dividend import rebuild_dividend_tab, verify as div_verify
+from rf_retire import inject as retire_inject, verify as retire_verify
 from collections import defaultdict
 
 # ══ ① Google Drive 來源資料 ══
@@ -480,6 +481,14 @@ for a,v in _TA:
 print(f"  ✅ 月曆 + 走勢圖（{'新增' if _isnew else '更新'} {md}，{_mx}筆）")
 
 # ══ ④ 反向驗證：從 HTML 解析回來對帳 ══
+# ══ 退休倒數分頁（退休日 2029-03-31）══
+try:
+    html, _RINFO, _rerr = retire_inject(html, GD)
+    if _rerr: errs.extend(_rerr)
+    else: print(f"  ✅ 退休倒數分頁（剩餘 {_RINFO['days']:,} 天 / 缺口 {_RINFO['gap']/1e4:,.0f}萬 / 需年化 {_RINFO['cagr']*100:.1f}%）")
+except Exception as _e:
+    _RINFO=None; errs.append(f"退休倒數分頁失敗: {_e}")
+
 # ══ 配息月曆分頁：由 dividend_records.csv 重建（唯一真實來源）══
 try:
     html, _DIVINFO = rebuild_dividend_tab(html, 'dividend_records.csv')
@@ -497,7 +506,7 @@ if _g!=0: errs.append(f"div 不平衡（全域 {_g:+}）")
 elif _b!=0: errs.append(f"div 不平衡（body {_b:+}）")
 else: print("  ✅ HTML div 結構平衡")
 _nt=len(re.findall(r'id="tab-[\w-]+"',html))
-if _nt!=18: errs.append(f"分頁數異常 {_nt}（應18）")
+if _nt!=19: errs.append(f"分頁數異常 {_nt}（應19）")
 def grab(var):
     m=re.search(rf'window\.{var}=\s*(\[[\s\S]*?\]);',html)
     return re.findall(r'val:([\d.]+)',m.group(1)) if m else []
@@ -645,6 +654,12 @@ _known_old=[v for v in ['869萬','357萬','4,460萬','2,242萬','3,505萬'] if v
 _stale=[v for v in _known_old if v in _bd2]
 if _stale: errs.append(f"殘留舊數字: {_stale}")
 else: print("  ✅ 無殘留舊數字")
+
+# 退休倒數分頁對帳
+if _RINFO:
+    _rv=retire_verify(html,_RINFO)
+    if _rv: errs.extend(_rv)
+    else: print(f"  ✅ 退休倒數分頁驗證通過（2029/03/31，剩 {_RINFO['days']:,} 天）")
 
 # 配息月曆對帳（頁面數字 vs CSV）
 if _DIVINFO:
