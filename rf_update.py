@@ -3,6 +3,7 @@
 import os, re, json, base64, subprocess, shutil, urllib.request, urllib.error, datetime
 from rf_dividend import rebuild_dividend_tab, verify as div_verify
 from rf_retire import inject as retire_inject, verify as retire_verify
+from rf_analysis import rebuild as ana_rebuild, verify as ana_verify
 from collections import defaultdict
 
 # ══ ① Google Drive 來源資料 ══
@@ -466,6 +467,15 @@ for a,v in _TA:
 print(f"  ✅ 月曆 + 走勢圖（{'新增' if _isnew else '更新'} {md}，{_mx}筆）")
 
 # ══ ④ 反向驗證：從 HTML 解析回來對帳 ══
+# ══ 台股／美股分析敘述（由持股重建）══
+try:
+    html, _AINFO, _aerr = ana_rebuild(html, TW, US, usd)
+    _AINFO['dead']=['0050','0056','SOFI','SNPS','NTSD','QQQI']
+    if _aerr: errs.extend(_aerr)
+    else: print(f"  ✅ 分析敘述重建（台股{_AINFO['tw_tot']/1e4:,.0f}萬/{_AINFO['tw_n']}檔、美股{_AINFO['us_twd']/1e4:,.0f}萬/{_AINFO['us_n']}檔）")
+except Exception as _e:
+    _AINFO=None; errs.append(f"分析敘述重建失敗: {_e}")
+
 # ══ 退休倒數分頁（退休日 2029-03-31）══
 try:
     html, _RINFO, _rerr = retire_inject(html, GD)
@@ -639,6 +649,12 @@ _known_old=[v for v in ['869萬','357萬','4,460萬','2,242萬','3,505萬'] if v
 _stale=[v for v in _known_old if v in _bd2]
 if _stale: errs.append(f"殘留舊數字: {_stale}")
 else: print("  ✅ 無殘留舊數字")
+
+# 分析敘述對帳
+if _AINFO:
+    _av=ana_verify(html,_AINFO)
+    if _av: errs.extend(_av)
+    else: print("  ✅ 分析敘述與持股一致（含已出清標的掃描）")
 
 # 退休倒數分頁對帳
 if _RINFO:
