@@ -7,7 +7,8 @@ from rf_analysis import rebuild as ana_rebuild, verify as ana_verify
 from collections import defaultdict
 
 # ══ ① Google Drive 來源資料 ══
-CASH=dict(ntd=6400000, usd=26000, jpy=0)  # 現金餘額（GD 現金表）
+CASH=dict(ntd=6400000, usd=26000, jpy=0)       # 現金餘額（GD 現金表）
+CASH_PREV=dict(ntd=0, usd=0, jpy=0)            # 前一交易日現金（算當日變化用）
 
 GD = dict(date='2026/09/25', ymd='2026-09-25',
     prev=96333559.22, total=96876368.57, debt=48860814.00,
@@ -82,6 +83,20 @@ def typ(c): return TYPES.get(c,'主動ETF' if c.endswith('A') else 'ETF')
 usd=round(GD['us']/sum(s*p for _,_,s,p in US),2)
 jpy=round(GD['jp']/sum(JP[c]['s']*JP[c]['p'] for c in JP),5)
 W=lambda n: round(n/10000)
+
+# ══ 現金納入總資產／淨資產 ══
+# Google Drive「總資產」欄只含台股+美股+日股+基金，不含現金倉位。
+# 這裡把現金換算台幣後併入，使 淨資產 = 總資產 − 總負債 的恆等式成立。
+CASH_TWD      = CASH['ntd']      + CASH['usd']*usd      + CASH['jpy']*jpy
+CASH_PREV_TWD = CASH_PREV['ntd'] + CASH_PREV['usd']*usd + CASH_PREV['jpy']*jpy
+GD['sec_total'] = GD['total']                 # 保留原始「不含現金」值供對帳
+GD['total'] += CASH_TWD
+GD['prev']  += CASH_PREV_TWD
+GD_HIST[GD['ymd']]  = GD['total']             # 月曆／走勢圖同步採含現金口徑
+NET_HIST[GD['ymd']] = GD['total'] - GD['debt']
+print(f"  💵 現金併入：NTD {CASH['ntd']:,} + USD {CASH['usd']:,} = {CASH_TWD/1e4:,.1f}萬"
+      f" → 總資產 {GD['sec_total']/1e4:,.0f}萬 + 現金 = {GD['total']/1e4:,.0f}萬")
+
 net=GD['total']-GD['debt']
 V=dict(total_w=W(GD['total']),net_w=W(net),debt_w=W(GD['debt']),tw_w=W(GD['tw']),
   us_w=W(GD['us']),jp_w=W(GD['jp']),fd_w=W(GD['fund']),div_w=round(GD['div']/10000,1),
@@ -423,6 +438,13 @@ if _nm_:
         _p=round((_cur-_prev)/_prev*100,2) if _prev else 0
         if _d not in _all: print(f"  ✅ 淨資產月曆回填 {_d}: {_v}萬")
         _all[_d]=f'{{"v":{_v},"c":{_c},"p":{_p}}}'
+    # 當日：優先用 NET_HIST 的前一日淨資產算變化（_ncg 會把昨日總資產配今日負債，負債一變就錯）
+    if GD['ymd'] in NET_HIST:
+        _k=sorted(NET_HIST); _ix=_k.index(GD['ymd'])
+        if _ix>0:
+            _pv=NET_HIST[_k[_ix-1]]; _cu=NET_HIST[GD['ymd']]
+            _ncg=round((_cu-_pv)/10000,1); _npc=round((_cu-_pv)/_pv*100,2) if _pv else 0
+            _nv=round(_cu/10000)
     _all[GD['ymd']]=f'{{"v":{_nv},"c":{_ncg},"p":{_npc}}}'
     html=re.sub(r'const NET_CAL_DATA = \{[\s\S]*?\};',
         'const NET_CAL_DATA = {'+','.join(f'"{k}":{v}' for k,v in sorted(_all.items()))+'};',html,count=1)
@@ -649,6 +671,18 @@ _known_old=[v for v in ['869萬','357萬','4,460萬','2,242萬','3,505萬'] if v
 _stale=[v for v in _known_old if v in _bd2]
 if _stale: errs.append(f"殘留舊數字: {_stale}")
 else: print("  ✅ 無殘留舊數字")
+
+# 現金併入口徑對帳
+_mk=GD['tw']+GD['us']+GD['jp']+GD['fund']
+if abs(_mk-GD['sec_total'])>1:
+    errs.append(f"四市場加總 {_mk/1e4:,.1f}萬 ≠ Drive 總資產 {GD['sec_total']/1e4:,.1f}萬")
+elif abs((GD['sec_total']+CASH_TWD)-GD['total'])>1:
+    errs.append("現金併入後總資產不符")
+elif abs((GD['total']-GD['debt'])-net)>1:
+    errs.append("淨資產 ≠ 總資產−總負債")
+else:
+    print(f"  ✅ 現金口徑：四市場 {_mk/1e4:,.0f}萬 ＋ 現金 {CASH_TWD/1e4:,.0f}萬 ＝ 總資產 {GD['total']/1e4:,.0f}萬"
+          f"，淨資產 {net/1e4:,.0f}萬 = 總資產−負債")
 
 # 分析敘述對帳
 if _AINFO:
